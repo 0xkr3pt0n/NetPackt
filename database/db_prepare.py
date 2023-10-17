@@ -1,6 +1,7 @@
 import os
 import json
 import psycopg2
+
 # Function to find and process JSON files in a directory and its subdirectories
 def process_json_files_in_directory(directory):
     for root, _, files in os.walk(directory):
@@ -88,7 +89,7 @@ def process_json_file(json_file_path):
         scor = ""
         sevr = ""
         if 'metrics' in json_load['containers']['cna']:
-            if 'cvssV3_1' in json_load['containers']['cna']['metrics'][0] or 'cvssV3_0' in json_load['containers']['cna']['metrics'][0] :
+            if 'cvssV3_1' in json_load['containers']['cna']['metrics'][0] or 'cvssV3_0' in json_load['containers']['cna']['metrics'][0]:
                 try:
                     conf = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['confidentialityImpact'] #confedintiallity impact
                 except:
@@ -109,6 +110,15 @@ def process_json_file(json_file_path):
                     sevr = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['baseSeverity'] #base severity
                 except:
                     sevr = "None"
+            elif 'cvssV2_0' in json_load['containers']['cna']['metrics'][0]:
+                try:
+                    scor = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['baseScore'] #base score
+                except:
+                    scor = "None"
+                conf = "None"
+                inte = "None"
+                aval = "None"
+                sevr = "None"
         else:
             conf = "None"
             inte = "None"
@@ -149,11 +159,15 @@ def process_json_file(json_file_path):
         date_update = vulnerabillites[i]['dataupdated']
         vendor = vulnerabillites[i]['vendor']
         product = vulnerabillites[i]['product']
-        try:
-            version_extracting = [item['version'] for item in vulnerabillites[i]['versions']]
-            versions = ', '.join(version_extracting)
-        except:
-            versions = "None"
+        for j in range(len(vulnerabillites[i]['versions'])):
+            if 'lessThan' in vulnerabillites[i]['versions'][j]:
+                versions = '< ' +  vulnerabillites[i]['versions'][j]['lessThan']
+            elif 'lessThanOrEqual' in vulnerabillites[i]['versions'][j]:
+                versions = '<= ' +  vulnerabillites[i]['versions'][j]['lessThanOrEqual']
+            elif 'version' in vulnerabillites[i]['versions'][j]:
+                versions = vulnerabillites[i]['versions'][j]['version']
+            else:
+                versions = "None"
         description = vulnerabillites[i]['description']
         description = ', '.join(description)
         refrences = vulnerabillites[i]['refrences']
@@ -169,10 +183,11 @@ def process_json_file(json_file_path):
 
         cursor.execute(insert_query, data_to_insert)
         connection.commit()
-        print("Data inserted successfully.")
-
+        print(f"data of cve {cve_id} inserted succsessfully. ")
+        
     cursor.close()
     connection.close()
+    
 
 
 # Start processing JSON files from the current directory
