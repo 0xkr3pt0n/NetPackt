@@ -7,7 +7,7 @@ class networkscan:
     
     #function to recieve hosts file and loop in it to scan each host or network (it may contain an ip or network prefix)
     def hosts(self, hosts):
-        with open('hosts.txt') as hosts:
+        with open(self.hosts) as hosts:
             for host in hosts:
                 infodb,infodisplay = self.scan(host)
                 print(infodb)
@@ -104,6 +104,6 @@ class networkscan:
         return services_for_db,services_for_display
 
 
-if __name__ == '__main__':
-    scan = networkscan("hosts.txt")
+
+scan = networkscan("hosts.txt")
    
