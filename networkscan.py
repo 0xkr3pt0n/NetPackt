@@ -1,5 +1,13 @@
 import nmap
 
+'''
+this class responsable for scanning targeted network or a whole network by giving it a network prefix
+Usage Example : scan = networkscan("hosts.txt")
+Note : 
+    [*] hosts.txt expected content
+        192.168.1.1 or 192.168.1.0/24 or 192.168.1.1,192.168.1.2
+'''
+
 class networkscan:
     #constructor that initiate scan
     def __init__(self,hosts):
@@ -105,5 +113,5 @@ class networkscan:
 
 
 
-scan = networkscan("hosts.txt")
+
    
