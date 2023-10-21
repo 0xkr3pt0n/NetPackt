@@ -5,6 +5,8 @@ import psycopg2
 '''
 this class is resposable for inserting data onto the database for first time use.
 Usage Example : db = initdatabase()
+Note : put this file in the root directory (cves/) which contain all json files and folders inside.
+Note : This script will take up to 2 hours so kindly go drink ur coffe or do anything useful until it finishes.
 '''
 class initdatabase:
     #class constructor
@@ -41,138 +43,271 @@ class initdatabase:
     def process_json_file(self, json_file_path):
         with open(json_file_path, 'r') as json_file:
             json_load = json.load(json_file)
-            
-        cve_id = json_load['cveMetadata']['cveId']
-        try:
-            date_updated = json_load['cveMetadata']['dateUpdated']
-        except:
-            date_updated = json_load['cveMetadata']['datePublished']
-
-        vulnerabillites = [] # a list of vulnerabillites affected with the same cve
-
-        #this loop will check if there is multiple servcies affected with the same cve
-        try:
-            for i in range(len(json_load['containers']['cna']['affected'])):
-                vend=json_load['containers']['cna']['affected'][i]['vendor']
-                prod=json_load['containers']['cna']['affected'][i]['product']
-                try:
-                    vers=json_load['containers']['cna']['affected'][i]['versions']
-                except:
-                    vers=json_load['containers']['cna']['affected'][0]['versions']
-                desc = []
-                refr = []
-                conf = ""
-                inte = ""
-                aval = ""
-                scor = ""
-                sevr = ""
-                
-                if 'metrics' in json_load['containers']['cna']:
-                    #case to handle metrics in case of cvss 3.1 or 3.0
-                    if 'cvssV3_1' in json_load['containers']['cna']['metrics'][0] or 'cvssV3_0' in json_load['containers']['cna']['metrics'][0] :
-                        try:
-                            conf = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['confidentialityImpact'] #confedintiallity impact
-                        except:
-                            conf = "None"
-                        try:
-                            inte = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['integrityImpact'] #integrity impact
-                        except:
-                            conf = "None"
-                        try:
-                            aval = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['availabilityImpact'] #availability impact
-                        except:
-                            aval = "None"
-                        try:
-                            scor = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['baseScore'] #base score
-                        except:
-                            scor = "None"
-                        try:
-                            sevr = json_load['containers']['cna']['metrics'][0]['cvssV3_1']['baseSeverity'] #base severity
-                        except:
-                            sevr = "None"
-            #case to handle metrics in case of cvss 2.0
-                    elif 'cvssV2_0' in json_load['containers']['cna']['metrics'][0]:
-                        try:
-                            scor = json_load['containers']['cna']['metrics'][0]['cvssV2_0']['baseScore'] #base score
-                        except:
-                            scor = "None"
-                        conf = "None"
-                        inte = "None"
-                        aval = "None"
-                        sevr = "None"
-                #case to handle metrics in case of other cases
-                    else:
-                        conf = "None"
-                        inte = "None"
-                        aval = "None"
-                        scor = "None"
-                        sevr = "None"
-                #if metrics section is not found case
+        #check if cve is rejected or not (we don't want rejected vulnerabillites in our DB)
+        if json_load['cveMetadata']['state'] == "PUBLISHED":
+            vulnerabillites =[]
+            #cve id cases
+            try:
+                cveid = json_load['cveMetadata']['cveId']
+            except KeyError as e:
+                cveid = "None"
+            #data updated cases
+            try:
+                dateUpdated = json_load['cveMetadata']['dateUpdated']  
+            except KeyError as e:
+                if 'datePublished' in json_load['cveMetadata']:
+                    dateUpdated = json_load['cveMetadata']['datePublished'] 
                 else:
-                    conf = "None"
-                    inte = "None"
-                    aval = "None"
-                    scor = "None"
-                    sevr = "None"
-                
-                #this loop will check if there is multiple descriptions for the cve
-                try:
-                    for j in range(len(json_load['containers']['cna']['descriptions'])):
-                        desc.append(json_load['containers']['cna']['descriptions'][j]['value'])
-                except:
-                    desc.append("None")
-                
-                #this loop will check if there is multiple refrences for the cve
-                try:
-                    for j in range(len(json_load['containers']['cna']['references'])):
-                        refr.append(json_load['containers']['cna']['references'][j]['url'])
-                except:
-                    refr.append("None")
-                vulnerabillites.append({"CVEID":cve_id, "dataupdated":date_updated,"vendor":vend,"product":prod,"versions":vers, "description":desc,"refrences":refr,"cimpact":conf,"iimpact":inte,"aimpact":aval,"baseScore":scor,"baseSeverity":sevr})
-        
-        except Exception as e:
-            print(f"couldn't extract json data from {cve_id} because : {e}")
-        
-        #inserting data of vulnerabillites on the database.
-        self.insert_data(vulnerabillites)
+                    dateUpdated = "None"
+            #service, product, versions cases, description, refrence, metrics
+            try:
+                for i in range(len(json_load['containers']['cna']['affected'])):
+                    #---------vendor, product version cases start---------
+                    service = json_load['containers']['cna']['affected'][i]
+                    if 'packageName' in service or 'collectionURL' in service:
+                        #product cases
+                        try:
+                            if 'product' in service:
+                                if service['product'] and service['packageName']  != 'n/a':
+                                    product = service['product'] + "," + service['packageName']
+                                elif service['product'] == 'n/a' and service['packageName'] !='n/a':
+                                    product = service['packageName']
+                                elif service['product'] != 'n/a' and service['packageName'] =='n/a':
+                                    product = service['product']
+                                else:
+                                    product = "None"
+                            else:
+                                if service['packageName'] != 'n/a':
+                                    product = service['packageName']
+                                else:
+                                    product = "None"
+                        except KeyError as e:
+                            product = "None"
+                        #vendor cases
+                        try:
+                            if 'vendor' in service:
+                                if service['vendor'] != 'n/a' and service['collectionURL']  != 'n/a':
+                                    vendor = service['vendor'] + "," + service['collectionURL']
+                                elif service['vendor'] == 'n/a' and service['collectionURL'] !='n/a':
+                                    vendor = service['collectionURL']
+                                elif service['vendor'] != 'n/a' and service['collectionURL'] =='n/a':
+                                    vendor = service['vendor']
+                                else:
+                                    vendor = "None"
+                            else:
+                                if service['collectionURL'] != 'n/a':
+                                    vendor = service['collectionURL']
+                                else:
+                                    vendor = "None"
+                        except KeyError as e:
+                            vendor = "None"
+                        #version cases
+                        affected_versions = []
+                        try:
+                            if 'versions' in service and 'cpes' in service :
+                                affected_versions.append(service['versions'])
+                                affected_versions.append(service['cpes'])
+                            elif 'versions' not in service and 'cpes' in service:
+                                affected_versions.append(service['cpes'])
+                            elif 'versions' in service and 'cpes' not in service:
+                                affected_versions.append(service['versions'])
+                            else:
+                                affected_versions.append("None")
+                        except KeyError as e:
+                            affected_versions.append("None")
+                    else: 
+                        #product cases
+                        try:
+                            if service['product'] == 'n/a':
+                                product = "None"
+                            else:
+                                product = service['product']
+                        except KeyError as e:
+                            product = "None"
+                        #vendor cases
+                        try:
+                            if service['vendor'] == 'n/a':
+                                vendor = "None"
+                            else:
+                                vendor = service['vendor']
+                        except KeyError as e:
+                            vendor = "None"
+                        #version cases
+                        affected_versions = []
+                        try:
+                            if 'versions' in service and 'cpes' in service :
+                                affected_versions.append(service['versions'])
+                                affected_versions.append(service['cpes'])
+                            elif 'versions' not in service and 'cpes' in service:
+                                affected_versions.append(service['cpes'])
+                            elif 'versions' in service and 'cpes' not in service:
+                                affected_versions.append(service['versions'])
+                            else:
+                                affected_versions.append("None")
+                        except KeyError as e:
+                            affected_versions.append("None")
+                    #---------vendor, product version cases end---------
+
+                    #description cases
+                    descriptions = []
+                    try:
+                        for description in json_load['containers']['cna']['descriptions']:
+                            descriptions.append(description['value'])
+                    except KeyError as e:
+                        descriptions.append("None")
+                    #refrences cases
+                    refrences = []
+                    try:
+                        for refrence in json_load['containers']['cna']['references']:
+                            refrences.append(refrence['url'])
+                    except KeyError as e:
+                        refrences.append("None")
+                    #metrics cases
+                    try:
+                        for metric in json_load['containers']['cna']['metrics']:
+                            if 'cvssV3_1' in metric:
+                                try:
+                                    confeditiallity_impact = metric['cvssV3_1']['confidentialityImpact']
+                                except KeyError as e:
+                                    confeditiallity_impact = "None"
+                                try:
+                                    integrity_impact = metric['cvssV3_1']['confidentialityImpact']
+                                except KeyError as e:
+                                    integrity_impact = "None"
+                                try:
+                                    availability_impact = metric['cvssV3_1']['availabilityImpact']
+                                except KeyError as e:
+                                    availability_impact = "None"
+                                try:
+                                    base_score = metric['cvssV3_1']['baseScore']
+                                except KeyError as e:
+                                    base_score = "None"
+                                try:
+                                    base_severity = metric['cvssV3_1']['baseSeverity']
+                                except KeyError as e:
+                                    base_severity = "None"
+                            
+                            elif 'cvssV3_0' in metric:
+                                try:
+                                    confeditiallity_impact = metric['cvssV3_0']['confidentialityImpact']
+                                except KeyError as e:
+                                    confeditiallity_impact = "None"
+                                try:
+                                    integrity_impact = metric['cvssV3_0']['confidentialityImpact']
+                                except KeyError as e:
+                                    integrity_impact = "None"
+                                try:
+                                    availability_impact = metric['cvssV3_0']['availabilityImpact']
+                                except KeyError as e:
+                                    availability_impact = "None"
+                                try:
+                                    base_score = metric['cvssV3_0']['baseScore']
+                                except KeyError as e:
+                                    base_score = "None"
+                                try:
+                                    base_severity = metric['cvssV3_0']['baseSeverity']
+                                except KeyError as e:
+                                    base_severity = "None"
+                            elif 'cvssV2_0' in metric:
+                                try:
+                                    confeditiallity_impact = metric['cvssV2_0']['confidentialityImpact']
+                                except KeyError as e:
+                                    confeditiallity_impact = "None"
+                                try:
+                                    integrity_impact = metric['cvssV2_0']['confidentialityImpact']
+                                except KeyError as e:
+                                    integrity_impact = "None"
+                                try:
+                                    availability_impact = metric['cvssV2_0']['availabilityImpact']
+                                except KeyError as e:
+                                    availability_impact = "None"
+                                try:
+                                    base_score = metric['cvssV2_0']['baseScore']
+                                except KeyError as e:
+                                    base_score = "None"
+                                try:
+                                    base_severity = metric['cvssV2_0']['baseSeverity']
+                                except KeyError as e:
+                                    base_severity = "None"
+                            else:
+                                confeditiallity_impact = "None"
+                                integrity_impact = "None"
+                                availability_impact = "None"
+                                base_score = "None"
+                                base_severity = "None"
+                    except KeyError as e:
+                                confeditiallity_impact = "None"
+                                integrity_impact = "None"
+                                availability_impact = "None"
+                                base_score = "None"
+                                base_severity = "None"  
+                    vulnerabillites.append({"cveid":cveid,"dateupdated":dateUpdated,"vendor":vendor,"product":product,"version":affected_versions,"description":descriptions,"refrences":refrences,"confedintiallity_impact":confeditiallity_impact, "integrity_impact":integrity_impact,"availabillity_impact":availability_impact,"base_score":base_score,"base_severity":base_severity})     
+                #sending each vulnerabillity to insert_data method to insert into db
+                self.insert_data(vulnerabillites)
+            except:
+                pass
+        else:
+            print(f" [ ! ] cve {json_load['cveMetadata']['cveId']} rejected and not inserted in DB.")
     
     #insert_data method to query the database to insert data.
     def insert_data(self, vulnerabillites):
-        #looping through all vulnerabillites prepared in the list
-        for i in range(len(vulnerabillites)):
-            
-            #preparing data for insertion in database, converting any datatype to string
-            cve_id = vulnerabillites[i]['CVEID']
-            date_update = vulnerabillites[i]['dataupdated']
-            vendor = vulnerabillites[i]['vendor']
-            product = vulnerabillites[i]['product']
-            for j in range(len(vulnerabillites[i]['versions'])):
-                if 'lessThan' in vulnerabillites[i]['versions'][j]:
-                    versions = '< ' +  vulnerabillites[i]['versions'][j]['lessThan']
-                elif 'lessThanOrEqual' in vulnerabillites[i]['versions'][j]:
-                    versions = '<= ' +  vulnerabillites[i]['versions'][j]['lessThanOrEqual']
-                elif 'version' in vulnerabillites[i]['versions'][j]:
-                    versions = vulnerabillites[i]['versions'][j]['version']
-                else:
-                    versions = "None"
-            description = vulnerabillites[i]['description']
-            description = ', '.join(description)
-            refrences = vulnerabillites[i]['refrences']
-            refrences = ', '.join(refrences)
-            confedintiallity_impact = vulnerabillites[i]['cimpact']
-            integtrity_impact = vulnerabillites[i]['iimpact']
-            availabillity_impact = vulnerabillites[i]['aimpact']
-            base_score = vulnerabillites[i]['baseScore']
-            base_severity = vulnerabillites[i]['baseSeverity']
+            for vulnerabillity in vulnerabillites:
+                #preparing data to be inserted in database
+                cve_id = vulnerabillity['cveid']
+                date_update = vulnerabillity['dateupdated']
+                vendor = vulnerabillity['vendor']
+                product = vulnerabillity['product']
+                version = vulnerabillity['version']
+                for ver in version:
+                    if ver !="None":
+                        for item in ver:
+                            if isinstance(item, str):
+                                version=item
+                            else:
+                                if 'version' in item and 'lessThan' not in item and 'lessThanOrEqual' not in item:
+                                    version = item['version']
+                                elif 'lessThan' in item:
+                                    version ="< " + item['lessThan']
+                                    try:
+                                        version = version + " , " + item['version']
+                                    except:
+                                        pass
+                                    try:
+                                        version = version + " , " + item['lessThanOrEqual']
+                                    except:
+                                        pass
+                                else:
+                                    version = "<= " + item['lessThanOrEqual']
+                                    try:
+                                        version = version + " , " + item['version']
+                                    except:
+                                        pass
+                                    try:
+                                        version = version + " , " + item['lessThan']
+                                    except:
+                                        pass
+                    else:
+                        version = "None"
+                if version == 'n/a':
+                    version = "None"
+                description = vulnerabillity['description']
+                description = ",".join(description)
+                refrences = vulnerabillity['refrences']
+                refrences = ",".join(refrences)
+                integtrity_impact = vulnerabillity['integrity_impact']
+                confedintiallity_impact = vulnerabillity['confedintiallity_impact']
+                availabillity_impact = vulnerabillity['availabillity_impact']
+                base_score = vulnerabillity['base_score']
+                base_severity = vulnerabillity['base_severity']
 
-            #inserting query
-            insert_query = "INSERT INTO vulnerabilities (cveid, dateupdated, vendor, product, versions, description, reference, confidentialityimpact, integrityimpact, availabilityimpact, basescore, baseseverity) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            data_to_insert = (cve_id, date_update, vendor, product, versions, description, refrences, confedintiallity_impact, integtrity_impact, availabillity_impact, base_score, base_severity)
+                #inserting query
+                insert_query = "INSERT INTO vulnerabilities (cveid, dateupdated, vendor, product, versions, description, reference, confidentialityimpact, integrityimpact, availabilityimpact, basescore, baseseverity) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                data_to_insert = (cve_id, date_update, vendor, product, version, description, refrences, confedintiallity_impact, integtrity_impact, availabillity_impact, base_score, base_severity)
 
-            #sending the query to postgres
-            self.cursor.execute(insert_query, data_to_insert)
-            self.connection.commit()
-            print(f"data of cve {cve_id} inserted succsessfully. ")
+                #sending the query to postgres
+                self.cursor.execute(insert_query, data_to_insert)
+                self.connection.commit()
+                print(f"data of cve {cve_id} inserted succsessfully. ")
         #closing database connection   
     #class destructor to finsih database connection at the end.
     def __del__(self):
