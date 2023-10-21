@@ -55,7 +55,10 @@ class initdatabase:
             for i in range(len(json_load['containers']['cna']['affected'])):
                 vend=json_load['containers']['cna']['affected'][i]['vendor']
                 prod=json_load['containers']['cna']['affected'][i]['product']
-                vers=json_load['containers']['cna']['affected'][i]['versions']
+                try:
+                    vers=json_load['containers']['cna']['affected'][i]['versions']
+                except:
+                    vers=json_load['containers']['cna']['affected'][0]['versions']
                 desc = []
                 refr = []
                 conf = ""
@@ -128,7 +131,7 @@ class initdatabase:
                 vulnerabillites.append({"CVEID":cve_id, "dataupdated":date_updated,"vendor":vend,"product":prod,"versions":vers, "description":desc,"refrences":refr,"cimpact":conf,"iimpact":inte,"aimpact":aval,"baseScore":scor,"baseSeverity":sevr})
         
         except Exception as e:
-            print(f"couldn't extract json data from the file: {e}")
+            print(f"couldn't extract json data from {cve_id} because : {e}")
         
         #inserting data of vulnerabillites on the database.
         self.insert_data(vulnerabillites)
