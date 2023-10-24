@@ -1,3 +1,10 @@
+
+{% if request.user.is_authenticated %}
+<script>
+    window.location.href = "{% url 'home' %}"; 
+</script>
+{% else %}
+
 {%load static%}
 <!DOCTYPE html>
 <html lang="en">
@@ -80,3 +87,4 @@
         <script src="js/scripts.js"></script>
     </body>
 </html>
+{% endif %}
