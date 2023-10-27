@@ -1,3 +1,4 @@
 modifications.py
 hosts.txt
 backend/database/cves
+myapp/myapp/settings.py
