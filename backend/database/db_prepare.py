@@ -14,10 +14,10 @@ class initdatabase:
         try:
             #connection to database ([!] dont forget to modify connection parameters)
             connection = psycopg2.connect(
-                host="localhost", #keep the same
+                host="192.168.1.50", #keep the same
                 database="netimpact", #database name (change according to your dbname)
                 user="postgres", # database username (change according to your username of postgres)
-                password="postgres" # database password (change according to your password of postgres)
+                password="123456" # database password (change according to your password of postgres)
             )
             cursor = connection.cursor()
             self.connection = connection
