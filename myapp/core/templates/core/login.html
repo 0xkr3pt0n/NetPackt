@@ -4,8 +4,6 @@
 </script>
 {% else %}
 
-
-
 {%load static%}
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +23,9 @@
     <body class="bg-primary">
         <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
+                
                 <div class="center">
+
                     <h1>Login</h1>
                     <form method="post">
                         {%csrf_token%}
@@ -43,9 +43,9 @@
                         <input type="checkbox" value="" id="inputRememberPassword" class="form-check-input">
                         <label for="inputRememberPassword" class="form-check-input ">Remember Password :)</label>
                       </div>   -->
-                      <div class="pass ">Forgot Password?  :)</div>
+                      <div class="pass ">Forgot Password? </div>
                       <input type="submit" value="Login" />
-                      <div class="signup_link">Not a member? <a href="#">Signup</a></div>
+                      <div class="signup_link">Not a member? <a href="{%url 'register'%}">Signup</a></div>
                     </form>
                 </div>
             </div>
