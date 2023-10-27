@@ -13,7 +13,7 @@ git config --global user.email "replace_with_github_email"
 ```
 then downloading the repo (it may ask you to login with browser):
 ```bash
-git clone https://github.com/0xkr3pt0n/NetPackt.git<br>
+git clone https://github.com/0xkr3pt0n/NetPackt.git
 ```
 ## installtion
 ```bash
