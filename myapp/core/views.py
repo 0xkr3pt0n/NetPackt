@@ -42,3 +42,5 @@ def home(request):
 def user_logout(request):
     logout(request)
     return redirect('/login/')
+def new_scan(requesr):
+    return render(requesr, "core/networkscan.html")
