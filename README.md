@@ -16,18 +16,16 @@ then downloading the repo (it may ask you to login with browser):
 git clone https://github.com/0xkr3pt0n/NetPackt.git
 ```
 ## installtion
-<<<<<<< HEAD
-''' bash
-=======
+
 ```bash
->>>>>>> 264cb5f2ef7983f06fb0d9d97c264cc902e2bbed
+
 $ pip install django
 $ cd NetPackt
 $ cd myapp
 $ python manage.py runserver
 ```
+
 ## running
-<br>
 visit 127.0.0.1:8080
 
 
