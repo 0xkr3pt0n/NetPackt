@@ -89,8 +89,8 @@
         </div>
         <div id="layoutSidenav_content">
     <main>
-
-                <div class="masthead">
+                  {%load static%}
+                <div class="masthead" style="background-image: url({% static 'background.jpeg' %});">
                     <div class="container position-relative">
                         <div class="row justify-content-center">
                             <div class="col-xl-6">
@@ -111,13 +111,13 @@
                                         <div class="row">
                                             <div class="col">
                                                 <input class="form-control form-control-lg" id="ipAddress" type="text"
-                                                    placeholder="129.168.1.1" data-sb-validations="required" />
+                                                    placeholder="192.168.1.1" data-sb-validations="required" />
                                                 <div class="invalid-feedback text-white"
                                                     data-sb-feedback="ipAddress:required">IP Address is required.
                                                 </div>
                                             </div>
                                             <div class="col-auto"><button class="btn btn-primary btn-lg disabled"
-                                                    id="submitButton" type="submit">Submit</button></div>
+                                                    id="submitButton" type="submit">Scan</button></div>
                                         </div>
                                         <!-- Submit success message-->
                                         <!---->
