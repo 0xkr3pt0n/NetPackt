@@ -1,59 +1,42 @@
-
-{% if request.user.is_authenticated %}
-<script>
-    window.location.href = "{% url 'home' %}"; 
-</script>
-{% else %}
-
-
-
-
+{% extends "core/base.html" %}
 {%load static%}
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Login ;D - SB Admin</title>
-        <link href="{%static 'styles.css'%}" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <!-- favicon to put a small image  --> 
-        <link rel="icon" type="image/x-icon" href="Genshin pics/icon.png">
-        <link rel="stylesheet" href="{%static 'oops.css'%}" />
-    </head>
-    <body class="bg-primary">
-        <div id="layoutAuthentication">
-            <div id="layoutAuthentication_content">
-                
-                <div class="center">
+{%block title%}Login{%endblock%}
+{%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
+{%block content%}
+{% if request.user.is_authenticated %}
+  <script>
+      window.location.href = "{% url 'home' %}"; 
+  </script>
+{%else%}
+  <body class="bg-primary">
+      <div id="layoutAuthentication">
+          <div id="layoutAuthentication_content">
+              
+              <div class="center">
 
-                    <h1>Login</h1>
-                    <form method="post">
-                        {%csrf_token%}
-                      <div class="txt_field">
-                        <input type="text" id="inputEmail" name="username" required />
-                        <span></span>
-                        <label>Username</label>
-                      </div>
-                      <div class="txt_field">
-                        <input type="password" id="inputPassword" name="password" required />
-                        <span></span>
-                        <label>Password</label>
-                      </div>
-                      <!--<div class="form-check mb-3">
-                        <input type="checkbox" value="" id="inputRememberPassword" class="form-check-input">
-                        <label for="inputRememberPassword" class="form-check-input ">Remember Password :)</label>
-                      </div>   -->
-                      <div class="pass ">Forgot Password? </div>
-                      <input type="submit" value="Login" />
-                      <div class="signup_link">Not a member? <a href="{%url 'register'%}">Signup</a></div>
-                    </form>
-                </div>
-            </div>
-
-
-  <!-- Your login form goes here -->
-  {% endif %}
+                  <h1>Login</h1>
+                  <form method="post">
+                      {%csrf_token%}
+                    <div class="txt_field">
+                      <input type="text" id="inputEmail" name="username"  />
+                      <span></span>
+                      <label>Username</label>
+                    </div>
+                    <div class="txt_field">
+                      <input type="password" id="inputPassword" name="password" required />
+                      <span></span>
+                      <label>Password</label>
+                    </div>
+                    <!--<div class="form-check mb-3">
+                      <input type="checkbox" value="" id="inputRememberPassword" class="form-check-input">
+                      <label for="inputRememberPassword" class="form-check-input ">Remember Password :)</label>
+                    </div>   -->
+                    <div class="pass ">Forgot Password? </div>
+                    <input type="submit" value="Login" />
+                    <div class="signup_link">Not a member? <a href="{%url 'register'%}">Signup</a></div>
+                  </form>
+              </div>
+          </div>
+  </body>
+{%endif%}
+{%endblock%}

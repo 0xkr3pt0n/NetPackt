@@ -1,61 +1,103 @@
 {% extends "core/base.html" %}
+{%load static%}
+{%block title%}Register{%endblock%}
+{%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
+{%block content%}
 {% if request.user.is_authenticated %}
 <script>
     window.location.href = "{% url 'home' %}"; 
 </script>
 {% else %}
-
-{%block content%}
     <body class="bg-primary">
         <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
-                <main>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-7">
-                                <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
-                                    <div class="card-body">
-                                        <form method='post' action=".">
-                                            {%csrf_token%}
-                                            <div class="row mb-3">
-                                                <div class="form-floating mb-3">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" name="username"/>
-                                                        <label for="inputFirstName">username</label>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                            <div class="row mb-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputPassword" type="password" placeholder="Create a password" name="password1"/>
-                                                        <label for="inputPassword">Password</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputPasswordConfirm" type="password" placeholder="Confirm password" name="password2"/>
-                                                        <label for="inputPasswordConfirm">Confirm Password</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-4 mb-0">
-                                                <div class="d-grid"><button class="btn btn-primary btn-block" type="submit">Create Account</button></div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="{%url 'login'%}">Have an account? Go to login</a></div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="center">
+                <h1>Register</h1>
+                <form method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    {% if form.username.errors %}
+                        <div class="text-danger">
+                            {{ form.username.errors.0 }}
                         </div>
+                    {% endif %} 
+                    <div class="txt_field">
+                        <input  id="username" type="text" name="username" required/>
+                        <span></span>
+                        <label>Username</label>
                     </div>
-                </main>
-            </div>
+                    {% if form.email.errors %}
+                        <div class="text-danger">
+                            {{ form.email.errors.0 }}
+                        </div>
+                    {% endif %}
+                    <div class="txt_field">
+                        <input  id="inputEmail" type="email" name="email" required/>
+                        <span></span>
+                        <label>Email address</label>
+                    </div>
+                    {% if form.password1.errors %}
+                    <div class="text-danger">
+                        {{ form.password1.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <div class="txt_field">
+                        <input  id="inputPassword" type="password" name="password1" required/>
+                        <span></span>
+                        <label>Password</label>
+                    </div>
+                    {% if form.password2.errors %}
+                    <div class="text-danger">
+                        {{ form.password2.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <div class="txt_field" >
+                        <input  id="inputPasswordConfirm" type="password" name="password2" required/>
+                        <span></span>
+                        <label>Confirm Password</label>
+                    </div>
+                    <input type="submit" value="Register"></input>
+                </form>
+            <div class="card-footer text-center py-3">
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'success' %}
+                <div class="alert alert-success" id="success-message">
+                    {{ message }}
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        let successMessage = document.getElementById('success-message');
+                        if (successMessage) {
+                            setTimeout(function () {
+                                successMessage.style.display = 'none';
+                            }, 3000);
+                        }
+                    });
+                </script>
+                {% endif %}
+                {% if message.tags == 'error' %}
+                <div class="alert alert-danger" id="error-message">
+                    {{ message }}
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        let errorMessage = document.getElementById('error-message');
+                        if (errorMessage) {
+                            setTimeout(function () {
+                                errorMessage.style.display = 'none';
+                            }, 3000);
+                        }
+                    });
+                </script>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                <div class="signup_link">Already have an account ?  <a href="{%url 'login'%}">Login</a></div>
 
-{%endblock%}
+                </div>
+            </div>
+        </div>
+
 {% endif %}
+{%endblock%}
+
