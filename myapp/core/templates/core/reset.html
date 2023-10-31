@@ -1,6 +1,6 @@
 {% extends "core/base.html" %}
 {%load static%}
-{%block title%}Login{%endblock%}
+{%block title%}Password Reset{%endblock%}
 {%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
 {%block content%}
 {% if request.user.is_authenticated %}
@@ -14,23 +14,16 @@
               
               <div class="center">
 
-                  <h1>Login</h1>
-
+                  <h1>Reset Password</h1>
                   <form method="post">
                       {%csrf_token%}
                     <div class="txt_field">
-                      <input type="text" id="inputEmail" name="username"  required/>
+                      <input type="email" id="inputEmail" name="email"  required/>
                       <span></span>
-                      <label>Username</label>
+                      <label>Email</label>
                     </div>
-                    <div class="txt_field">
-                      <input type="password" id="inputPassword" name="password" required />
-                      <span></span>
-                      <label>Password</label>
-                    </div>
-                    <div class="pass"><a href="{%url 'password_reset' %}" >Forgot Password?</a> </div>
-                    <input type="submit" value="Login" />
-                    <div class="signup_link">Not a member? <a href="{%url 'register'%}">Signup</a></div>
+                    <input type="submit" value="Reset" />
+                    <div class="signup_link">Back To <a href="{%url 'login'%}">Login</a></div>
                   </form>
               </div>
           </div>

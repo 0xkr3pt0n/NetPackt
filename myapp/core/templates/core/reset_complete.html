@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{%load static%}
+{%block title%}Password Reset{%endblock%}
+{%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
+{%block content%}
+{% if request.user.is_authenticated %}
+  <script>
+      window.location.href = "{% url 'home' %}"; 
+  </script>
+{%else%}
+  <body class="bg-primary">
+      <div id="layoutAuthentication">
+          <div id="layoutAuthentication_content">
+              
+              <div class="center">
+
+                  <p class="pass-reset-p">
+                    Your Password Has Changed<br>
+                    Back to <a href="{%url 'login'%}">Login</a>
+                  </p>
+              </div>
+          </div>
+  </body>
+{%endif%}
+{%endblock%}

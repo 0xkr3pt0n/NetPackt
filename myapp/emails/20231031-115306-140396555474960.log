@@ -1,0 +1,25 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Password reset on 127.0.0.1:8000
+From: webmaster@localhost
+To: mohabwrites@gmail.com
+Date: Tue, 31 Oct 2023 11:53:06 -0000
+Message-ID: <169875318663.29961.4205282946899026601@mohab>
+
+
+You're receiving this email because you requested a password reset for your user account at 127.0.0.1:8000.
+
+Please go to the following page and choose a new password:
+
+http://127.0.0.1:8000/reset/OA/bwxnoi-862e9226283526b65ad5c30ece186236/
+
+Your username, in case you’ve forgotten: mohab_612
+
+Thanks for using our site!
+
+The 127.0.0.1:8000 team
+
+
+
+-------------------------------------------------------------------------------

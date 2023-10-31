@@ -4,6 +4,7 @@ from .forms import SignupForm
 from django.contrib.auth import logout
 from django.contrib import messages
 
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -20,12 +21,15 @@ def signup(request):
 
     return render(request, 'core/register.html', {'form': form})
 
+def user_logout(request):
+    logout(request)
+    return redirect('/login/')
+
 @login_required
 def home(request):
     return render(request, 'core/index.html')
 
-def user_logout(request):
-    logout(request)
-    return redirect('/login/')
+
 def new_scan(requesr):
     return render(requesr, "core/networkscan.html")
+
