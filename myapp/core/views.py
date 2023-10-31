@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignupForm
 from django.contrib.auth import logout
 from django.contrib import messages
-
+from django.contrib.auth.models import User
 
 def signup(request):
     if request.method == 'POST':
@@ -37,3 +37,4 @@ def scans(request):
 @login_required(login_url='/login/')
 def soon(request):
     return render(request, "core/soon.html")
+
