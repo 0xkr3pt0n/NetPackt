@@ -1,0 +1,53 @@
+{% extends "core/dashboard.html" %}
+{%block dashboard_content%}
+<main>
+    {%load static%}
+  <div class="masthead" style="background-image: url({% static 'background.jpeg' %});">
+      <div class="container position-relative">
+          <div class="row justify-content-center">
+              <div class="col-xl-6">
+                  <div class="text-center text-white">
+                      <div class="bg_image"></div>
+
+                      <h1 class="mb-5">Enter your IP Adress and know what threats may be facinig your device!</h1>
+                      <form class="form-subscribe" id="contactForm"  method="post" action=".">
+                            {% csrf_token %}
+                          <div class="row">
+                              <div class="col">
+                                  <input class="form-control form-control-lg" id="ipAddress" type="text"
+                                      placeholder="192.168.1.1" data-sb-validations="required" name="ip_address"/>
+                                  <div class="invalid-feedback text-white"
+                                      data-sb-feedback="ipAddress:required">IP Address is required.
+                                  </div>
+                              </div>
+                              <div class="col-auto"><button class="btn btn-primary btn-lg "
+                                      id="submitButton" type="submit">Scan</button></div>
+                          </div>
+                          <!-- Submit success message-->
+                          <!---->
+                          <!-- This is what your users will see when the form-->
+                          <!-- has successfully submitted-->
+                          <div class="d-none" id="submitSuccessMessage">
+                              <div class="text-center mb-3">
+                                  <div class="fw-bolder">Scan initiated....</div>
+                                  <p>results will be shown shortly!</p>
+                              </div>
+
+
+                          </div>
+                          <!-- Submit error message-->
+                          <!---->
+                          <!-- This is what your users will see when there is-->
+                          <!-- an error submitting the form-->
+                          <div class="d-none" id="submitErrorMessage">
+                              <div class="text-center text-danger mb-3">Error sending IP address!</div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- Icons Grid-->
+</main>
+{%endblock%}

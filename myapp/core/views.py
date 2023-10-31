@@ -21,6 +21,7 @@ def signup(request):
 
     return render(request, 'core/register.html', {'form': form})
 
+@login_required(login_url='/login/')
 def user_logout(request):
     logout(request)
     return redirect('/login/')
@@ -29,7 +30,10 @@ def user_logout(request):
 def home(request):
     return render(request, 'core/index.html')
 
+@login_required(login_url='/login/')
+def scans(request):
+    return render(request, "core/scans.html")
 
-def new_scan(requesr):
-    return render(requesr, "core/networkscan.html")
-
+@login_required(login_url='/login/')
+def soon(request):
+    return render(request, "core/soon.html")
