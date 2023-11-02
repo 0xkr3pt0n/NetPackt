@@ -9,20 +9,23 @@
                   <div class="text-center text-white">
                       <div class="bg_image"></div>
 
-                      <h1 class="mb-5">Enter your IP Adress and know what threats may be facinig your device!</h1>
-                      <form class="form-subscribe" id="contactForm"  method="post" action=".">
+                      <h1 class="mb-5">Press Start to know what threats may be facinig your device!</h1>
+                      <form class="form-subscribe" id="contactForm"  method="post" action="." >
                             {% csrf_token %}
                           <div class="row">
-                              <div class="col">
-                                  <input class="form-control form-control-lg" id="ipAddress" type="text"
-                                      placeholder="192.168.1.1" data-sb-validations="required" name="ip_address"/>
+                              <div class="col" >
+                                    <div class>
+                                  <input class="form-control form-control-lg mb-3" id="scan_name" type="text" placeholder="Scan Name" data-sb-validations="required" name="scan_name" required/>
+                                  <input class="form-control form-control-lg mb-3" id="shared_with" type="text" placeholder="Shared With" data-sb-validations="required" name="shared_with"/>
+                                  <input class="form-control form-control-lg mb-3" id="ipAddress" type="text" placeholder="IP or Network prefix" data-sb-validations="required" name="ip_address" required/>
                                   <div class="invalid-feedback text-white"
                                       data-sb-feedback="ipAddress:required">IP Address is required.
                                   </div>
+                                  <div class="col-auto"><button class="btn btn-primary btn-lg mb-3"
+                                    id="submitButton" type="submit">Start</button></div>
                               </div>
-                              <div class="col-auto"><button class="btn btn-primary btn-lg "
-                                      id="submitButton" type="submit">Scan</button></div>
                           </div>
+
                           <!-- Submit success message-->
                           <!---->
                           <!-- This is what your users will see when the form-->

@@ -96,7 +96,7 @@ class networkscan:
                         services_for_display.append(udp_port)
                 except:
                     pass
-        return services_for_db
+        return services_for_display
 
 
 

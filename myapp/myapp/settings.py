@@ -39,6 +39,7 @@ EMAIL_FILE_PATH = BASE_DIR / 'emails'
 INSTALLED_APPS = [
     'core',
     'netscan',
+    'background_task',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
