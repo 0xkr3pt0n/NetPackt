@@ -30,9 +30,6 @@ def user_logout(request):
 def home(request):
     return render(request, 'core/index.html')
 
-@login_required(login_url='/login/')
-def scans(request):
-    return render(request, "core/scans.html")
 
 @login_required(login_url='/login/')
 def soon(request):

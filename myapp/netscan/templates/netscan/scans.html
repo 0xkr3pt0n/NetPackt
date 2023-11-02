@@ -1,4 +1,5 @@
 {% extends "core/dashboard.html" %}
+{%block title%}Scans{%endblock%}
 {%block dashboard_content%}
 {%load static%}
 <main>
@@ -27,16 +28,17 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for item in scans %}
                         <tr>
-                            <td>Alaraby Company</td>
-                            <td>Mohab Mustafa</td>
-                            <td>192.168.1.5</td>
-                            <td>2023/10/31</td>
+                            <td>{{ item.1 }}</td>
+                            <td>{{ item.3 }}</td>
+                            <td>{{ item.2 }}</td>
+                            <td>{{ item.5 }}</td>
                             <td><a href="#">view</a></td>
                             <td><a href="#">view</a></td>
-                            <td>Pending</td>
+                            <td>{{ item.6 }}</td>
                         </tr>
-                        
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

@@ -30,6 +30,16 @@ class GenerateScan:
         insert_query = f"INSERT INTO findings (cveid, scan_id) VALUES ('{cveid}', '{scanid}')"
         self.cursor.execute(insert_query)
         self.connection.commit()
+    def getscans(self):
+        fetch_query = f"SELECT * FROM scans"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchall()
+        self.connection.commit()
+        return result
+    def scancomplete(self, scanid):
+        update_query = f"UPDATE scans SET current_status = 'completed' WHERE id = {scanid}"
+        self.cursor.execute(update_query)
+        self.connection.commit()
     def __del__(self):
         self.cursor.close()
         self.connection.close()

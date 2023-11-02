@@ -1,6 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-
 import datetime
 from .backend import networkscan
 from .backend import search
@@ -29,10 +28,20 @@ def networkscanning(request):
         #retrving cves from database
         query_db = search.SearchDatabase()
         query_result = query_db.getData(scan_result)
+
+        #change scan status to completed
+        gscan.scancomplete(scan_id)
         
         cve_list = [cve[0] for sublist in query_result for cve in sublist]
         for cveid in cve_list:
             gscan.insert_finding(cveid, scan_id)
-        #printing the result
+        return redirect('scans')
          
     return render(request, "netscan/netscan.html")
+
+
+@login_required(login_url='/login/')
+def scans(request):
+    gscan = generate_scan.GenerateScan()
+    scans = gscan.getscans()
+    return render(request, "netscan/scans.html", {'scans':scans})
