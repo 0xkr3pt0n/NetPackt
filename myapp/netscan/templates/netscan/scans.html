@@ -34,8 +34,8 @@
                             <td>{{ item.3 }}</td>
                             <td>{{ item.2 }}</td>
                             <td>{{ item.5 }}</td>
-                            <td><a href="#">view</a></td>
-                            <td><a href="#">view</a></td>
+                            <td>{{ item.4 }}</td>
+                            <td><a href="{% url 'report_detils' item.0 %}">view</a></td>
                             <td>{{ item.6 }}</td>
                         </tr>
                         {% endfor %}

@@ -40,6 +40,28 @@ class GenerateScan:
         update_query = f"UPDATE scans SET current_status = 'completed' WHERE id = {scanid}"
         self.cursor.execute(update_query)
         self.connection.commit()
+    def getreport(self, reportid):
+        fetch_query = f"SELECT * FROM scans WHERE id = {reportid}"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchone()
+        self.connection.commit()
+        if result:
+            report_dict = (result[0], result[1], result[2], result[3], result[4],result[5], result[6])
+            return report_dict
+        else:
+            return "none"
+    def getfindings(self, scanid):
+        fetch_query = f"SELECT * FROM findings WHERE scan_id = {scanid}"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchall()
+        self.connection.commit()
+        return result
+    def retrive_cves(self, cveid):
+        fetch_query = f"SELECT * FROM vulnerabilities WHERE cveid = '{cveid}'"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchone()
+        self.connection.commit()
+        return result
     def __del__(self):
         self.cursor.close()
         self.connection.close()

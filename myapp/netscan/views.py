@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 import datetime
 from .backend import networkscan
@@ -45,3 +45,16 @@ def scans(request):
     gscan = generate_scan.GenerateScan()
     scans = gscan.getscans()
     return render(request, "netscan/scans.html", {'scans':scans})
+
+@login_required(login_url='/login/')
+def report(request,report_id):
+    get_report = generate_scan.GenerateScan()
+    report_data = get_report.getreport(report_id)
+    findings_data = get_report.getfindings(report_id)
+    discoverd_findings = []
+    for cve in findings_data:
+        cve_data = get_report.retrive_cves(cve[1])
+        combined_data = cve+cve_data
+        discoverd_findings.append(combined_data)
+    print(discoverd_findings[0])
+    return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings})

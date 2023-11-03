@@ -1,0 +1,109 @@
+{% extends "core/dashboard.html" %}
+{%block title%}Scans{%endblock%}
+{%block dashboard_content%}
+{%load static%}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Report of {{report.1}}</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="{%url 'home'%}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{%url 'scans'%}">Scans</a></li>
+            <li class="breadcrumb-item active">{{report.1}}</li>
+        </ol>
+
+        <div class="row">
+            <!-- Vulnerabilities Table -->
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Threats Detected Summary
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Infected Service</th>
+                                    <th>Impact</th>
+                                    <th>CVE-ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for finding in findings%}
+                                <tr>
+                                    <td>{{finding.6}}</td>
+                                    <td>{{finding.12}}</td>
+                                    <td>{{finding.1}}</td>
+                                </tr>
+                                {%endfor%}
+                                <!-- Add more rows for other vulnerabilities -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer small text-muted">Updated today at 10:00 AM</div>
+                </div>
+            </div>
+            <!-- Pie Chart -->
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-pie me-1"></i>
+                        Sytem Imapcts
+                    </div>
+                    <div class="card-body">
+                        <canvas id="myPieChart" width="100%" height="50"></canvas>
+                    </div>
+                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4" >
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                More Information
+            </div>
+            <div class="card-header p-3">
+                {%for finding in findings%}
+                <div class="card mb-2">
+                    <div class="card-header">
+                        {{finding.6}} {{finding.7}}
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">CVE ID : {{finding.1}} </li>
+                            <li class="list-group-item">Description : {{finding.8}} </li>
+                            <li class="list-group-item">Refrences :  {{finding.14}}</li>
+                        </ul>                                        
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        </div>
+    </div>
+</main>
+<script src="{%static 'chart.js'%}"></script>
+<script>
+    var noneCount = 0;
+    var highCount = 0;
+    var mediumCount = 0;
+    var lowCount = 0;
+
+    // Iterate through findings and count occurrences of impact levels
+    {% for finding in findings %}
+        {% if finding.12 == 'None' %}
+            noneCount++;
+        {% elif finding.12 == 'High' %}
+            highCount++;
+        {% elif finding.12 == 'Medium' %}
+            mediumCount++;
+        {% elif finding.12 == 'Low' %}
+            lowCount++;
+        {% endif %}
+    {% endfor %}
+    var chardata = [noneCount, highCount, mediumCount, lowCount];
+    drawchart(chardata);
+</script>
+
+{%endblock%}
