@@ -8,9 +8,10 @@
           <div class="row justify-content-center">
               <div class="col-xl-6">
                   <div class="text-center text-white">
-                      <div class="bg_image"></div>
+                        <div class="bg_image"></div>
 
                       <h1 class="mb-5">Press Start to know what threats may be facinig your device!</h1>
+                      
                       <form class="form-subscribe" id="contactForm"  method="post" action="." >
                             {% csrf_token %}
                           <div class="row">
@@ -19,7 +20,16 @@
                                   <input class="form-control form-control-lg mb-3" id="scan_name" type="text" placeholder="Scan Name" data-sb-validations="required" name="scan_name" required/>
                                   <input class="form-control form-control-lg mb-3" id="shared_with" type="text" placeholder="Shared With" data-sb-validations="required" name="shared_with"/>
                                   <input class="form-control form-control-lg mb-3" id="ipAddress" type="text" placeholder="IP or Network prefix" data-sb-validations="required" name="ip_address" required/>
-                                  
+                                  {% comment %} <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Dropdown button
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><a class="dropdown-item" href="#">Action</a></li>
+                                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    </ul>
+                                  </div> {% endcomment %}
                                   <div class="invalid-feedback text-white"
                                       data-sb-feedback="ipAddress:required">IP Address is required.
                                   </div>

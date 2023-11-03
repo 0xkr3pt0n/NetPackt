@@ -26,15 +26,16 @@ CREATE TABLE IF NOT EXISTS public.scans
     username text COLLATE pg_catalog."default",
     shared_with text COLLATE pg_catalog."default",
     scan_date text COLLATE pg_catalog."default",
+    current_status text COLLATE pg_catalog."default",
     CONSTRAINT scans_pkey PRIMARY KEY (id)
-);
-
+)
 
 -- code to create findings table
 CREATE TABLE IF NOT EXISTS public.findings
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
     cveid text COLLATE pg_catalog."default",
-	scan_id integer,
+    scan_id integer,
+    infected_service text COLLATE pg_catalog."default",
     CONSTRAINT findings_pkey PRIMARY KEY (id)
-);
+)
