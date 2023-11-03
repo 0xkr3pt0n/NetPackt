@@ -31,10 +31,17 @@ def networkscanning(request):
 
         #change scan status to completed
         gscan.scancomplete(scan_id)
-        
-        cve_list = [cve[0] for sublist in query_result for cve in sublist]
-        for cveid in cve_list:
-            gscan.insert_finding(cveid, scan_id)
+        for j in query_result:
+            for infected_service,v in j.items():
+                cve_ids = [item[0] for item in v]
+                if not cve_ids:
+                    pass
+                else:
+                    for cveid in cve_ids:
+                        gscan.insert_finding(cveid, scan_id, infected_service)
+        # cve_list = [cve[0] for sublist in query_result for cve in sublist]
+        # for cveid in cve_list:
+        #     gscan.insert_finding(cveid, scan_id)
         return redirect('scans')
          
     return render(request, "netscan/netscan.html")
@@ -56,5 +63,5 @@ def report(request,report_id):
         cve_data = get_report.retrive_cves(cve[1])
         combined_data = cve+cve_data
         discoverd_findings.append(combined_data)
-    print(discoverd_findings[0])
+    print(discoverd_findings)
     return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings})

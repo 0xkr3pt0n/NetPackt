@@ -26,8 +26,8 @@ class GenerateScan:
         self.connection.commit()
         return inserted_id
     
-    def insert_finding(self, cveid, scanid):
-        insert_query = f"INSERT INTO findings (cveid, scan_id) VALUES ('{cveid}', '{scanid}')"
+    def insert_finding(self, cveid, scanid, infected_service):
+        insert_query = f"INSERT INTO findings (cveid, scan_id, infected_service) VALUES ('{cveid}', '{scanid}', '{infected_service}')"
         self.cursor.execute(insert_query)
         self.connection.commit()
     def getscans(self):
@@ -60,8 +60,11 @@ class GenerateScan:
         fetch_query = f"SELECT * FROM vulnerabilities WHERE cveid = '{cveid}'"
         self.cursor.execute(fetch_query)
         result = self.cursor.fetchone()
+        if result:
+            refrences = result[11].split(',')
+            cve_dict = (result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9], result[10], refrences, result[12])
         self.connection.commit()
-        return result
+        return cve_dict
     def __del__(self):
         self.cursor.close()
         self.connection.close()

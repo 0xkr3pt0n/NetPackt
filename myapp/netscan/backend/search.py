@@ -30,8 +30,9 @@ class SearchDatabase:
                 self.cursor.execute(search_query)
                 result = self.cursor.fetchall()
                 self.connection.commit()
-                searchresult.append(result)
-
+                service_name = service + " " +version
+                searchresult.append({service_name:result})
+        
         return searchresult
     
     # closing database connection

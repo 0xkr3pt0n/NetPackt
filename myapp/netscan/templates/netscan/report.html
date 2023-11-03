@@ -1,5 +1,5 @@
 {% extends "core/dashboard.html" %}
-{%block title%}Scans{%endblock%}
+{%block title%}{{report.1}}{%endblock%}
 {%block dashboard_content%}
 {%load static%}
 <main>
@@ -10,52 +10,71 @@
             <li class="breadcrumb-item"><a href="{%url 'scans'%}">Scans</a></li>
             <li class="breadcrumb-item active">{{report.1}}</li>
         </ol>
-
+        
         <div class="row">
-            <!-- Vulnerabilities Table -->
-            <div class="col-lg-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <i class="fas fa-table me-1"></i>
-                        Threats Detected Summary
+
+                <!-- Vulnerabilities Table -->
+                <div class="col-lg-6">            
+                    <div class="card mb-2">
+                        <div class="card-header">
+                            Scan Information
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><b>Scan Name :</b> {{report.1}} </li>
+                                <li class="list-group-item"><b>Target IP :</b> {{report.2}} </li>
+                                <li class="list-group-item"><b>Done By :</b> {{report.3}} </li>
+                                <li class="list-group-item"><b>Shared With :</b> {{report.4}} </li>
+                                <li class="list-group-item"><b>Scan Date :</b> {{report.5}} </li>
+                                <li class="list-group-item"><b>Status :</b> {{report.6}} </li>            
+                            </ul>                                        
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Infected Service</th>
-                                    <th>Impact</th>
-                                    <th>CVE-ID</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {%for finding in findings%}
-                                <tr>
-                                    <td>{{finding.6}}</td>
-                                    <td>{{finding.12}}</td>
-                                    <td>{{finding.1}}</td>
-                                </tr>
-                                {%endfor%}
-                                <!-- Add more rows for other vulnerabilities -->
-                            </tbody>
-                        </table>
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            Threats Detected Summary
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Infected Service</th>
+                                        <th>Impact</th>
+                                        <th>CVE-ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for finding in findings%}
+                                    <tr>
+                                        <td>{{finding.3}}</td>
+                                        <td>{{finding.14}}</td>
+                                        <td>{{finding.1}}</td>
+                                    </tr>
+                                    {%endfor%}
+                                    <!-- Add more rows for other vulnerabilities -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer small text-muted">Updated today at 10:00 AM</div>
                     </div>
-                    <div class="card-footer small text-muted">Updated today at 10:00 AM</div>
+                    
+
                 </div>
-            </div>
+
             <!-- Pie Chart -->
-            <div class="col-lg-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <i class="fas fa-chart-pie me-1"></i>
-                        Sytem Imapcts
+                <div class="col-lg-6 mt-5">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-chart-pie me-1"></i>
+                            Sytem Imapcts
+                        </div>
+                        <div class="card-body">
+                            <canvas id="myPieChart" width="100%" height="50"></canvas>
+                        </div>
+                        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
                     </div>
-                    <div class="card-body">
-                        <canvas id="myPieChart" width="100%" height="50"></canvas>
-                    </div>
-                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
                 </div>
-            </div>
         </div>
         
         <div class="card mb-4" >
@@ -67,13 +86,22 @@
                 {%for finding in findings%}
                 <div class="card mb-2">
                     <div class="card-header">
-                        {{finding.6}} {{finding.7}}
+                        {{finding.3}}
                     </div>
                     <div class="card-body">
                         <ul class="list-group">
-                            <li class="list-group-item">CVE ID : {{finding.1}} </li>
-                            <li class="list-group-item">Description : {{finding.8}} </li>
-                            <li class="list-group-item">Refrences :  {{finding.14}}</li>
+                            <li class="list-group-item"><b>CVE ID :</b> {{finding.1}} </li>
+                            <li class="list-group-item"><b>Foundation :</b> {{finding.6}} </li>
+                            <li class="list-group-item"><b>Service :</b> {{finding.7}} </li>
+                            <li class="list-group-item"><b>System Impact :</b> {{finding.14}} </li>
+                            <li class="list-group-item"><b>Description :</b> {{finding.9}} </li>
+                            <li class="list-group-item"><b>Refrences :</b><br>
+                                  {%for ref in finding.15%}
+                                    <ul>
+                                        <li><a href="{{ref}}" target="_blank">{{ref}}</a></li>
+                                    </ul>
+                                  {%endfor%}
+                            </li>
                         </ul>                                        
                     </div>
                 </div>
@@ -92,13 +120,13 @@
 
     // Iterate through findings and count occurrences of impact levels
     {% for finding in findings %}
-        {% if finding.12 == 'None' %}
+        {% if finding.14 == 'None' %}
             noneCount++;
-        {% elif finding.12 == 'High' %}
+        {% elif finding.14 == 'High' %}
             highCount++;
-        {% elif finding.12 == 'Medium' %}
+        {% elif finding.14 == 'Medium' %}
             mediumCount++;
-        {% elif finding.12 == 'Low' %}
+        {% elif finding.14 == 'Low' %}
             lowCount++;
         {% endif %}
     {% endfor %}
