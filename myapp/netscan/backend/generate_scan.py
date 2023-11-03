@@ -30,8 +30,8 @@ class GenerateScan:
         insert_query = f"INSERT INTO findings (cveid, scan_id, infected_service) VALUES ('{cveid}', '{scanid}', '{infected_service}')"
         self.cursor.execute(insert_query)
         self.connection.commit()
-    def getscans(self):
-        fetch_query = f"SELECT * FROM scans"
+    def getscans(self, username):
+        fetch_query = f"SELECT * FROM scans where username = '{username}' or shared_with like '%{username}%'"
         self.cursor.execute(fetch_query)
         result = self.cursor.fetchall()
         self.connection.commit()

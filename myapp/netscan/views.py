@@ -47,7 +47,7 @@ def networkscanning(request):
 @login_required(login_url='/login/')
 def scans(request):
     gscan = generate_scan.GenerateScan()
-    scans = gscan.getscans()
+    scans = gscan.getscans(request.user.username)
     return render(request, "netscan/scans.html", {'scans':scans})
 
 @login_required(login_url='/login/')
