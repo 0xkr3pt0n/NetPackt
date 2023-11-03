@@ -65,6 +65,11 @@ class GenerateScan:
             cve_dict = (result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9], result[10], refrences, result[12])
         self.connection.commit()
         return cve_dict
+    def retrive_users(self):
+        fetch_query = f"SELECT username FROM auth_user"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchall()
+        return result
     def __del__(self):
         self.cursor.close()
         self.connection.close()

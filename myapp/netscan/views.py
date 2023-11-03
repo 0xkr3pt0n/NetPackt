@@ -9,6 +9,7 @@ from .backend import generate_scan
 
 @login_required(login_url='/login/')
 def networkscanning(request):
+    gscan = generate_scan.GenerateScan()
     if request.method == 'POST':
         #getting parameters by post request
         ip_address = request.POST.get('ip_address')
@@ -18,7 +19,6 @@ def networkscanning(request):
         current_datetime = datetime.datetime.now()
         status = 'pending'
         #generating scan entry in db
-        gscan = generate_scan.GenerateScan()
         scan_id = gscan.insert_scan(current_user, scan_name, ip_address, shared_with, current_datetime, status)
         
         #start scanning the target
@@ -39,12 +39,9 @@ def networkscanning(request):
                 else:
                     for cveid in cve_ids:
                         gscan.insert_finding(cveid, scan_id, infected_service)
-        # cve_list = [cve[0] for sublist in query_result for cve in sublist]
-        # for cveid in cve_list:
-        #     gscan.insert_finding(cveid, scan_id)
         return redirect('scans')
-         
-    return render(request, "netscan/netscan.html")
+    users = gscan.retrive_users()
+    return render(request, "netscan/netscan.html", {'users':users})
 
 
 @login_required(login_url='/login/')
