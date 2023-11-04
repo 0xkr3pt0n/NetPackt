@@ -19,23 +19,42 @@
                                   <input class="form-control form-control-lg mb-3" id="scan_name" type="text" placeholder="Scan Name" data-sb-validations="required" name="scan_name" required/>
                                   <input class="form-control form-control-lg mb-3" id="ipAddress" type="text" placeholder="IP or Network prefix" data-sb-validations="required" name="ip_address" required/>
                                   
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <input class="form-control form-control-lg mb-3" id="shared_with" type="text" placeholder="Shared With" data-sb-validations="required" name="shared_with"/>
+                                  <div class="form-group">
+                                    <div class="input-group">
+                                        <input
+                                          class="form-control form-control-lg mb-3"
+                                          id="shared_with"
+                                          type="text"
+                                          placeholder="Shared With"
+                                          data-sb-validations="required"
+                                          name="shared_with"
+                                        />
+                                      <div class="input-group-append">
+                                        <div class="dropdown">
+                                          <button
+                                            class="btn btn-secondary btn-lg dropdown-toggle"
+                                            type="button"
+                                            id="shareDropdownButton"
+                                            data-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false"
+                                          >
+                                            Share with
+                                          </button>
+                                          <div
+                                            class="dropdown-menu"
+                                            aria-labelledby="shareDropdownButton"
+                                          >
+                                            {% for user in users %}
+                                            <a class="dropdown-item" href="#" data-value="{{user.0}}"
+                                              >{{user.0}}</a
+                                            >
+                                            {% endfor %}
+                                          </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="dropdown mb-3">
-                                                <button class="btn btn-primary btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                  Share with
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                {% for user in users %}
-                                                  <li><a class="dropdown-item" href="#" data-value="{{user.0}}">{{user.0}}</a></li>
-                                                {%endfor%}
-                                                </ul>
-                                            </div>
-                                        </div>
+                                      </div>
                                     </div>
+                                  </div>
                                 
                                   <div class="col-auto mb-3"><button class="btn btn-primary btn-lg mb-3"
                                     id="submitButton" type="submit">Start</button></div>

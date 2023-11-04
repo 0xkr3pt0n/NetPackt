@@ -9,11 +9,12 @@ Note :
 '''
 
 class networkscan:    
-    #function to for scanning netowrk or a only one host 
+    #function to for scanning netowrk or a only one host
+     
     def scan(self,network_prefix):
         nm = nmap.PortScanner()
         #argument T4 for threading
-        scan_raw_result = nm.scan(hosts=network_prefix, arguments='-v -n -A -T4')
+        scan_raw_result = nm.scan(hosts=network_prefix, arguments='-v -n -A -T4 -p-')
         
         services_for_db = [] #this list will at last contain each service running and it's version to query the database with
         services_for_display = [] #this list will at last contain each port and it's information for user display

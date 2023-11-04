@@ -60,5 +60,11 @@ def report(request,report_id):
         cve_data = get_report.retrive_cves(cve[1])
         combined_data = cve+cve_data
         discoverd_findings.append(combined_data)
-    print(discoverd_findings)
-    return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings})
+    users = get_report.retrive_users()
+    if request.method == 'POST':
+        new_name = request.POST.get('new_name')
+        new_share = request.POST.get('new_share')
+        get_report.updatescan(new_name, new_share, report_id)
+        return redirect('report_detils', report_id=report_id)
+        
+    return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings, 'users':users})
