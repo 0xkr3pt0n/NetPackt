@@ -69,6 +69,17 @@ class GenerateScan:
         self.connection.commit()
         return result
     
+    def getOnline(self, scanid):
+        fetch_query = f"SELECT * FROM api_result WHERE scan_id = {scanid}"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchall()
+        returned_formatted_list = []
+        self.connection.commit()
+        for i in result:
+            formatted_links = i[3].split(',')
+            formatted_result = (i[0], i[1], i[2],formatted_links, i[4],i[5],i[6],i[7])
+            returned_formatted_list.append(formatted_result)
+        return returned_formatted_list
     #function to retrive cve details from database
     def retrive_cves(self, cveid):
         fetch_query = f"SELECT * FROM vulnerabilities WHERE cveid = '{cveid}'"

@@ -39,3 +39,16 @@ CREATE TABLE IF NOT EXISTS public.findings
     infected_service text COLLATE pg_catalog."default",
     CONSTRAINT findings_pkey PRIMARY KEY (id)
 )
+
+-- code for searching vulnerabillites through api
+CREATE TABLE IF NOT EXISTS public.api_result
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    description text COLLATE pg_catalog."default",
+    nvd text COLLATE pg_catalog."default",
+    refrences text COLLATE pg_catalog."default",
+    cve_id text COLLATE pg_catalog."default",
+    infected_service text COLLATE pg_catalog."default",
+    scan_id integer,
+    impact text COLLATE pg_catalog."default"
+)

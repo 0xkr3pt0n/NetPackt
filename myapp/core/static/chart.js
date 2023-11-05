@@ -7,7 +7,7 @@ function drawchart(data){// Set new default font family and font color to mimic 
     var myPieChart = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ["None", "High", "Meduim", "Low"],
+        labels: ["None", "HIGH", "MEDUIM", "Low"],
         datasets: [{
           data: data,
           backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#f8d7da'],

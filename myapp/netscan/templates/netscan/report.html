@@ -57,6 +57,13 @@
                   <td>{{finding.1}}</td>
                 </tr>
                 {%endfor%}
+                {%for find in online%}
+                <tr>
+                  <td>{{find.5}}</td>
+                  <td>{{find.7}}</td>
+                  <td>{{find.4}}</td>
+                </tr>
+                {%endfor%}
                 <!-- Add more rows for other vulnerabilities -->
               </tbody>
             </table>
@@ -116,6 +123,32 @@
           </div>
         </div>
         {%endfor%}
+
+        {%for find in online%}
+        <div class="card mb-2">
+          <div class="card-header">{{find.5}}</div>
+          <div class="card-body">
+            <ul class="list-group">
+              <li class="list-group-item"><b>CVE ID :</b> {{find.4}}</li>
+              <li class="list-group-item"><b>Service :</b> {{find.5}}</li>
+              <li class="list-group-item">
+              </li>
+              <li class="list-group-item">
+                <b>Description :</b> {{find.1}}
+              </li>
+              <li class="list-group-item">
+                <b>Refrences :</b><br />
+                {%for ref in find.3%}
+                <ul>
+                  <li><a href="{{ref}}" target="_blank">{{ref}}</a></li>
+                </ul>
+                {%endfor%}
+                
+              </li>
+            </ul>
+          </div>
+        </div>
+        {%endfor%}
       </div>
       <div class="card-footer small text-muted">
         Updated yesterday at 11:59 PM
@@ -125,25 +158,7 @@
 </main>
 <script src="{%static 'chart.js'%}"></script>
 <script>
-  var noneCount = 0;
-  var highCount = 0;
-  var mediumCount = 0;
-  var lowCount = 0;
 
-  // Iterate through findings and count occurrences of impact levels
-  {% for finding in findings %}
-      {% if finding.14 == 'None' %}
-          noneCount++;
-      {% elif finding.14 == 'High' %}
-          highCount++;
-      {% elif finding.14 == 'Medium' %}
-          mediumCount++;
-      {% elif finding.14 == 'Low' %}
-          lowCount++;
-      {% endif %}
-  {% endfor %}
-  var chardata = [noneCount, highCount, mediumCount, lowCount];
-  drawchart(chardata);
 </script>
 <!-- Modal for editing scan name -->
 <div
@@ -264,5 +279,36 @@
     });
   });
   
+  var noneCount = 0;
+  var highCount = 0;
+  var mediumCount = 0;
+  var lowCount = 0;
+
+  // Iterate through findings and count occurrences of impact levels
+  {% for finding in findings %}
+      {% if finding.14 == 'None' %}
+          noneCount++;
+      {% elif finding.14 == 'High'%}
+          highCount++;
+      {% elif finding.14 == 'Medium' %}
+          mediumCount++;
+      {% elif finding.14 == 'Low' %}
+          lowCount++;
+      {% endif %}
+  {% endfor %}
+
+  {%for find in online%}
+    {% if find.7 == 'None' %}
+      noneCount++;
+    {% elif find.7 == 'High'%}
+      highCount++;
+    {% elif find.7 == 'Medium' %}
+      mediumCount++;
+    {% elif find.7 == 'Low' %}
+      lowCount++;
+    {% endif %}
+  {%endfor%}
+  var chardata = [noneCount, highCount, mediumCount, lowCount];
+  drawchart(chardata);
 </script>
 {%endblock%}

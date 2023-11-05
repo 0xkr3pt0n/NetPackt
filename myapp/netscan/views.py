@@ -28,7 +28,8 @@ def networkscanning(request):
         #retrving cves from database
         query_db = search.SearchDatabase()
         query_result = query_db.getData(scan_result)
-
+        query_db.onlineSearch(scan_result, scan_id)
+        
         #change scan status to completed
         gscan.scancomplete(scan_id)
         for j in query_result:
@@ -55,6 +56,7 @@ def report(request,report_id):
     get_report = generate_scan.GenerateScan()
     report_data = get_report.getreport(report_id)
     findings_data = get_report.getfindings(report_id)
+    findings_online = get_report.getOnline(report_id)
     discoverd_findings = []
     for cve in findings_data:
         cve_data = get_report.retrive_cves(cve[1])
@@ -66,5 +68,10 @@ def report(request,report_id):
         new_share = request.POST.get('new_share')
         get_report.updatescan(new_name, new_share, report_id)
         return redirect('report_detils', report_id=report_id)
-        
-    return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings, 'users':users})
+    
+    for db_finding in discoverd_findings:
+        for on_finding in findings_online:
+            if db_finding[1] == on_finding[4]:
+                findings_online.remove(on_finding)
+                
+    return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings, 'users':users, 'online':findings_online})
