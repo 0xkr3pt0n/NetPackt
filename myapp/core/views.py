@@ -35,3 +35,14 @@ def home(request):
 def soon(request):
     return render(request, "core/soon.html")
 
+def setting(request):
+    return render(request, "core/setting.html")
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        return redirect('/login/')  
+
+    return redirect('setting') 
