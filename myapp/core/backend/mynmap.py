@@ -1,54 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-nmap.py - version and date, see below
-
-Source code : https://bitbucket.org/xael/python-nmap
-
-Author :
-
-* Alexandre Norman - norman at xael.org
-
-Contributors:
-
-* Steve 'Ashcrow' Milner - steve at gnulinux.net
-* Brian Bustin - brian at bustin.us
-* old.schepperhand
-* Johan Lundberg
-* Thomas D. maaaaz
-* Robert Bost
-* David Peltier
-* Ed Jones
-
-Licence: GPL v3 or any later version for python-nmap
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-**************
-IMPORTANT NOTE
-**************
-
-The Nmap Security Scanner used by python-nmap is distributed
-under it's own licence that you can find at https://svn.nmap.org/nmap/COPYING
-
-Any redistribution of python-nmap along with the Nmap Security Scanner
-must conform to the Nmap Security Scanner licence
-
-"""
 import csv
 import io
 import os
@@ -56,16 +5,10 @@ import re
 import shlex
 import subprocess
 import sys
+import platform
 from multiprocessing import Process
 from xml.etree import ElementTree as ET
 
-
-__author__ = "Alexandre Norman (norman@xael.org)"
-__version__ = "0.7.1"
-__last_modification__ = "2021.10.26"
-
-
-############################################################################
 
 
 class PortScanner(object):
@@ -73,13 +16,18 @@ class PortScanner(object):
     PortScanner class allows to use nmap from python
 
     """
-    path = os.getcwd()
+    current_path = os.getcwd()
+    running_platform = platform.system()
+    if running_platform == "Linux":
+        nmap_path = f"{current_path}/core/backend/nmap_linux/nmap"
+    else:
+        nmap_path = f"{current_path}/core/backend/nmap_windows/nmap"
     
     def __init__(
         self,
         nmap_search_path=(
 
-            f"{path}/core/backend/nmap/nmap",
+            f"{nmap_path}",
 
         ),
     ):
