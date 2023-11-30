@@ -52,3 +52,16 @@ CREATE TABLE IF NOT EXISTS public.api_result
     scan_id integer,
     impact text COLLATE pg_catalog."default"
 )
+
+-- create scan result table
+CREATE TABLE IF NOT EXISTS public.netowrk_scan_result
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    scan_id integer,
+    svc text COLLATE pg_catalog."default",
+	svc_product text COLLATE pg_catalog."default",
+	svc_ver text COLLATE pg_catalog."default",
+	port_number text COLLATE pg_catalog."default",
+	script text COLLATE pg_catalog."default",
+    CONSTRAINT netowrk_scan_result_pkey PRIMARY KEY (id)
+)

@@ -18,8 +18,8 @@ class GenerateScan:
             print("Error connecting to database : ", e)
     
     # function to insert new scan in the database when the user triggers a new scan
-    def insert_scan(self, username, scan_name, ip_address, shared_with, current_datetime, status):
-        insert_query = f"INSERT INTO scans (scan_name, system_ip, username, shared_with, scan_date, current_status) VALUES ('{scan_name}', '{ip_address}', '{username}', '{shared_with}', '{current_datetime}','{status}') RETURNING id"
+    def insert_scan(self, username, scan_name, ip_address, shared_with, current_datetime, status, scan_type, is_runscript):
+        insert_query = f"INSERT INTO scans (scan_name, system_ip, username, shared_with, scan_date, current_status, scan_type, is_runscript) VALUES ('{scan_name}', '{ip_address}', '{username}', '{shared_with}', '{current_datetime}','{status}', '{scan_type}','{is_runscript}') RETURNING id"
         self.cursor.execute(insert_query)
         inserted_id = self.cursor.fetchone()[0]
         self.connection.commit()
@@ -38,7 +38,12 @@ class GenerateScan:
         result = self.cursor.fetchall()
         self.connection.commit()
         return result
-    
+    def get_scan_result(self, scan_id):
+        fetch_query = f"SELECT * FROM netowrk_scan_result WHERE scan_id = {scan_id}"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchall()
+        self.connection.commit()
+        return result
     #set scan status from pending to completed when a scan finishes
     def scancomplete(self, scanid):
         update_query = f"UPDATE scans SET current_status = 'completed' WHERE id = {scanid}"
@@ -66,8 +71,13 @@ class GenerateScan:
         fetch_query = f"SELECT * FROM findings WHERE scan_id = {scanid}"
         self.cursor.execute(fetch_query)
         result = self.cursor.fetchall()
+        returned_formatted_list = []
+        for i in result:
+            formatted_links = i[6].split(',')
+            formatted_result = (i[0], i[1], i[2],i[3], i[4],i[5],formatted_links)
+            returned_formatted_list.append(formatted_result)
         self.connection.commit()
-        return result
+        return returned_formatted_list
     
     def getOnline(self, scanid):
         fetch_query = f"SELECT * FROM api_result WHERE scan_id = {scanid}"
@@ -77,7 +87,7 @@ class GenerateScan:
         self.connection.commit()
         for i in result:
             formatted_links = i[3].split(',')
-            formatted_result = (i[0], i[1], i[2],formatted_links, i[4],i[5],i[6],i[7])
+            formatted_result = (i[0], i[1], i[2],formatted_links, i[4],i[5],i[6],i[7],i[8])
             returned_formatted_list.append(formatted_result)
         return returned_formatted_list
     #function to retrive cve details from database

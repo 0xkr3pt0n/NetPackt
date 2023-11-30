@@ -1,0 +1,10 @@
+LICENSE
+README
+ndiff.py
+setup.py
+docs/ndiff.1
+ndiff.egg-info/PKG-INFO
+ndiff.egg-info/SOURCES.txt
+ndiff.egg-info/dependency_links.txt
+ndiff.egg-info/top_level.txt
+scripts/ndiff

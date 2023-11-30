@@ -13,16 +13,11 @@
       <!-- Vulnerabilities Table -->
       <div class="col-lg-6">
         <div class="card mb-2">
-          <div
-            class="card-header d-flex justify-content-between align-items-center"
-          >
+          <div class="card-header d-flex justify-content-between align-items-center">
             <span>Scan Information</span>
-            <span
-              id="editScanNameIcon"
-              data-toggle="modal"
-              data-target="#editScanNameModal"
-              ><i class="fas fa-pen"></i
-            ></span>
+            <span id="editScanNameIcon" data-toggle="modal" data-target="#editScanNameModal">
+              <i class="fas fa-pen"> </i>
+            </span>
           </div>
           <div class="card-body">
             <ul class="list-group">
@@ -33,6 +28,50 @@
               <li class="list-group-item"><b>Scan Date :</b> {{report.5}}</li>
               <li class="list-group-item"><b>Status :</b> {{report.6}}</li>
             </ul>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Scan result summary
+          </div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Port number</th>
+                  <th>Running service</th>
+                  <th>Service Version</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%for result_item in scan_result%}
+                <tr>
+                  <td>{{result_item.5}}</td>
+                  <td>{{result_item.2}} {{result_item.3}}</td>
+                  <td>{{result_item.4}}</td>
+                </tr>
+                {%endfor%}
+                <!-- Add more rows for other vulnerabilities -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Pie Chart -->
+      <div class="col-lg-6 mt-5">
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-chart-pie me-1"></i>
+            Sytem Imapcts
+          </div>
+          <div class="card-body">
+            <canvas id="myPieChart" width="100%" height="50"></canvas>
+          </div>
+          <div class="card-footer small text-muted">
+            Updated yesterday at 11:59 PM
           </div>
         </div>
         <div class="card mb-4">
@@ -53,7 +92,7 @@
                 {%for finding in findings%}
                 <tr>
                   <td>{{finding.3}}</td>
-                  <td>{{finding.14}}</td>
+                  <td>{{finding.17}}</td>
                   <td>{{finding.1}}</td>
                 </tr>
                 {%endfor%}
@@ -68,98 +107,96 @@
               </tbody>
             </table>
           </div>
-          <div class="card-footer small text-muted">
-            Updated today at 10:00 AM
-          </div>
-        </div>
-      </div>
-
-      <!-- Pie Chart -->
-      <div class="col-lg-6 mt-5">
-        <div class="card mb-4">
-          <div class="card-header">
-            <i class="fas fa-chart-pie me-1"></i>
-            Sytem Imapcts
-          </div>
-          <div class="card-body">
-            <canvas id="myPieChart" width="100%" height="50"></canvas>
-          </div>
-          <div class="card-footer small text-muted">
-            Updated yesterday at 11:59 PM
-          </div>
         </div>
       </div>
     </div>
 
-    <div class="card mb-4">
-      <div class="card-header">
-        <i class="fas fa-chart-area me-1"></i>
-        More Information
-      </div>
-      <div class="card-header p-3">
-        {%for finding in findings%}
-        <div class="card mb-2">
-          <div class="card-header">{{finding.3}}</div>
-          <div class="card-body">
-            <ul class="list-group">
-              <li class="list-group-item"><b>CVE ID :</b> {{finding.1}}</li>
-              <li class="list-group-item"><b>Foundation :</b> {{finding.6}}</li>
-              <li class="list-group-item"><b>Service :</b> {{finding.7}}</li>
-              <li class="list-group-item">
-                <b>System Impact :</b> {{finding.14}}
-              </li>
-              <li class="list-group-item">
-                <b>Description :</b> {{finding.9}}
-              </li>
-              <li class="list-group-item">
-                <b>Refrences :</b><br />
-                {%for ref in finding.15%}
-                <ul>
-                  <li><a href="{{ref}}" target="_blank">{{ref}}</a></li>
-                </ul>
-                {%endfor%}
-              </li>
-            </ul>
-          </div>
-        </div>
-        {%endfor%}
-
-        {%for find in online%}
-        <div class="card mb-2">
-          <div class="card-header">{{find.5}}</div>
-          <div class="card-body">
-            <ul class="list-group">
-              <li class="list-group-item"><b>CVE ID :</b> {{find.4}}</li>
-              <li class="list-group-item"><b>Service :</b> {{find.5}}</li>
-              <li class="list-group-item">
-              </li>
-              <li class="list-group-item">
-                <b>Description :</b> {{find.1}}
-              </li>
-              <li class="list-group-item">
-                <b>Refrences :</b><br />
-                {%for ref in find.3%}
-                <ul>
-                  <li><a href="{{ref}}" target="_blank">{{ref}}</a></li>
-                </ul>
-                {%endfor%}
-                
-              </li>
-            </ul>
-          </div>
-        </div>
-        {%endfor%}
-      </div>
-      <div class="card-footer small text-muted">
-        Updated yesterday at 11:59 PM
-      </div>
-    </div>
+{% comment %} detilied report start {% endcomment %}
+<div class="card mb-4">
+  <div class="card-header">
+    <i class="fas fa-chart-area me-1"></i>
+    Detailed report
   </div>
+  <div class="card-body p-3">
+    {%for scan_item in scan_result%}
+      <div class="card mb-3">
+        <div class="card-header">
+          Port : {{scan_item.5}}
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item"><b>Running Service :</b> {{scan_item.2}} {{scan_item.3}}</li>
+            <li class="list-group-item"><b>Service Version :</b> {{scan_item.4}}</li>
+            <li class="list-group-item"><b>Scripts result : </b> <br>
+              {{scan_item.6}}
+            </li>
+            <li class="list-group-item"><b>Vulnerabilities Found : </b> <br>
+              <ul class="list-group list-unstyled">
+              {%for finding in findings%}
+                {% if finding.4 == scan_item.5 %}
+                <li class="list-group-item"><b>CVE ID :</b> {{finding.1}}</li>
+                <li class="list-group-item"><b>Severity Impact :</b> {{finding.17}}</li>
+                <li class="list-group-item"><b>Exploitability :</b> 
+                  {%if finding.5%}
+                  
+                    Easy,
+                    Exploit available online an attacker with low knowledge could exploit it, It's recommended to batch it as soon as possible
+                  
+                  {%else%}
+                    <p>
+                      Hard,
+                      Exploit isn't available online it requires high knowledge to exploit it, it's not time critical to batch this vulnerability However it should be fixed as soon as possible.
+                    </p>
+                  {%endif%}
+                </li>
+                {%if finding.5%}
+                  {%for exploit_link in finding.6%}
+                    <li class="list-group-item"><b>Exploit Links:</b> 
+                      <a href="{{exploit_link}}" target="_blank">{{exploit_link}}</a>
+                    </li>
+                  {%endfor%}
+                {%endif%}
+                <li class="list-group-item"><b>Description :</b> {{finding.12}}</li>
+                <li class="list-group-item"><b>Refrences :</b> 
+                  {%for ref in finding.18%}
+                <ul>
+                  <li><a href="{{ref}}" target="_blank">{{ref}}</a></li>
+                </ul>
+                {%endfor%}
+                </li>
+                {%endif%}
+                
+                {%endfor%}
+                <li>
+                  <ul class="list-group list-unstyled">
+                  {%for find in online%}
+                  {%if find.8 == scan_item.5%}
+                    <li class="list-group-item"><b>CVE ID :</b> {{find.4}}</li>
+                    <li class="list-group-item"><b>Severity Impact :</b> {{find.7}}</li>
+                    <li class="list-group-item"><b>Description :</b> {{find.2}}</li>
+                    <li class="list-group-item"><b>Refrences : </b> <br>
+                      {%for ref in find.3%}
+                      <ul>
+                        <li><a href="{{ref}}" target="_blank">{{ref}}</a></li>
+                      </ul>
+                      {%endfor%}
+                    </li>
+                  {%endif%}
+                  {%endfor%}
+                  </ul>
+                </li>
+                <hr>
+            
+          </ul>
+        </div>
+      </div>
+    {%endfor%}
+  </div>
+</div>
+{% comment %} detilied report end {% endcomment %}
 </main>
 <script src="{%static 'chart.js'%}"></script>
-<script>
 
-</script>
 <!-- Modal for editing scan name -->
 <div
   class="modal fade"
@@ -286,13 +323,13 @@
 
   // Iterate through findings and count occurrences of impact levels
   {% for finding in findings %}
-      {% if finding.14 == 'None' %}
+      {% if finding.17 == 'None' %}
           noneCount++;
-      {% elif finding.14 == 'High'%}
+      {% elif finding.17 == 'High'%}
           highCount++;
-      {% elif finding.14 == 'Medium' %}
+      {% elif finding.17 == 'Medium' %}
           mediumCount++;
-      {% elif finding.14 == 'Low' %}
+      {% elif finding.17 == 'Low' %}
           lowCount++;
       {% endif %}
   {% endfor %}

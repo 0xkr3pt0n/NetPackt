@@ -13,8 +13,127 @@
                     <img class="card-img-top" src="{%static 'network.png'%}" alt="Card image cap">
                     <div class="card-body">Netowrk Scan</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-black stretched-link" href="{%url 'scan'%}">New scan</a>
-                        <div class="small text-black"><i class="fas fa-angle-right"></i></div>
+                        {% comment %} <a class="small text-black stretched-link" href="{%url 'scan'%}">New scan</a> {% endcomment %}
+                        <span id="editScanNameIcon" data-toggle="modal" data-target="#editScanNameModal">
+                            <a class="small text-black stretched-link" href="#">New scan</a>
+                          </span>
+                          <div class="small text-black"><i class="fas fa-plus"></i></div>
+                        {% comment %} new scan popup start {% endcomment %}
+                        <div
+                            class="modal fade"
+                            id="editScanNameModal"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="editScanNameModalLabel"
+                            aria-hidden="true"
+                            >
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editScanNameModalLabel">
+                                    New Network Scan
+                                    </h5>
+                                    <button
+                                    type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close"
+                                    >
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Network Scanning form -->
+                                    <form id="Newnetworkscanform" method="POST" action=".">
+                                        {% csrf_token %}
+                                    <div class="form-group">
+                                        {% comment %} start scan name {% endcomment %}
+                                        <div class="m-3">
+                                            <label for="newScanName">Scan Name </label>
+                                            <input
+                                            type="text"
+                                            class="form-control"
+                                            id="ScanName"
+                                            name="ScanName"
+                                            />
+                                        </div>
+                                        {% comment %} end scan name {% endcomment %}
+
+                                        {% comment %} start target ip address {% endcomment %}
+                                        <div class="m-3">
+                                            <label for="TargetAddress">IP address or Network Prefix </label>
+                                            <input
+                                            type="text"
+                                            class="form-control"
+                                            id="TargetAddress"
+                                            name="TargetAddress"
+                                            />
+                                        </div>
+                                        {% comment %} scan option start {% endcomment %}
+                                        <div class="form-check form-check-inline m-3">
+                                            <input class="form-check-input" type="radio" name="scan_type" id="inlineRadio1" value="1" checked>
+                                            <label class="form-check-label" for="inlineRadio1">Basic Scan</label>
+                                        </div>
+                                        <div class="form-check form-check-inline m-3">
+                                            <input class="form-check-input" type="radio" name="scan_type" id="inlineRadio2" value="2">
+                                            <label class="form-check-label" for="inlineRadio2">Advanced Scan</label>
+                                        </div>
+                                        <div class="form-check form-switch mx-5 my-3">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="is_runscript">
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Run services scripts </label>
+                                        </div>
+                                        {% comment %} scan option end {% endcomment %}
+                                        
+                                        {% comment %} start shared with {% endcomment %}
+                                        <div class="form-group">
+                                        <div class="m-3">
+                                        <label for="sharedwith">Shared with </label>
+                                        <div class="input-group">
+                                            <input
+                                            class="form-control"
+                                            id="shared_with"
+                                            type="text"
+                                            placeholder="Shared With"
+                                            data-sb-validations="required"
+                                            name="shared_with"
+                                            />
+                                            <div class="input-group-append">
+                                            <div class="dropdown">
+                                                <button
+                                                class="btn btn-info dropdown-toggle"
+                                                type="button"
+                                                id="shareDropdownButton"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                >
+                                                Share with
+                                                </button>
+                                                <div
+                                                class="dropdown-menu"
+                                                aria-labelledby="shareDropdownButton"
+                                                >
+                                                {% for user in users %}
+                                                <a class="dropdown-item" href="#" data-value="{{user.0}}">{{user.0}}</a>
+                                                {% endfor %}
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {% comment %} end shared with {% endcomment %}
+                                    <button type="submit" class="btn btn-primary m-3" name="scan">Scan</button>
+
+                                    </form>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        {% comment %} new scan pop up end {% endcomment %}
+                        
                     </div>
                 </div>
             </div>
@@ -44,3 +163,51 @@
     </div>
 </main>
 {%endblock%}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the dropdown items
+        var dropdownItems = document.querySelectorAll('.dropdown-item');
+        
+        // Get the input element
+        var sharedWithInput = document.getElementById('shared_with');
+        
+        // Add click event listeners to the dropdown items
+        dropdownItems.forEach(function(item) {
+          item.addEventListener('click', function() {
+            // Get the selected value
+            var selectedValue = item.getAttribute('data-value');
+            
+            // Get the current input value
+            var currentValue = sharedWithInput.value;
+            
+            // Check if the input is not empty, add a comma before the new value
+            if (currentValue !== '') {
+              currentValue += ', ';
+            }
+            
+            // Update the input value with the selected value
+            sharedWithInput.value = currentValue + selectedValue;
+          });
+        });
+      });
+    document
+    .getElementById("Newnetworkscanform")
+    .addEventListener("submit", function (event) {
+      // Handle form submission here
+      // You can use AJAX to send the form data to the server or perform other actions
+      // Close the modal after form submission
+      $("#Newnetworkscanform").modal("hide");
+    });
+    
+    document.querySelectorAll('.dropdown-menu a').forEach(function(item) {
+        item.addEventListener('click', function(event) {
+
+            // Set the selected value to the hidden input field
+            document.getElementById('selectedItem').value = item.getAttribute('data-value');
+
+            // Update the button text (optional)
+            document.getElementById('option-btn').innerText = item.innerText;
+        });
+    });
+
+</script>
