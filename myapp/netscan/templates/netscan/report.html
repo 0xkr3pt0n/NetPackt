@@ -130,6 +130,7 @@
             <li class="list-group-item"><b>Scripts result : </b> <br>
               {{scan_item.6}}
             </li>
+            {%if is_online == 0 %}
             <li class="list-group-item"><b>Vulnerabilities Found : </b> <br>
               <ul class="list-group list-unstyled">
               {%for finding in findings%}
@@ -138,10 +139,10 @@
                 <li class="list-group-item"><b>Severity Impact :</b> {{finding.17}}</li>
                 <li class="list-group-item"><b>Exploitability :</b> 
                   {%if finding.5%}
-                  
-                    Easy,
-                    Exploit available online an attacker with low knowledge could exploit it, It's recommended to batch it as soon as possible
-                  
+                    <p>
+                      Easy,
+                      Exploit available online an attacker with low knowledge could exploit it, It's recommended to batch it as soon as possible
+                    <p>
                   {%else%}
                     <p>
                       Hard,
@@ -167,13 +168,37 @@
                 {%endif%}
                 
                 {%endfor%}
-                <li>
+                {%endif%}
+                {%if is_online == 1%}
+                <li class="list-group-item">
                   <ul class="list-group list-unstyled">
                   {%for find in online%}
                   {%if find.8 == scan_item.5%}
                     <li class="list-group-item"><b>CVE ID :</b> {{find.4}}</li>
                     <li class="list-group-item"><b>Severity Impact :</b> {{find.7}}</li>
-                    <li class="list-group-item"><b>Description :</b> {{find.2}}</li>
+                    <li class="list-group-item"><b>Exploitability :</b>
+                      {%if find.9%}
+                        <p>
+                          Easy,
+                          Exploit available online an attacker with low knowledge could exploit it, It's recommended to batch it as soon as possible.
+                        </p>
+                        
+                        <li class="list-group-item"><b>Exploit Links:</b> 
+                          <a href="{{find.10}}" target="_blank">{{find.10}}</a>
+                        </li>
+                      
+                      </li>
+                      {%else%}
+                        <p>
+                          Hard,
+                          Exploit isn't available online it requires high knowledge to exploit it, it's not time critical to batch this vulnerability However it should be fixed as soon as possible.
+                        </p>
+                      </li>
+                      {%endif%}
+                      
+
+                    
+                    <li class="list-group-item"><b>Description :</b> {{find.1}}</li>
                     <li class="list-group-item"><b>Refrences : </b> <br>
                       {%for ref in find.3%}
                       <ul>
@@ -186,6 +211,7 @@
                   </ul>
                 </li>
                 <hr>
+                {%endif%}
             
           </ul>
         </div>
@@ -321,8 +347,22 @@
   var mediumCount = 0;
   var lowCount = 0;
 
+  {%if is_online == 1%}
+    {%for find in online%}
+      {% if find.7 == 'None' %}
+        noneCount++;
+      {% elif find.7 == 'HIGH'%}
+        highCount++;
+      {% elif find.7 == 'MEDIUM' %}
+        mediumCount++;
+      {% elif find.7 == 'LOW' %}
+        lowCount++;
+      {% endif %}
+    {%endfor%}
+ 
   // Iterate through findings and count occurrences of impact levels
-  {% for finding in findings %}
+  {%else%}
+    {% for finding in findings %}
       {% if finding.17 == 'None' %}
           noneCount++;
       {% elif finding.17 == 'High'%}
@@ -332,19 +372,10 @@
       {% elif finding.17 == 'Low' %}
           lowCount++;
       {% endif %}
-  {% endfor %}
+    {% endfor %}
+  {%endif%}
 
-  {%for find in online%}
-    {% if find.7 == 'None' %}
-      noneCount++;
-    {% elif find.7 == 'High'%}
-      highCount++;
-    {% elif find.7 == 'Medium' %}
-      mediumCount++;
-    {% elif find.7 == 'Low' %}
-      lowCount++;
-    {% endif %}
-  {%endfor%}
+
   var chardata = [noneCount, highCount, mediumCount, lowCount];
   drawchart(chardata);
 </script>

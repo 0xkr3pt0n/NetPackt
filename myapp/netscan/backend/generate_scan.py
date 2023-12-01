@@ -61,7 +61,7 @@ class GenerateScan:
         result = self.cursor.fetchone()
         self.connection.commit()
         if result:
-            report_dict = (result[0], result[1], result[2], result[3], result[4],result[5], result[6])
+            report_dict = (result[0], result[1], result[2], result[3], result[4],result[5], result[6], result[7], result[9])
             return report_dict
         else:
             return "none"
@@ -87,7 +87,7 @@ class GenerateScan:
         self.connection.commit()
         for i in result:
             formatted_links = i[3].split(',')
-            formatted_result = (i[0], i[1], i[2],formatted_links, i[4],i[5],i[6],i[7],i[8])
+            formatted_result = (i[0], i[1], i[2],formatted_links, i[4],i[5],i[6],i[7],i[8], i[9], i[10])
             returned_formatted_list.append(formatted_result)
         return returned_formatted_list
     #function to retrive cve details from database

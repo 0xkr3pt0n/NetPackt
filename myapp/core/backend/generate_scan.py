@@ -18,8 +18,8 @@ class GenerateScan:
             print("Error connecting to database : ", e)
     
     # function to insert new scan in the database when the user triggers a new scan
-    def insert_scan(self, username, scan_name, ip_address, shared_with, current_datetime, status, scan_type, is_runscript):
-        insert_query = f"INSERT INTO scans (scan_name, system_ip, username, shared_with, scan_date, current_status, scan_type, is_runscript) VALUES ('{scan_name}', '{ip_address}', '{username}', '{shared_with}', '{current_datetime}','{status}', '{scan_type}','{is_runscript}') RETURNING id"
+    def insert_scan(self, username, scan_name, ip_address, shared_with, current_datetime, status, scan_type, is_intrusive, scan_online):
+        insert_query = f"INSERT INTO scans (scan_name, system_ip, username, shared_with, scan_date, current_status, scan_type, is_intrusive, scan_online) VALUES ('{scan_name}', '{ip_address}', '{username}', '{shared_with}', '{current_datetime}','{status}', '{scan_type}','{is_intrusive}', '{scan_online}') RETURNING id"
         self.cursor.execute(insert_query)
         inserted_id = self.cursor.fetchone()[0]
         self.connection.commit()
