@@ -31,7 +31,7 @@ class PortScanner(object):
 
         ),
     ):
-        print(nmap_search_path)
+        
         """
         Initialize PortScanner module
 

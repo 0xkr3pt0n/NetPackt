@@ -22,9 +22,8 @@
                             <th>Done by</th>
                             <th>Target IP</th>
                             <th>Scan date</th>
-                            <th>Shared with</th>
-                            <th>Report</th>
                             <th>Progress</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,9 +33,16 @@
                             <td>{{ item.3 }}</td>
                             <td>{{ item.2 }}</td>
                             <td>{{ item.5 }}</td>
-                            <td>{{ item.4 }}</td>
-                            <td><a href="{% url 'report_detils' item.0 %}">view</a></td>
                             <td>{{ item.6 }}</td>
+                            <td style="text-align:center;">
+                                <a href="{% url 'report_detils' item.0 %}">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="{%url 'delete_report' item.0 %}">
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -35,3 +35,9 @@ def report(request,report_id):
         return render(request, 'netscan/report.html', {'report':report_data, 'users':users, 'online':findings_online, 'scan_result':scan_result,'is_online':1})
     else:
         return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings, 'users':users, 'scan_result':scan_result, 'is_online':0})
+
+@login_required
+def delete_report(request, report_id):
+    deleteReport = generate_scan.GenerateScan()
+    deleteReport.remove_report(report_id)
+    return redirect('scans')

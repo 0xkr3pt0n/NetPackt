@@ -54,7 +54,7 @@ def home(request):
             userid = request.user.id
             is_api_activated = settings.get_api_option(userid)
             
-            if is_intrusive == "intrusive":
+            if is_intrusive == "1":
                 scan_intrusive = 1
             else:
                 scan_intrusive = 0
@@ -64,7 +64,7 @@ def home(request):
             
             #start scanning the target
             scan = networkscan.networkscan()
-            scan_result = scan.scan(ip_address, is_intrusive)
+            scan_result = scan.scan(ip_address, scan_intrusive)
             
             # insert scan result into the database
             for result_item in scan_result:

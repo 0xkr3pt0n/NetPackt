@@ -15,9 +15,12 @@ class networkscan:
         
         nm = mynmap.PortScanner()
         #argument T4 for threading
-        if scan_option == '1':
-            scan_raw_result = nm.scan(hosts=network_prefix, arguments='-p- -Sv -A -n -T4')
+        if scan_option == 1:
+            print("start intrusive scanning")
+            scan_raw_result = nm.scan(hosts=network_prefix, arguments='-p- -sV -A -n -T4')
+            print("End scanning")
         else:
+            print("start low scanning")
             scan_raw_result = nm.scan(hosts=network_prefix, arguments='-p- -v -n -A -T0')
         services_for_db = [] #this list will at last contain each service running and it's version to query the database with
         services_for_display = [] #this list will at last contain each port and it's information for user display

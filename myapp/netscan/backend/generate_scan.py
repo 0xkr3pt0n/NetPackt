@@ -67,3 +67,8 @@ class GenerateScan:
     def get_scan_result(self, scan_id):
         result = self.db.commit_to_database_data(f"SELECT * FROM netowrk_scan_result WHERE scan_id = {scan_id}")
         return result
+    def remove_report(self, scan_id):
+        self.db.commit_to_database(f"DELETE FROM scans WHERE id = {scan_id}")
+        self.db.commit_to_database(f"DELETE FROM api_result WHERE scan_id = {scan_id}")
+        self.db.commit_to_database(f"DELETE FROM netowrk_scan_result WHERE scan_id = {scan_id}")
+        self.db.commit_to_database(f"DELETE FROM findings WHERE scan_id = {scan_id}")
