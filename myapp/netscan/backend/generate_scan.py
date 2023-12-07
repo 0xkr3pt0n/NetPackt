@@ -31,7 +31,8 @@ class GenerateScan:
     def getreport(self, reportid):
         result = self.db.commit_to_database_dataOne(f"SELECT * FROM scans WHERE id = {reportid}")
         if result:
-            report_dict = (result[0], result[1], result[2], result[3], result[4],result[5], result[6])
+            report_dict = (result[0], result[1], result[2], result[3], result[4],result[5], result[6],result[9])
+            print(report_dict)
             return report_dict
         else:
             return "none"
@@ -61,5 +62,8 @@ class GenerateScan:
     
     #function to retrive users to select a shared with user
     def retrive_users(self):
-        result = self.db.commit_to_database(f"SELECT username FROM auth_user")
+        result = self.db.commit_to_database_data(f"SELECT username FROM auth_user")
+        return result
+    def get_scan_result(self, scan_id):
+        result = self.db.commit_to_database_data(f"SELECT * FROM netowrk_scan_result WHERE scan_id = {scan_id}")
         return result

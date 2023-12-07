@@ -61,5 +61,5 @@ class GenerateScan:
     
     #function to retrive users to select a shared with user
     def retrive_users(self):
-        result = self.db.commit_to_database(f"SELECT username FROM auth_user")
+        result = self.db.commit_to_database_data(f"SELECT username FROM auth_user")
         return result

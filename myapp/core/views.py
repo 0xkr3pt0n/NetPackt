@@ -11,6 +11,7 @@ from .backend import generate_scan
 from .backend import user_settingsdb
 from .backend import vulnsdb
 from .backend import exploits
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -37,7 +38,7 @@ def home(request):
     gscan = generate_scan.GenerateScan()
     if request.method == 'POST':
         #network scanning code
-        if 'scan' in request.POST:
+        if 'Network_Scan' in request.POST:
         #getting parameters by post request
             ip_address = request.POST.get('TargetAddress')
             scan_name = request.POST.get('ScanName')
@@ -57,6 +58,7 @@ def home(request):
                 scan_intrusive = 1
             else:
                 scan_intrusive = 0
+                
             #generating scan entry in db
             scan_id = gscan.insert_scan(current_user, scan_name, ip_address, shared_with, current_datetime, status, scan_type, scan_intrusive, is_api_activated)
             

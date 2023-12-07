@@ -1,19 +1,6 @@
 #!/usr/bin/python
-# Author: an0mal1a
+# Author: mohab
 
-"""
-$ python2.7 vscan.py
-{'match': {'pattern': '^.*<address>Apache/([\\d.]+) Server at ([-\\w_.]+) Port \\d+</address>\\n</body></html>\\n',
-           'versioninfo': {'cpename': ['apache:http_server:2.4.7'],
-                           'devicetype': [' v'],
-                           'hostname': ['www.nongnu.org'],
-                           'info': [],
-                           'operatingsystem': [],
-                           'vendorproductname': ['Apache httpd'],
-                           'version': ['2.4.7']}},
- 'probe': {'probename': 'GetRequest',
-           'probestring': 'GET / HTTP/1.0\\r\\n\\r\\n'}}
-"""
 
 import os
 import re
@@ -83,7 +70,7 @@ class ServiceProbe(Nmap):
 
         # check if file has availabe data
         if not lines:  # None or []
-            self.fatal("Failed to read nmap-service-probes file %s for probe data" % filename)
+            self.fatal("Failed to read nmap-service-probes file %s for probe data")
 
         # only one [Exclude Directive] can be included
         c = 0;

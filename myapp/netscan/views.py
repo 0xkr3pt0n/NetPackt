@@ -30,7 +30,8 @@ def report(request,report_id):
         new_share = request.POST.get('new_share')
         get_report.updatescan(new_name, new_share, report_id)
         return redirect('report_detils', report_id=report_id)
-    if report_data[8] == 1:
+    # print(report_data)
+    if report_data[7] == 1:
         return render(request, 'netscan/report.html', {'report':report_data, 'users':users, 'online':findings_online, 'scan_result':scan_result,'is_online':1})
     else:
         return render(request, 'netscan/report.html', {'report':report_data, 'findings':discoverd_findings, 'users':users, 'scan_result':scan_result, 'is_online':0})
