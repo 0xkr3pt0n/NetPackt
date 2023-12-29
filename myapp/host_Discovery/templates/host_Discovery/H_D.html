@@ -10,10 +10,10 @@
     <form method="post" action="{% url 'scan_network' %}">
         {% csrf_token %}
         <label for="target_subnet">Target Subnet:</label>
-        <input type="text" name="target_subnet" value="{{ target_subnet }}" required>
+        <input type="text" name="target_subnet" pattern="^(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9]\.){2}(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.0/24$" value="{{ target_subnet }}" required>
         <br>
         <label for="exclude_ips">Excluded IPs (comma-separated):</label>
-        <input type="text" name="exclude_ips" value="{{ exclude_ips }}">
+        <input type="text" name="exclude_ips"  value="{{ exclude_ips }}">
         <br>
         <label for="output_file">Output File:</label>
         <input type="text" name="output_file" value="{{ output_file }}">
