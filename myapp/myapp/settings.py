@@ -39,6 +39,7 @@ EMAIL_FILE_PATH = BASE_DIR / 'emails'
 INSTALLED_APPS = [
     'core',
     'netscan',
+    'host_Discovery',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'netimpact',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': 'Dodo@1',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
