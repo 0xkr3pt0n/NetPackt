@@ -9,3 +9,5 @@ py2exe==0.13.0.1
 pycairo==1.23.0
 pyxploitdb==2.0
 Requests==2.31.0
+mac_vendor_lookup==0.1.12
+scipy==2.5.0
