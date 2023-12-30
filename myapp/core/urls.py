@@ -16,5 +16,5 @@ urlpatterns = [
     path('setting/', views.setting, name='setting'),
     path('delete_account/', views.delete_account, name='delete_account'),
     path('soon/', views.soon, name="soon"),
-
+    path('initiate_database/', views.initiate_database, name='initiate_database'),
 ]

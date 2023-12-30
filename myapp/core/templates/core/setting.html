@@ -69,14 +69,18 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Network scanner Settings</h5>
-                            <form method="post" action=".">
-                                {%csrf_token%}
+                            <form method="post" action="{% url 'setting' %}">
+                                {% csrf_token %}
                                 <div class="form-check form-switch mx-5 my-3">
-                                    {% if is_api == 1 %}
-                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="is_api" checked>
-                                    {%else%}
-                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="is_api">
-                                    {%endif%}
+                                    {% if is_api is not None %}
+                                        {% if is_api %}
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="is_api" checked>
+                                        {% else %}
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="is_api">
+                                        {% endif %}
+                                    {% else %}
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="is_api">
+                                    {% endif %}
                                     <label class="form-check-label" for="flexSwitchCheckDefault">Online Scanner (For up to date results)</label>
                                 </div>
                                 <button type="submit" class="btn btn-success" name="save_settings">Save settings</button>
@@ -104,7 +108,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Initiate Database</h5>
                             <p>Are you sure you want to initiate the database?</p>
-                            <form method="post" >
+                            <form method="post" action="{% url 'initiate_database' %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-primary">Initiate Database</button>
                             </form>

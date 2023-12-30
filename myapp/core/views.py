@@ -11,6 +11,7 @@ from .backend import generate_scan
 from .backend import user_settingsdb
 from .backend import vulnsdb
 from .backend import exploits
+from .backend.connDB import init_database
 
 def signup(request):
     if request.method == 'POST':
@@ -124,6 +125,12 @@ def setting(request):
     return render(request, "core/setting.html", {'is_api':is_api_activated})
 
 @login_required
+def initiate_database(request):
+    if request.method == 'POST':
+        init_database()
+    return render(request, 'core/setting.html')
+
+@login_required
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
@@ -131,3 +138,26 @@ def delete_account(request):
         return redirect('/login/')  
 
     return redirect('setting') 
+
+@login_required
+def setting(request):
+    settings = user_settingsdb.upateSettings()
+    userid = request.user.id
+
+    if request.method == 'POST':
+        if 'save_settings' in request.POST:
+            is_api = request.POST.get('is_api')
+            print(is_api)
+            if is_api == "on":
+                settings.update_api_activate(userid)
+            else:
+                settings.update_api_disable(userid)
+
+    try:
+        is_api_activated = settings.get_api_option(userid)
+    except Exception as e:
+        # Handle the exception, e.g., log it and set is_api_activated to a default value
+        print(f"Error getting is_api option: {e}")
+        is_api_activated = False
+
+    return render(request, "core/setting.html", {'is_api': is_api_activated})
