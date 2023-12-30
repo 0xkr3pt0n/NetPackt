@@ -26,6 +26,7 @@ $ python manage.py runserver
 ```
 
 ## running
-visit 127.0.0.1:8080
+```bash
+WebAPP Socket : 127.0.0.1:8080
 
-
+```
