@@ -9,7 +9,7 @@ class database:
                 host="localhost", #keep the same
                 database="netimpact", #database name (change according to your dbname)
                 user="postgres", # database username (change according to your username of postgres)
-                password="postgres" # database password (change according to your password of postgres)
+                password="Dodo@1" # database password (change according to your password of postgres)
             )
             cursor = connection.cursor()
             self.connection = connection
