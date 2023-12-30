@@ -14,8 +14,8 @@
                     <a class="list-group-item list-group-item-action" data-toggle="list" href="#password" role="tab">
                         Reset password
                     </a>
-                    <a class="list-group-item list-group-item-action" data-toggle="list" href="#delete-account" role="tab">
-                        Delete account
+                    <a class="list-group-item list-group-item-action" data-toggle="list" href="#initiate-database" role="tab">
+                        Initiate Database
                     </a>
                     <a class="list-group-item list-group-item-action" data-toggle="list" href="#scanner-settings" role="tab">
                         Scanner settings
@@ -23,11 +23,17 @@
                     <a class="list-group-item list-group-item-action" data-toggle="list" href="#check-update" role="tab">
                         Check update
                     </a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list" href="#delete-account" role="tab">
+                        Delete account
+                    </a>
                 </div>
             </div>
         </div>
         <div class="col-md-7 col-xl-8">
             <div class="tab-content">
+                <!-- Existing tab-panes -->
+
+                <!-- Reset password tab-pane -->
                 <div class="tab-pane fade" id="password" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -44,6 +50,7 @@
                     </div>
                 </div>
 
+                <!-- Delete account tab-pane -->
                 <div class="tab-pane fade" id="delete-account" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -57,6 +64,7 @@
                     </div>
                 </div>
 
+                <!-- Scanner settings tab-pane -->
                 <div class="tab-pane fade" id="scanner-settings" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -77,6 +85,7 @@
                     </div>
                 </div>
 
+                <!-- Check update tab-pane -->
                 <div class="tab-pane fade" id="check-update" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -84,6 +93,20 @@
                             <form>
                                 {%csrf_token%}
                                 <button type="submit" class="btn btn-primary">Check for updates</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New tab-pane for initiating the database -->
+                <div class="tab-pane fade" id="initiate-database" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Initiate Database</h5>
+                            <p>Are you sure you want to initiate the database?</p>
+                            <form method="post" >
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Initiate Database</button>
                             </form>
                         </div>
                     </div>
