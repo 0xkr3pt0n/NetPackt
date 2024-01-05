@@ -26,7 +26,7 @@ def init_database():
         refrences text,
         cvi_id text,
         infected_service text,
-        scan_id text,
+        scan_id integer,
         impact text,
         port_number text,
         is_easy text,
@@ -51,8 +51,8 @@ def init_database():
     );
     """
 
-    create_network_scan_result = """
-    CREATE TABLE IF NOT EXISTS network_scan_result(
+    create_netowrk_scan_result = """
+    CREATE TABLE IF NOT EXISTS netowrk_scan_result(
         id  SERIAL PRIMARY KEY NOT NULL,
         scan_id integer,
         svc text,
@@ -90,7 +90,7 @@ def init_database():
     cursor.execute(create_api_result)
     cursor.execute(alter_auth_user)
     cursor.execute(create_findings)
-    cursor.execute(create_network_scan_result)
+    cursor.execute(create_netowrk_scan_result)
     cursor.execute(create_scans)
     cursor.execute(create_vulns)
 
