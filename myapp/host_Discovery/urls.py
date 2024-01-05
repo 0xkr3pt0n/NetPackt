@@ -1,6 +1,6 @@
-from django.urls import path,include
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('scan/', views.scan_network, name='scan_network'),
+    path('discover/', views.scan_network, name='discover'),
 ]

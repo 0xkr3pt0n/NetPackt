@@ -7,7 +7,7 @@
 <main>
     <h1>Host discovery</h1>
 
-    <form method="post" action="{% url 'scan_network' %}">
+    <form method="post" action="{% url 'discover' %}">
         {% csrf_token %}
         <label for="target_subnet">Target Subnet(EX:192.168.1.0/24):</label>
         <input type="text" name="target_subnet" pattern="^(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9]\.){2}(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.0/24$" value="{{ target_subnet }}" required>

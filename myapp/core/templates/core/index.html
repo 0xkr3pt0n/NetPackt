@@ -7,11 +7,27 @@
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item active">Dashboard</li>
         </ol>
+
+        <div class="row">
+            <div class="col-xl-2 col-md-2">
+                <div class="card bg-light text-black mb-4">
+                    <!-- Customize the image source and alt text as needed -->
+                    <img class="card-img-top" src="{% static 'host_discovery.png' %}" alt="Card image cap">
+                    
+                    <div class="card-body text-center">Host Discovery</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-black stretched-link" href= "{%url 'discover'%}" >Discover</a>
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-xl-2 col-md-2">
                 <div class="card bg-light text-black mb-4">
                     <img class="card-img-top" src="{%static 'network.png'%}" alt="Card image cap">
-                    <div class="card-body">Netowrk Scan</div>
+                    <div class="card-small-body text-center" >Netowrk Scan</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
                         {% comment %} <a class="small text-black stretched-link" href="{%url 'scan'%}">New scan</a> {% endcomment %}
                         <span id="editScanNameIcon" data-toggle="modal" data-target="#editScanNameModal">
@@ -161,7 +177,7 @@
             <div class="col-xl-2 col-md-2">
                 <div class="card bg-light text-black mb-4">
                     <img class="card-img-top" src="{%static 'web.png'%}" alt="Card image cap">
-                    <div class="card-body">Web Application Scan</div>
+                    <div class="card-small-body text-center" s >Web Application Scan</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
                         <a class="small text-black stretched-link" href="{%url 'soon'%}">New scan</a>
                         <div class="small text-black"><i class="fas fa-angle-right"></i></div>
@@ -171,13 +187,15 @@
             <div class="col-xl-2 col-md-2">
                 <div class="card bg-light text-black mb-4">
                     <img class="card-img-top" src="{%static 'malware.png'%}" alt="Card image cap">
-                    <div class="card-body">Ransomware (MS17-010) Scan</div>
+                    <div class="card-small-body text-center" style="font-size: 13px;">
+                        Ransomware (MS17-010) Scan</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
                         <a class="small text-black stretched-link" href="{%url 'soon'%}">New scan</a>
                         <div class="small text-black"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>
             </div>
+
         </div>
         
 
