@@ -1,0 +1,75 @@
+{% extends "core/base.html" %}
+{%load static%}
+{%block title%}Login{%endblock%}
+{%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
+{%block content%}
+{% if request.user.is_authenticated %}
+  <script>
+      window.location.href = "{% url 'dashboard' %}"; 
+  </script>
+{%else%}
+<body class="bg-primary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            
+            <div class="center">
+
+                <h1>Login</h1>
+
+                <form method="post">
+                    {%csrf_token%}
+                    {% for message in messages %}
+                        {% if  message.tags == 'error' %}
+                            <div class="text-danger">
+                                {{ message }}
+                            </div>
+                        {%endif%}
+                        {%if message.tags == 'success'%}
+                            <div class="text-success">
+                                {{message}}
+                            </div>
+                        {%endif%}
+                    {%endfor%}
+                  <div class="txt_field">
+                    <input type="text" id="inputEmail" name="username"  required/>
+                    <span></span>
+                    <label>Username</label>
+                  </div>
+                  <div class="txt_field">
+                    <input type="password" id="inputPassword" name="password" required />
+                    <span></span>
+                    <label>Password</label>
+                  </div>
+                  <p class="error-message  {% if form.errors %}show{%else%}hide{% endif %}">Invalid username or password. Please try again or register if you don't have an account.</p>
+                  <style>
+                    .error-message {
+                        color: red;
+                    }
+                    
+                    .show {
+                        display: block;
+                    }
+                    
+                    .hide {
+                        display: none;
+                    }
+                </style>
+                  <div class="pass"><a href="{%url "forget_password"%}">Forgot Password?</a> </div>
+                  <input type="submit" value="Login"/>
+                  <div class="signup_link">Not a member? <a href="{%url "register"%}">Signup</a></div>
+                </form>
+            </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              const errorMessage = document.querySelector('.error-message');
+              
+              if (errorMessage) {
+                  setTimeout(function () {
+                      errorMessage.classList.add('hide');
+                  }, 6000); // 3000 milliseconds = 3 seconds
+              }
+          });
+      </script>
+{%endif%}
+{%endblock%}
