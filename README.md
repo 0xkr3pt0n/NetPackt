@@ -21,6 +21,16 @@ python database.py
 python manage.py runserver
 ```
 
+## pushing changes
+
+```bash
+in netpackt folder
+git add .
+git commit -m "message"
+git push
+```
+
+
 ## running
 ```bash
 WebAPP Socket : 127.0.0.1:8080
