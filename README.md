@@ -35,6 +35,12 @@ git push
 git checkout main
 ```
 
+## switching to new branch
+
+```bash
+git checkout netpackt-new
+```
+
 ## running
 ```bash
 WebAPP Socket : 127.0.0.1:8080
