@@ -1,4 +1,5 @@
 import psycopg2
+import subprocess
 
 class database_prepare:
     def __init__(self):
@@ -18,12 +19,21 @@ class database_prepare:
         #class destructor
 
         #create tables
+        self.create_djangousers_table()
         self.create_Vulnscanreport_table()
         self.create_hostdiscoveryreport_table()
         self.create_discoverdip_table()
         self.create_scans_table()
         self.create_sharedusers_table()
+        
 
+    def create_djangousers_table(self):
+        command1 = "python manage.py makemigrations"
+        command2 = "python manage.py migrate"
+        result1 = subprocess.run(command1, shell=True, capture_output=True, text=True) 
+        result2 = subprocess.run(command2, shell=True, capture_output=True, text=True) 
+        print(result1.stdout)
+        print(result2.stdout)
     
     def create_Vulnscanreport_table(self):
         try:
