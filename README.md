@@ -29,7 +29,11 @@ git add .
 git commit -m "message"
 git push
 ```
+## switching to old branch
 
+```bash
+git checkout main
+```
 
 ## running
 ```bash
