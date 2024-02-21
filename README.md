@@ -14,11 +14,12 @@ git checkout -b netpackt-new remotes/origin/netpackt-new
 ```
 
 ## installtion
-
+download https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2011.json.zip extract it in this folder (where manage.py located)
 ```bash
-
+pip install -r requirements.txt
 python database.py
-python manage.py runserver
+python data-parser-nist.py
+python run.py
 ```
 
 ## pushing changes

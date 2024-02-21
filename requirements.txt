@@ -1,0 +1,5 @@
+Django==5.0.2
+django4_background_tasks==1.2.9
+mac_vendor_lookup==0.1.12
+psycopg2==2.9.9
+scapy==2.5.0
