@@ -94,7 +94,7 @@ def network_scan(request):
         return redirect('myscans')
     return render(request, 'core/networkscan.html')
 
-@background(schedule=0)  # Execute immediately
+@background(schedule=None)  # Execute immediately
 def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type):
     print("start")
     vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, 100)
