@@ -6,7 +6,8 @@ from .forms import LoginForm,SignupForm
 from django.contrib.auth.models import User
 from .scan_generator import scan_create
 from .vulnerability_scan import vscanner
-
+from .scan_fetcher import fetch_scans
+from background_task import background
 # Create your views here.
 
 def user_login(request):
@@ -89,10 +90,15 @@ def network_scan(request):
         else:
             scan_type = 2
         
-        vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, 100)
-        vscanning.vulnerability_scan()
-        return redirect('dashboard')
+        schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type)
+        return redirect('myscans')
     return render(request, 'core/networkscan.html')
+
+@background(schedule=0)  # Execute immediately
+def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type):
+    print("start")
+    vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, 100)
+    vscanning.vulnerability_scan()
 
 @login_required(login_url='/login/')
 def host_discovery(request):
@@ -101,3 +107,9 @@ def host_discovery(request):
 @login_required(login_url='/login/')
 def settings(request):
     return render(request, 'core/settings.html')
+
+@login_required(login_url='/login/')
+def myreports(request):
+    fs = fetch_scans.scans_fetch()
+    data = fs.fetch_scans(request.user.id)
+    return render(request, 'core/reports.html', {'data':data})
