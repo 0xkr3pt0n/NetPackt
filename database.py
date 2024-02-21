@@ -22,10 +22,10 @@ class netpackt_database_prepare:
 
         #create tables
         self.create_djangousers_table()
+        self.create_scans_table()
         self.create_Vulnscanreport_table()
         self.create_hostdiscoveryreport_table()
         self.create_discoverdip_table()
-        self.create_scans_table()
         self.create_sharedusers_table()
         
 
@@ -36,14 +36,38 @@ class netpackt_database_prepare:
         result2 = subprocess.run(command2, shell=True, capture_output=True, text=True) 
         print(result1.stdout)
         print(result2.stdout)
+
+    def create_scans_table(self):
+        try:
+            # SQL query to create the scans table if it does not exist
+            create_table_query = '''
+                CREATE TABLE IF NOT EXISTS scans (
+                    id SERIAL PRIMARY KEY,
+                    scan_name VARCHAR(255),
+                    scan_type INTEGER,
+                    progress INTEGER,
+                    IP_SUBNET VARCHAR(255),
+                    USER_ID INTEGER REFERENCES auth_user(id),
+                    scan_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            '''
+            # execute the create table query
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'scans' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
     
     def create_Vulnscanreport_table(self):
         try:
             create_table_query = '''
             CREATE TABLE IF NOT EXISTS vulnscan_report (
                 id SERIAL PRIMARY KEY,
+                scan_id INTEGER REFERENCES scans(id),
+                portnumber VARCHAR(255),
+                service VARCHAR(255),
+                version VARCHAR(255),
                 cve_id VARCHAR(255),
-                scan_id INTEGER,
                 exploitability INTEGER
             )
             '''
@@ -58,7 +82,7 @@ class netpackt_database_prepare:
             create_table_query = '''
             CREATE TABLE IF NOT EXISTS hostdiscovery_report (
                 id SERIAL PRIMARY KEY,
-                scan_id INTEGER
+                scan_id INTEGER REFERENCES scans(id)
             )
             '''
             self.cursor.execute(create_table_query)
@@ -80,28 +104,6 @@ class netpackt_database_prepare:
             self.cursor.execute(create_table_query)
             self.connection.commit()
             print("Table 'discoverd_ip' created successfully or already exists.")
-        except Exception as e:
-            print("Error creating table: ", e)
-    def create_scans_table(self):
-        try:
-            # SQL query to create the scans table if it does not exist
-            create_table_query = '''
-                CREATE TABLE IF NOT EXISTS scans (
-                    id SERIAL PRIMARY KEY,
-                    scan_name VARCHAR(255),
-                    scan_type INTEGER,
-                    progress INTEGER,
-                    IP_SUBNET VARCHAR(255),
-                    USER_ID INTEGER REFERENCES auth_user(id),
-                    vulnreport_id INTEGER REFERENCES vulnscan_report(id) DEFAULT 0,
-                    hostdiscover_id INTEGER REFERENCES hostdiscovery_report DEFAULT 0,
-                    scan_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            '''
-            # execute the create table query
-            self.cursor.execute(create_table_query)
-            self.connection.commit()
-            print("Table 'scans' created successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
     def create_sharedusers_table(self):

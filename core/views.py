@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.shortcuts import render,redirect
 from .forms import LoginForm,SignupForm
 from django.contrib.auth.models import User
+from .scan_generator import scan_create
+from .vulnerability_scan import vscanner
 
 # Create your views here.
 
@@ -54,6 +56,42 @@ def dashboard(request):
 
 @login_required(login_url='/login/')
 def network_scan(request):
+    if request.method == "POST":
+        scan_name = request.POST.get('scan_name')
+        ip_addr = request.POST.get('ip_addr')
+        port_scanType = request.POST.get('portscantype')
+        port_rangeType = request.POST.get('portrangetype')
+        intrustivity_type = request.POST.get('intrusive_type')
+        user_id = request.user.id
+        
+        #create new scan record in db
+        create_scan = scan_create.scan_create()
+        scan_id = create_scan.vulnerability_scan(scan_name, ip_addr, user_id)
+        
+        min_port = 0
+        max_port = 0
+        #start the vulnerability scan
+        if port_rangeType == "0":
+            min_port = 1
+            max_port = 10
+        elif port_rangeType == "1":
+            min_port = 1
+            max_port = 100
+        elif port_rangeType == "2":
+            min_port = 1
+            max_port = 1000
+        else:
+            min_port = 1
+            max_port = 65535
+        
+        if port_scanType == "1":
+            scan_type = 1
+        else:
+            scan_type = 2
+        
+        vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, 100)
+        vscanning.vulnerability_scan()
+        return redirect('dashboard')
     return render(request, 'core/networkscan.html')
 
 @login_required(login_url='/login/')
