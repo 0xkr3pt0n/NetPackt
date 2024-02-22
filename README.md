@@ -13,12 +13,14 @@ cd NetPackt
 git checkout -b netpackt-new remotes/origin/netpackt-new
 ```
 
-## installtion
+## installtion for first time only
 download https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2011.json.zip extract it in this folder (where manage.py located)
+download https://nvd.nist.gov/feeds/json/cpematch/1.0/nvdcpematch-1.0.json.zip extract it in this folder (where manage.py located)
 ```bash
 pip install -r requirements.txt
 python database.py
 python data-parser-nist.py
+python cpe-parser.py
 python run.py
 ```
 
@@ -34,6 +36,8 @@ git push
 
 ## running
 ```bash
+
+python run.py
 WebAPP Socket : 127.0.0.1:8080
 
 ```
