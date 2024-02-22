@@ -22,6 +22,7 @@ class netpackt_database_prepare:
 
         #create tables
         self.create_djangousers_table()
+        self.add_api_column()
         self.create_scans_table()
         self.create_Vulnscanreport_table()
         self.create_hostdiscoveryreport_table()
@@ -36,6 +37,15 @@ class netpackt_database_prepare:
         result2 = subprocess.run(command2, shell=True, capture_output=True, text=True) 
         print(result1.stdout)
         print(result2.stdout)
+    
+    def add_api_column(self):
+        try:
+            add_column_query = "ALTER TABLE auth_user ADD COLUMN IF NOT EXISTS api_option INTEGER DEFAULT 0;"
+            self.cursor.execute(add_column_query)
+            self.connection.commit()
+            print("column 'api_option' added successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
 
     def create_scans_table(self):
         try:
