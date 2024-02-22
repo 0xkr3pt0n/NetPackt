@@ -187,6 +187,8 @@ class cves_database_prepare:
         self.create_cve_table()
         self.create_cpes_table()
         self.create_refrences_table()
+        self.create_cpeMatchURI_table()
+        self.create_cpeMatchNames_table()
     def create_cve_table(self):
         try:
             # SQL query to create the scans table if it does not exist
@@ -220,6 +222,7 @@ class cves_database_prepare:
             print("Table 'cpes' created successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
+    
     def create_refrences_table(self):
         try:
             # SQL query to create the scans table if it does not exist
@@ -234,6 +237,39 @@ class cves_database_prepare:
             self.cursor.execute(create_refrences_table_query)
             self.connection.commit()
             print("Table 'cpes' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+    
+    def create_cpeMatchURI_table(self):
+        try:
+            # SQL query to create the scans table if it does not exist
+            create_cpeMatch_table_query = '''
+                CREATE TABLE IF NOT EXISTS cpe_match_uri (
+                    id SERIAL PRIMARY KEY,
+                    cpe23uri TEXT
+                )
+            '''
+            # execute the create table query
+            self.cursor.execute(create_cpeMatch_table_query)
+            self.connection.commit()
+            print("Table 'cpe_match_uri' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+    
+    def create_cpeMatchNames_table(self):
+        try:
+            # SQL query to create the scans table if it does not exist
+            create_cpeMatch_table_query = '''
+                CREATE TABLE IF NOT EXISTS cpe_match_names (
+                    cpe_id INTEGER REFERENCES cpe_match_uri(id),
+                    cpe_name TEXT
+
+                )
+            '''
+            # execute the create table query
+            self.cursor.execute(create_cpeMatch_table_query)
+            self.connection.commit()
+            print("Table 'cpe_match_names' created successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
 
