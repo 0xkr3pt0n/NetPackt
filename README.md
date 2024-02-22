@@ -33,7 +33,13 @@ python data-parser-nist.py
 python cpe-parser.py
 python run.py
 ```
+## running
+```bash
 
+python run.py
+WebAPP Socket : 127.0.0.1:8080
+
+```
 ## pushing changes
 
 ```bash
@@ -41,13 +47,4 @@ in netpackt folder
 git add .
 git commit -m "message"
 git push
-```
-
-
-## running
-```bash
-
-python run.py
-WebAPP Socket : 127.0.0.1:8080
-
 ```
