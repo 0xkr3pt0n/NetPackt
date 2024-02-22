@@ -25,6 +25,8 @@ class netpackt_database_prepare:
         self.add_api_column()
         self.create_scans_table()
         self.create_Vulnscanreport_table()
+        self.create_apiresults_table()
+        self.api_refrences_table()
         self.create_hostdiscoveryreport_table()
         self.create_discoverdip_table()
         self.create_sharedusers_table()
@@ -87,6 +89,41 @@ class netpackt_database_prepare:
         except Exception as e:
             print("Error creating table: ", e)
     
+    def create_apiresults_table(self):
+        try:
+            create_table_query = '''
+                CREATE TABLE IF NOT EXISTS api_results (
+                    id SERIAL PRIMARY KEY,    
+                    scan_id INTEGER REFERENCES scans(id),
+                    portnumber VARCHAR(255),
+                    service VARCHAR(255),
+                    version VARCHAR(255),
+                    CVE_ID VARCHAR(255),
+                    Impact DOUBLE PRECISION,
+                    Description TEXT
+                )
+            '''
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'api_results' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table", e)
+    
+    def api_refrences_table(self):
+        try:
+            create_table_query = '''
+                CREATE TABLE IF NOT EXISTS api_refrences (   
+                    api_id INTEGER REFERENCES api_results(id),
+                    refrence TEXT,
+                    refrence_type INTEGER
+                )
+            '''
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'api_refrences' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table", e)
+
     def create_hostdiscoveryreport_table(self):
         try:
             create_table_query = '''
