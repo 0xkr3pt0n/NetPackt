@@ -15,6 +15,14 @@ git checkout -b netpackt-new remotes/origin/netpackt-new
 
 ## installtion for first time only
 download the following files extract them in the main folder (where manage.py located)<br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2002.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2003.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2004.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2005.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2006.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2007.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2008.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2009.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2010.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2011.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2012.json.zip <br>
