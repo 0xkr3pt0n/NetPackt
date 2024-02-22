@@ -30,17 +30,7 @@ git add .
 git commit -m "message"
 git push
 ```
-## switching to old branch
 
-```bash
-git checkout main
-```
-
-## switching to new branch
-
-```bash
-git checkout netpackt-new
-```
 
 ## running
 ```bash
