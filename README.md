@@ -25,6 +25,11 @@ https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2016.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2017.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2018.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2019.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2020.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2021.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2022.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2023.json.zip <br>
+https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2024.json.zip <br>
 https://nvd.nist.gov/feeds/json/cpematch/1.0/nvdcpematch-1.0.json.zip 
 ```bash
 pip install -r requirements.txt

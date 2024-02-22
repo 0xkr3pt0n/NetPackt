@@ -72,20 +72,20 @@ def parser(json_cve_file):
         #inserting refrences into database
         for ref in exploit_links:
             ref_type = 2
-            cpe_data_query = f"INSERT INTO refrences (cve_id, refrence, refrence_type) VALUES ('{cve_id}', '{ref}', '{ref_type}')"
-            cve_cursor.execute(cpe_data_query)
+            cpe_data_query = "INSERT INTO refrences (cve_id, refrence, refrence_type) VALUES (%s, %s, %s)"
+            cve_cursor.execute(cpe_data_query, (cve_id, ref, ref_type))
             cve_connection.commit()
         
         for ref in patch_links:
             ref_type = 1
-            cpe_data_query = f"INSERT INTO refrences (cve_id, refrence, refrence_type) VALUES ('{cve_id}', '{ref}', '{ref_type}')"
-            cve_cursor.execute(cpe_data_query)
+            cpe_data_query = "INSERT INTO refrences (cve_id, refrence, refrence_type) VALUES (%s, %s, %s)"
+            cve_cursor.execute(cpe_data_query, (cve_id, ref, ref_type))
             cve_connection.commit()
         
         for ref in refrences:
             ref_type = 0
-            cpe_data_query = f"INSERT INTO refrences (cve_id, refrence, refrence_type) VALUES ('{cve_id}', '{ref}', '{ref_type}')"
-            cve_cursor.execute(cpe_data_query)
+            cpe_data_query = "INSERT INTO refrences (cve_id, refrence, refrence_type) VALUES (%s, %s, %s)"
+            cve_cursor.execute(cpe_data_query, (cve_id, ref, ref_type))
             cve_connection.commit()
         print(f"cve : {cve_id} inserted into database")  
 
@@ -93,6 +93,16 @@ def parser(json_cve_file):
     cve_connection.close()
     print("----------done----------")
 
-#done 11-12-13-14
-for i in range(3, 5):
+# for cve in 2002-2003-2004-2005-2006-2007-2008-2009
+for i in range(2, 10):
+    parser(f'nvdcve-1.1-200{i}.json')
+
+# for cves in 2010-2011-2012-2013-2014-2015-2016-2017-2018-2019
+for i in range(0, 10):
     parser(f'nvdcve-1.1-201{i}.json')
+
+# for cves in 2020-2021-2022-2023-2024
+for i in range(0, 5):
+    parser(f'nvdcve-1.1-202{i}.json')
+
+
