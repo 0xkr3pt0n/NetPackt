@@ -39,6 +39,9 @@ https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2022.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2023.json.zip <br>
 https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2024.json.zip <br>
 https://nvd.nist.gov/feeds/json/cpematch/1.0/nvdcpematch-1.0.json.zip 
+
+then create two databases in postgresql [netpackt, cves]
+
 ```bash
 pip install -r requirements.txt
 python database.py
