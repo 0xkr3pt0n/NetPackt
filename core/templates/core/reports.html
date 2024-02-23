@@ -55,7 +55,7 @@
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{%url 'myscans'%}">My scans</a>
-                                    <a class="nav-link" href="layout-sidenav-light.html">Shared Scans</a>
+                                    <a class="nav-link" href="{%url 'sharedscans'%}">Shared Scans</a>
                                 </nav>
                             </div>
                         </div>
@@ -70,6 +70,10 @@
                 <main>
                     <div class="container-fluid px-4">
                         <h1 class="mt-4">My scans</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="#">Reports</a></li>
+                            <li class="breadcrumb-item active">My scans</li>
+                        </ol>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>

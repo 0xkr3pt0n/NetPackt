@@ -11,4 +11,5 @@ urlpatterns = [
     path('host_discovery/', views.host_discovery, name="host_discovery"),
     path('settings/', views.settings, name="settings"),
     path('myscans/', views.myreports, name="myscans"),
+    path('sharedscans/', views.sharedreports, name="sharedscans")
 ]
