@@ -88,7 +88,7 @@
                                             <th>Progress</th>
                                             <th>IP</th>
                                             <th>Scan Date</th>
-                                            
+                                            <th>Done by</th>
                                             <th>Report</th>
                                         </tr>
                                     </thead>
@@ -99,7 +99,7 @@
                                             <th>Progress</th>
                                             <th>IP</th>
                                             <th>Scan Date</th>
-                                            
+                                            <th>Done by</th>
                                             <th>Report</th>
                                         </tr>
                                     </tfoot>
@@ -125,7 +125,11 @@
                                             <td>{{ item.4 }}</td>
                                             <td>{{ item.6 }}</td>
                                             
-                                            
+                                            {%for username in usernames|slice:":1" %}
+                                                {%if item.5 == username.0%}
+                                                    <td>{{username.1}}</td>
+                                                {%endif%}
+                                            {%endfor%}                  
                                             <td><a href="#">View</a></td>
                                         </tr>
                                         {%endfor%}

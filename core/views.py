@@ -130,4 +130,8 @@ def myreports(request):
 def sharedreports(request):
     fs = fetch_scans.scans_fetch()
     data = fs.fetch_shared_scans(request.user.id)
-    return render(request, 'core/shared_reports.html', {'data':data})
+    usernames = []
+    for userids in data:
+        user = User.objects.get(pk=userids[5])
+        usernames.append((user.id, user.username))
+    return render(request, 'core/shared_reports.html', {'data':data, 'usernames':usernames})
