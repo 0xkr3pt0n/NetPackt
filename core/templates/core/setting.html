@@ -1,0 +1,78 @@
+{%load static%}
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="{%static 'styles.css'%}" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container p-0">
+        <h1 class="h3 mb-3">Settings</h1>
+        <div class="row">
+            <div class="col-md-5 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Profile Settings</h5>
+                    </div>
+                    <div class="list-group list-group-flush" role="tablist">
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#password"role="tab">
+                            Password
+                        </a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#delete-account" role="tab">
+                            Delete account
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 col-xl-8">
+                <div class="tab-content">
+                   
+                    <div class="tab-pane fade" id="password" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Password</h5>
+                                <form>
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="inputPasswordCurrent">Current password</label>
+                                        <input type="password" class="form-control" id="inputPasswordCurrent">
+                                        <small><a href="#">Forgot your password?</a></small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPasswordNew">New password</label>
+                                        <input type="password" class="form-control" id="inputPasswordNew">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPasswordNew2">Verify password</label>
+                                        <input type="password" class="form-control" id="inputPasswordNew2">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="delete-account" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Delete Account</h5>
+                                <p>Are you sure you want to delete your account?</p>
+                                <form method="post" action="{% url 'delete_account' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript"></script>
+</body>
+
+</html>

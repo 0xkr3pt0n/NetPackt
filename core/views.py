@@ -135,3 +135,17 @@ def sharedreports(request):
         user = User.objects.get(pk=userids[5])
         usernames.append((user.id, user.username))
     return render(request, 'core/shared_reports.html', {'data':data, 'usernames':usernames})
+
+@login_required
+def setting(request):
+    return render(request, 'core/setting.html')
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, 'Your account has been deleted.')
+        return redirect('/login/')  # Redirect to login page after account deletion
+    return render(request, 'core/setting')
+
