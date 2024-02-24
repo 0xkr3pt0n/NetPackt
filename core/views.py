@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from .scan_generator import scan_create
 from .vulnerability_scan import vscanner
 from .scan_fetcher import fetch_scans
+from .users_fetcher import users_fetch
 from background_task import background
 # Create your views here.
 
@@ -64,10 +65,18 @@ def network_scan(request):
         port_rangeType = request.POST.get('portrangetype')
         intrustivity_type = request.POST.get('intrusive_type')
         user_id = request.user.id
-        
+        # preparing shared users ids list
+        shared_users = request.POST.get('user_shared')
+        shared_users_list = []
+        req_list = list(request.POST)
+        try:
+            for i in req_list[6:]:
+                shared_users_list.append(int(i))
+        except:
+            pass
         #create new scan record in db
         create_scan = scan_create.scan_create()
-        scan_id = create_scan.vulnerability_scan(scan_name, ip_addr, user_id)
+        scan_id = create_scan.vulnerability_scan(scan_name, ip_addr, user_id, shared_users_list)
         
         min_port = 0
         max_port = 0
@@ -92,7 +101,10 @@ def network_scan(request):
         
         schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type)
         return redirect('myscans')
-    return render(request, 'core/networkscan.html')
+    users = users_fetch.users_fetch()
+    users_data = users.get_all_users(request.user.id)
+    # print(users_data)
+    return render(request, 'core/networkscan.html', {'users':users_data})
 
 @background(schedule=None)  # Execute immediately
 def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type):
@@ -113,3 +125,13 @@ def myreports(request):
     fs = fetch_scans.scans_fetch()
     data = fs.fetch_scans(request.user.id)
     return render(request, 'core/reports.html', {'data':data})
+
+@login_required(login_url='/login/')
+def sharedreports(request):
+    fs = fetch_scans.scans_fetch()
+    data = fs.fetch_shared_scans(request.user.id)
+    usernames = []
+    for userids in data:
+        user = User.objects.get(pk=userids[5])
+        usernames.append((user.id, user.username))
+    return render(request, 'core/shared_reports.html', {'data':data, 'usernames':usernames})

@@ -20,6 +20,22 @@ class scans_fetch:
         result = self.cursor.fetchall()
         self.connection.commit()
         return result
+    def fetch_shared_scans(self, user_id):
+        fetch_query = f"SELECT * FROM shared_users WHERE user_id = {user_id}"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchall()
+        self.connection.commit()
+        scans = []
+        for scanid in result:
+            fetch_shared_scans = f"select * FROM scans where id = {scanid[0]}"
+            self.cursor.execute(fetch_shared_scans)
+            result = self.cursor.fetchall()
+            self.connection.commit()
+            scans.append(result)
+        proccesed_data = [inner_tuple for sublist in scans for inner_tuple in sublist]
+        return proccesed_data
+            
+
 
 if __name__ == "__main__":
     scans = scans_fetch()
