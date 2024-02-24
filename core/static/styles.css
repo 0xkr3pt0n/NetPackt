@@ -1737,6 +1737,15 @@ progress {
     --bs-gutter-y: 3rem;
   }
 }
+
+
+.chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+}
+
 .table, .datatable-table {
   --bs-table-color: var(--bs-body-color);
   --bs-table-bg: transparent;
