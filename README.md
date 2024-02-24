@@ -9,8 +9,6 @@
 note : it's a private repo so you must configure and authorize git with github first with the following steps:<br>
 ```bash
 git clone https://github.com/0xkr3pt0n/NetPackt.git
-cd NetPackt
-git checkout -b netpackt-new remotes/origin/netpackt-new
 ```
 
 then create two databases in postgresql [netpackt, cves]
