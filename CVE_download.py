@@ -67,3 +67,7 @@ for link in cve_links:
 subprocess.run(["python", "database.py"])
 subprocess.run(["python", "data-parser-nist.py"])
 subprocess.run(["python", "cpe-parser.py"])
+
+delete_zip_files()
+
+delete_json_files()
