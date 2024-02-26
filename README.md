@@ -10,7 +10,6 @@ note : it's a private repo so you must configure and authorize git with github f
 ```bash
 git clone https://github.com/0xkr3pt0n/NetPackt.git
 cd NetPackt
-git checkout -b netpackt-new remotes/origin/netpackt-new
 ```
 
 ## installtion for first time only
