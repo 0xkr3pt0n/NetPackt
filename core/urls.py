@@ -14,5 +14,5 @@ urlpatterns = [
     path('myscans/', views.myreports, name="myscans"),
     path('sharedscans/', views.sharedreports, name="sharedscans"),
     path('setting/', views.setting, name="setting"),
-    path('delete_account/', views.delete_account, name='delete_account'),
+    path('delete_account/', views.delete_account, name='delete_account'),#
 ]

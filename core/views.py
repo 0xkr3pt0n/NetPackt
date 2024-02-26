@@ -148,4 +148,4 @@ def delete_account(request):
         messages.success(request, 'Your account has been deleted.')
         return redirect('/login/')  # Redirect to login page after account deletion
     return render(request, 'core/setting')
-
+#
