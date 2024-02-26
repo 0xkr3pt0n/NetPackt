@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netpackt - Vulnerability Assessment Tool</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="{%static 'home.css'%}">
 </head>
 
 <body>
@@ -57,7 +58,7 @@
                     you suggestions and recommendations on how to improve your web security and performance.</p>
             </div>
             <div class="about-image">
-                <img src="Netpackt.png" alt="Netpackt logo">
+                <img src="{%static 'Netpackt.png'%}" alt="Netpackt logo">
             </div>
         </div>
     </main>
