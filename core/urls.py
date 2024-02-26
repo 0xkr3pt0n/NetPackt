@@ -10,7 +10,7 @@ urlpatterns = [
     path('logout/', views.user_logout, name="logout"),
     path('network_scan/', views.network_scan, name="network_scan"),
     path('host_discovery/', views.host_discovery, name="host_discovery"),
-    path('settings/', views.settings, name="settings"),
+    
     path('myscans/', views.myreports, name="myscans"),
     path('sharedscans/', views.sharedreports, name="sharedscans"),
     path('setting/', views.setting, name="setting"),
