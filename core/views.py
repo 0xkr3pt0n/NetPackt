@@ -9,6 +9,7 @@ from .vulnerability_scan import vscanner
 from .scan_fetcher import fetch_scans
 from .users_fetcher import users_fetch
 from background_task import background
+from .vulnerability_scan import api_database
 # Create your views here.
 
 def user_login(request):
@@ -141,7 +142,15 @@ def sharedreports(request):
 
 @login_required
 def setting(request):
-    return render(request, 'core/setting.html')
+    apoption = api_database.api_database()
+    if request.method == "POST":
+        api_option = request.POST.get("apioption")
+        if api_option == "on":
+            apoption.EnableAPI(request.user.id)
+        else:
+            apoption.DisableAPI(request.user.id)
+    api = apoption.get_apiOption(request.user.id)
+    return render(request, 'core/setting.html', {'api':api})
 
 @login_required
 def delete_account(request):
