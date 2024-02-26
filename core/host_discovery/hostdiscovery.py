@@ -6,6 +6,7 @@ import threading
 from queue import Queue
 import ipaddress
 import sys
+import socket
 
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 
@@ -130,8 +131,10 @@ class hostDiscovery:
 
     def discover_hosts(self, option, target_subnet, exclude_ips=None):
         if option == "0":
+            print("start hdis")
             return self.arp_scan(target_subnet, exclude_ips)
         elif option == "1":
+            print("start hdis")
             return self.ping_sweep(target_subnet)
         else:
             print("Invalid choice. Exiting.")
@@ -143,6 +146,7 @@ class hostDiscovery:
             return vendor if vendor else "Unknown Vendor"
         except Exception:
             return "Unknown Vendor"
+
 
 
 if __name__ == "__main__":

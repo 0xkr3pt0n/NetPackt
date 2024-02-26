@@ -11,27 +11,50 @@
         
         <div class="card mb-4">
             <div class="card-body">
-                <form>
+                <form method="POST" action=".">
+                    {% csrf_token %}
                     <div class="row m-3">
                       <div class="col">
                         <label class="my-1 mr-2" for="scan_name">Scan Name</label>
-                        <input type="text" id="scan_name" class="form-control" placeholder="EX : Company1">
+                        <input type="text" id="scan_name" name="scan_name" class="form-control" placeholder="EX : Company1">
                       </div>
                       <div class="col" id="ipInput">
-                        <label class="my-1 mr-2" for="scan_name">IP address or Network subnet</label>
-                        <input type="text" class="form-control" placeholder="EX : 192.168.1.1 or 192.168.1.0/24">
+                        <label class="my-1 mr-2" for="scan_name">Network subnet</label>
+                        <input type="text" name="subnet" class="form-control" placeholder="EX : 192.168.1.0/24">
                       </div>
                     </div>
                     <div class="row m-3">
                         <div class="col">
+                            <label class="my-1 mr-2" for="share">Share report with</label>
+                            <div class="dropdown-center">
+                                <button class=" form-select" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Select users
+                                </button>
+                                <ul class="dropdown-menu ">
+                                {%for user in users%}
+                                    <li>                            
+                                        <div class="form-check m-2">
+                                            <input class="form-check-input" type="checkbox" name="{{user.0}}" value="{{user.0}}" id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                            {{user.1}}
+                                            </label>
+                                        </div>
+                                    </li>
+                                {%endfor%}
+                                </ul>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                                <input class="form-check-input" name = "ping_option" value="on" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
                                 <label class="form-check-label" for="flexRadioDefault1">
                                   Ping sweep method
                                 </label>
                               </div>
                               <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                <input class="form-check-input" name="ping_option" value="off" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
                                 <label class="form-check-label" for="flexRadioDefault2">
                                   ARP method
                                 </label>
@@ -51,34 +74,4 @@
     </div>
 </main>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Get the radio button and input field
-        const radioBtn_arp = document.getElementById("flexRadioDefault2");
-        const ipInput = document.getElementById("ipInput");
-        const radioBtn_ip = document.getElementById('flexRadioDefault1');
-        // Initially hide the input field
-        
-
-        // Add event listener to the radio button
-        radioBtn_arp.addEventListener("change", function() {
-            // If radio button is checked, show the input field; otherwise, hide it
-            if (radioBtn_arp.checked) {
-                
-                ipInput.style.display = "none";
-            } else {
-                ipInput.style.display = "block";
-            }
-        });
-
-        radioBtn_ip.addEventListener("change", function() {
-            // If radio button is checked, show the input field; otherwise, hide it
-            if (radioBtn_ip.checked) { 
-                ipInput.style.display = "block";
-            } else {
-                ipInput.style.display = "none"; 
-            }
-        });
-    });
-</script>
 {%endblock%}

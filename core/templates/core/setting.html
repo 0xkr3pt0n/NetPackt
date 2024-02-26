@@ -90,12 +90,17 @@
                                     <div class="list-group list-group-flush" role="tablist">
                                         <a class="list-group-item list-group-item-action" data-toggle="list"
                                             href="#password" role="tab">
-                                            Password
+                                            Password settings
+                                        </a>
+                                        <a class="list-group-item list-group-item-action" data-toggle="list"
+                                        href="#api_option" role="tab">
+                                        Online scanner
                                         </a>
                                         <a class="list-group-item list-group-item-action" data-toggle="list"
                                             href="#delete-account" role="tab">
                                             Delete account
                                         </a>
+
                                     </div>
                                 </div>
                             </div>
@@ -138,6 +143,29 @@
                                                 <form method="post" action="{% url 'delete_account' %}">
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-danger">Delete Account</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="api_option" role="tabpanel">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Online Scanner</h5>
+                                                <p>Enable online scanning to get up to date results (may slow down scan depends on your internet connection)</p>
+                                                <form method="post" action=".">
+                                                    {% csrf_token %}
+                                                    <div class="form-check form-switch mb-3">
+                                                        {%for api_option in api%}
+                                                            {%if api_option == 1%}
+                                                                <input class="form-check-input" name="apioption" type="checkbox" id="flexSwitchCheckDefault" checked>
+                                                            {%else%}
+                                                                <input class="form-check-input" name="apioption" type="checkbox" id="flexSwitchCheckDefault">
+                                                            {%endif%}
+                                                        {%endfor%}
+                                                        <label class="form-check-label" for="flexSwitchCheckDefault">Online scanner</label>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
                                                 </form>
                                             </div>
                                         </div>

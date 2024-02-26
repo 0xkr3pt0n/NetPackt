@@ -1780,13 +1780,14 @@ progress {
   }
 }
 
-
 .chart {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 500px;
+  height: 400px;
+  font: white;
 }
+
 
 .table, .datatable-table {
   --bs-table-color: var(--bs-body-color);

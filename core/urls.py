@@ -9,8 +9,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name="dashboard"),
     path('logout/', views.user_logout, name="logout"),
     path('network_scan/', views.network_scan, name="network_scan"),
-    path('host_discovery/', views.host_discovery, name="host_discovery"),
-    
+    path('host_discovery/', views.host_discover, name="host_discovery"),
     path('myscans/', views.myreports, name="myscans"),
     path('sharedscans/', views.sharedreports, name="sharedscans"),
     path('setting/', views.setting, name="setting"),
