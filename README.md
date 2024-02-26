@@ -59,7 +59,6 @@ WebAPP Socket : 127.0.0.1:8080
 ## pushing changes
 
 ```bash
-in netpackt folder
 git add .
 git commit -m "message"
 git push
