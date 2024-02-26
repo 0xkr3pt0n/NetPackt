@@ -17,8 +17,8 @@
             <a href="#">Help</a>
             <a href="#About">About</a>
             <a href="#Contact">Contact</a>
-            <a href="#" class="btn btn-primary">Login</a>
-            <a href="#" class="btn btn-secondary">Sign Up</a>
+            <a href="{%url 'login'%}" class="btn btn-primary">Login</a>
+            <a href="{%url 'register'%}" class="btn btn-secondary">Sign Up</a>
         </nav>
     </header>
     <main>
@@ -51,11 +51,11 @@
         <div class="about" id="About">
             <div class="about-text">
                 <h2>About Netpackt</h2>
-                <p>Netpackt is a web-based tool that helps you scan, analyze, and fix vulnerabilities in your web
+                <p>Netpackt is a web-based tool that helps you scan, analyze, and fix vulnerabilities in network and your web
                     applications. It supports various web technologies and frameworks, such as HTML, CSS, JavaScript,
                     Python, Django and more. Netpackt provides you with comprehensive and detailed
                     reports, highlighting the severity, impact, and solution of each vulnerability. Netpackt also offers
-                    you suggestions and recommendations on how to improve your web security and performance.</p>
+                    you suggestions and recommendations on how to improve your network and web security and performance.</p>
             </div>
             <div class="about-image">
                 <img src="{%static 'Netpackt.png'%}" alt="Netpackt logo">

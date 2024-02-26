@@ -11,6 +11,9 @@ from .users_fetcher import users_fetch
 from background_task import background
 # Create your views here.
 
+def home(request):
+    return render(request, 'core/home.html')
+
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
