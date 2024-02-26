@@ -11,6 +11,41 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
+ .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #1d4ca3; 
+  color: #fff; 
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff; 
+  text-decoration: none;
+}
+
+.nav-items {
+  display: flex;
+  align-items: center;
+  list-style: none;
+}
+
+.nav-items a {
+  margin: 0 15px;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-items a:hover {
+  color: #f0f8ff;
+}
+
+
+
  body {
   margin-top: 20px;
   background: #F0F8FF;

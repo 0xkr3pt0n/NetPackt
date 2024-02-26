@@ -3,6 +3,9 @@
 {%block title%}Login{%endblock%}
 {%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
 {%block content%}
+<nav class="nav-items">
+    <a href="{%url 'home'%}" class="btn btn-primary">Netpackt</a>
+</nav>
 {% if request.user.is_authenticated %}
   <script>
       window.location.href = "{% url 'dashboard' %}"; 
