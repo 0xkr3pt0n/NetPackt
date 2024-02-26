@@ -24,3 +24,52 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
 });
+
+
+const data = {
+    labels: ['Critical', 'High', 'Medium', 'Low', 'Informational'],
+    datasets: [{
+        label: 'My First Dataset',
+        data: [12, 19, 3, 5, 20], //add data values from an analysis function
+        backgroundColor: [ 
+            '#d84315',
+            '#ec9630',
+            '#fdd835', 
+            '#9ccc65', 
+            '#f1f8e9'
+        ],
+        hoverOffset: 4
+    }]
+};
+
+// Get the canvas element
+const ctx = document.getElementById('pieChart').getContext('2d');
+
+// Create the pie chart
+new Chart(ctx, {
+    type: 'pie',
+    data: data,
+});
+
+const rows = document.querySelectorAll('tbody tr');
+rows.forEach(row => {
+    const cell = row.querySelector('td:nth-child(4)');
+    const value = cell.textContent.trim().toLowerCase();
+    switch (value) {
+        case 'severe':
+            row.style.backgroundColor = '#ffcccc'; // Light red
+            break;
+        case 'high':
+            row.style.backgroundColor = '#ffe0b3'; // Light orange
+            break;
+        case 'medium':
+            row.style.backgroundColor = '#ffffcc'; // Light yellow
+            break;
+        case 'low':
+            row.style.backgroundColor = '#ccffcc'; // Light green
+            break;
+        default:
+            // Handle unknown or default case
+            break;
+    }
+});
