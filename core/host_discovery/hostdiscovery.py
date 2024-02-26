@@ -6,6 +6,7 @@ import threading
 from queue import Queue
 import ipaddress
 import sys
+import socket
 
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 
@@ -143,6 +144,7 @@ class hostDiscovery:
             return vendor if vendor else "Unknown Vendor"
         except Exception:
             return "Unknown Vendor"
+
 
 
 if __name__ == "__main__":

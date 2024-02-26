@@ -10,6 +10,7 @@ from .scan_fetcher import fetch_scans
 from .users_fetcher import users_fetch
 from background_task import background
 from .vulnerability_scan import api_database
+from .host_discovery import hostdiscovery
 # Create your views here.
 
 def user_login(request):
@@ -69,14 +70,13 @@ def network_scan(request):
         intrustivity_type = request.POST.get('intrusive_type')
         user_id = request.user.id
         # preparing shared users ids list
-        shared_users = request.POST.get('user_shared')
         shared_users_list = []
         req_list = list(request.POST)
-        try:
-            for i in req_list[6:]:
+        for i in req_list[6:]:
+            try:
                 shared_users_list.append(int(i))
-        except:
-            pass
+            except:
+                pass
         #create new scan record in db
         create_scan = scan_create.scan_create()
         scan_id = create_scan.vulnerability_scan(scan_name, ip_addr, user_id, shared_users_list)
@@ -117,8 +117,31 @@ def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type)
     vscanning.vulnerability_scan()
 
 @login_required(login_url='/login/')
-def host_discovery(request):
-    return render(request, 'core/hostdiscovery.html')
+def host_discover(request):
+    if request.method == "POST":
+        scan_name = request.POST.get('scan_name')
+        subnet = request.POST.get('subnet')
+        ping_option = request.POST.get('ping_option')
+        hd = hostdiscovery.hostDiscovery()
+        create_scan = scan_create.scan_create()
+        user_id = request.user.id
+        shared_users_list = []
+        req_list = list(request.POST)
+        for i in req_list:
+            try:
+                shared_users_list.append(int(i))
+            except:
+                pass
+        scan_id = create_scan.host_discovery(scan_name, subnet, user_id, shared_users_list)
+        return redirect('myscans')
+        # if ping_option == "on":
+        #     hd.discover_hosts("1", subnet)
+        # else:
+        #     hd.discover_hosts("0", subnet)
+        # print(shared_users_list)
+    users = users_fetch.users_fetch()
+    users_data = users.get_all_users(request.user.id)
+    return render(request, 'core/hostdiscovery.html', {'users':users_data})
 
 @login_required(login_url='/login/')
 def settings(request):
