@@ -56,6 +56,8 @@ def forget_password(request):
 def dashboard(request):
     return render(request, 'core/dashboard.html')
 
+
+
 @login_required(login_url='/login/')
 def network_scan(request):
     if request.method == "POST":
@@ -106,6 +108,7 @@ def network_scan(request):
     # print(users_data)
     return render(request, 'core/networkscan.html', {'users':users_data})
 
+
 @background(schedule=None)  # Execute immediately
 def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type):
     print("start")
@@ -135,3 +138,16 @@ def sharedreports(request):
         user = User.objects.get(pk=userids[5])
         usernames.append((user.id, user.username))
     return render(request, 'core/shared_reports.html', {'data':data, 'usernames':usernames})
+
+@login_required
+def setting(request):
+    return render(request, 'core/setting.html')
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, 'Your account has been deleted.')
+        return redirect('/login/')  # Redirect to login page after account deletion
+    return render(request, 'core/setting')

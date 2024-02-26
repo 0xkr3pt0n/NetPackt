@@ -12,5 +12,7 @@ urlpatterns = [
     path('host_discovery/', views.host_discovery, name="host_discovery"),
     path('settings/', views.settings, name="settings"),
     path('myscans/', views.myreports, name="myscans"),
-    path('sharedscans/', views.sharedreports, name="sharedscans")
+    path('sharedscans/', views.sharedreports, name="sharedscans"),
+    path('setting/', views.setting, name="setting"),
+    path('delete_account/', views.delete_account, name='delete_account'),
 ]
