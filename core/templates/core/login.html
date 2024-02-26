@@ -4,7 +4,7 @@
 {%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
 {%block content%}
 <nav class="nav-items">
-    <a href="{%url 'home'%}" class="btn btn-primary">Netpackt</a>
+    <a href="{%url 'home'%}" class="btn btn-primary" style="font-size: 20px; padding: 10px 20px;">Netpackt</a>
 </nav>
 {% if request.user.is_authenticated %}
   <script>
