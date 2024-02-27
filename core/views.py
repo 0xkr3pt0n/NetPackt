@@ -13,6 +13,9 @@ from .vulnerability_scan import api_database
 from .host_discovery import hdisocver
 # Create your views here.
 
+def home(request):
+    return render(request, "core/home.html")
+
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
