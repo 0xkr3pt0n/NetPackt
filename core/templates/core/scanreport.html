@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Netpackt | {%block scan_title%} {%endblock%}</title>
-    <link href="static/styles.css" rel="stylesheet" />
+    <title>Netpackt | {%block scan_title%} Report {%endblock%}</title>
+    <link href="{%static 'styles.css'%}" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -83,40 +83,80 @@
                     <h1 class="mt-4">Network vulnerability scan</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item"><a href="{%url 'dashboard'%}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Scan report</li>
+                        {%for item in scan_data%}
+                            <li class="breadcrumb-item active">{{item.1}}</li>
+                        {%endfor%}
                     </ol>
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="chart">
-                                <canvas id="pieChart"></canvas>
+                    <div class="row">
+
+                        <div class="col">
+                            <div class="card mb-4">
+                                <div class="card-header">Scan Information</div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        {%for item in scan_data%}
+                                            <li class="list-group-item">Scan name : {{item.1}}</li>
+                                            {%if item.2 == 0%}
+                                                <li class="list-group-item">Scan Type : Network Vulnerability scan</li>
+                                            {%else%}
+                                                <li class="list-group-item">Scan Type : Host Discovery scan</li>
+                                            {%endif%}
+
+                                            {%if item.3 == 0%}
+                                                <li class="list-group-item">Progress : Completed</li>
+                                            {%else%}
+                                                <li class="list-group-item">Scan name : In progress</li>
+                                            {%endif%}
+                                            <li class="list-group-item">IP / Subnet : {{item.4}}</li>
+                                            <li class="list-group-item">Done by : {{user_name}}</li>
+                                            
+                                            <li class="list-group-item">Scan Date : {{item.6}}</li>
+                                            <li class="list-group-item">PDF : <a href="#">Report</a></li>
+                                            
+                                        {%endfor%}
+                                      </ul>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="col">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="chart">
+                                        <canvas id="pieChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+                    
                     <div class="card mb-4">
+                        <div class="card-header">Result summary</div>
                         <div class="card-body">
                             <div class="table" id="table">
                                 <table id="scan_result">
                                     <thead>
                                         <tr>
-                                            <th>CVE ID</th>
-                                            <th>Service</th>
-                                            <th>Version</th>
-                                            <th>Impact</th>
-                                            <th>Exploitability</th>
-                                            <th>Attack complexity</th>
-                                            <th>Description</th>
+                                            <th style="padding: 5px;">CVE ID</th>
+                                            <th style="padding: 5px;">Service</th>
+                                            <th style="padding: 5px;">Version</th>
+                                            <th style="padding: 5px;">Port</th>     
+                                            <th style="padding: 5px;">Attack complexity</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablebody">
-                                        {%for item in data%}
+                                        {%for item in report_data%}
                                         <tr>
-                                            <td>{{ item.cveid }}</td>
-                                            <td>{{ item.service }}</td>
-                                            <td>{{ item.version }}</td>
-                                            <td>{{ item.impact }}</td>
-                                            <td>{{ item.exploitability }}</td>
-                                            <td>{{ item.attackcomplexity }}</td>
-                                            <td>{{ item.description }}</td>
+                                            <td style="padding: 5px;">{{ item.5 }}</td>
+                                            <td style="padding: 5px;">{{ item.3 }}</td>
+                                            <td style="padding: 5px;">{{ item.4 }}</td>
+                                            <td style="padding: 5px;">{{ item.2 }}</td>
+                                            {%for cve in cve_data%}
+                                                {%if cve.0 == item.5%}
+                                                    <td style="padding: 5px;">{{ cve.4 }}</td>
+                                                {%endif%}
+                                            {%endfor%}
                                         </tr>
                                        
                                         {%endfor%}
@@ -125,12 +165,50 @@
                             </div>
                         </div>
                     </div>
+                    {%for cve in cve_data%}
+                    <div class="card mb-4">
+                        <div class="card-header">CVE ID : {{cve.0}}</div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <b> Description : </b><br>
+                                    <p>{{cve.1}}</p>
+                                </li>
+                                
+                                <li class="list-group-item">
+                                    <b>Exploitability Score : </b>{{cve.2}}
+                                </li>
+
+                                <li class="list-group-item">
+                                   <b> Network Impact Score : </b> {{cve.3}}
+                                </li>
+
+                                <li class="list-group-item">
+                                    <b> Attack complexity : </b> {{cve.4}}
+                                </li>
+
+                                <li class="list-group-item">
+                                    <b> Refrences : </b> <br>
+                                    {%for ref in cve_refs %}
+                                    {%if ref.0 == cve.0 %}
+                                        {%if ref.2 == 0 %}
+                                            Refrence link : <a href="{{ref.1}}">{{ref.1}}</a> <br>
+                                        {%elif ref.2 == 1%}
+                                            Patch link : <a href="{{ref.1}}">{{ref.1}}</a> <br>
+                                        {%else%}
+                                            Exploit link : <a href="{{ref.1}}">{{ref.1}}</a> <br>
+                                        {%endif%}
+                                    {%endif%}
+                                    {%endfor%}
+                                </li>
+                                
+                              </ul>
+                        </div>
+                    </div>
+                    {%endfor%}
 
                 </div>
             </main>
-            {%endblock%}
-
-            {%endblock%}
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
@@ -147,7 +225,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
-    <script src="static/scripts.js"></script>
+    <script src="{%static 'scripts.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
 </body>
 

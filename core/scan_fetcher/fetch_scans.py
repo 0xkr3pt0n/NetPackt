@@ -14,6 +14,18 @@ class scans_fetch:
             self.cursor = connection.cursor()
         except Exception as e:
             print("Error connecting to database : ", e)
+        try:
+            # Connection to the CVE database
+            cve_connection = psycopg2.connect(
+                host="localhost",
+                database="cves",  
+                user="postgres",
+                password="postgres"
+            )
+            self.cve_connection = cve_connection
+            self.cve_cursor = cve_connection.cursor()
+        except Exception as e:
+            print("Error connecting to database : ", e)
     def fetch_scans(self, user_id):
         fetch_query = f"SELECT * FROM scans where user_id = {user_id}"
         self.cursor.execute(fetch_query)
@@ -34,6 +46,29 @@ class scans_fetch:
             scans.append(result)
         proccesed_data = [inner_tuple for sublist in scans for inner_tuple in sublist]
         return proccesed_data
+    def fetch_scan_result(self, scan_id):
+        query = f"SELECT * FROM vulnscan_report WHERE scan_id = {scan_id}"
+        self.cursor.execute(query)
+        report = self.cursor.fetchall()
+        self.connection.commit()
+        return report
+    def fetch_scan_info(self, scan_id):
+        query = f"SELECT * FROM scans WHERE id = {scan_id}"
+        self.cursor.execute(query)
+        scans = self.cursor.fetchall()
+        self.connection.commit()
+        return scans
+    def get_vulnerability_detils(self, cve_id):
+        query = f"SELECT * FROM cve WHERE cve_id = '{cve_id}' "
+        self.cve_cursor.execute(query)
+        cve_data = self.cve_cursor.fetchall()
+        self.cve_connection.commit()
+        query2 = f"SELECT * FROM refrences WHERE cve_id = '{cve_id}' "
+        self.cve_cursor.execute(query2)
+        refrences_data = self.cve_cursor.fetchall()
+        self.cve_connection.commit()
+        return cve_data, refrences_data
+
             
 
 

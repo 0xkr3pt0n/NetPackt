@@ -188,3 +188,21 @@ def delete_account(request):
         messages.success(request, 'Your account has been deleted.')
         return redirect('/login/')
     return render(request, 'core/setting')
+
+@login_required
+def scan_report(request, report_id):
+    fs = fetch_scans.scans_fetch()
+    report_data = fs.fetch_scan_result(report_id)
+    scan_data = fs.fetch_scan_info(report_id)
+    user_data = User.objects.get(id=scan_data[0][5])
+    username = user_data.username
+    cve_data_list = []
+    cve_refrences_list = []
+    for cve_id in report_data:
+        cve_data, cve_refrences = fs.get_vulnerability_detils(cve_id[5])
+        cve_data_list.append(cve_data)
+        cve_refrences_list.append(cve_refrences)
+    
+    cve_data_front = [item for sublist in cve_data_list for item in sublist]
+    refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
+    return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front})

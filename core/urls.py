@@ -15,4 +15,5 @@ urlpatterns = [
     path('sharedscans/', views.sharedreports, name="sharedscans"),
     path('setting/', views.setting, name="setting"),
     path('delete_account/', views.delete_account, name='delete_account'),
+    path('report/<int:report_id>/', views.scan_report, name='report'),
 ]
