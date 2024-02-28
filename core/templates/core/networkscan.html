@@ -33,15 +33,21 @@
                           </select>
                         </div>
 
-                        <div class="col">
-                            <label class="my-1 mr-2" for="share">Port range</label>
-                            <select class="form-select" name ="portrangetype" id="share" aria-label="Default select example">
+                        <div class="col" id="portRangeSelect">
+                            <label class="my-1 mr-2" for="portRangeSelect">Port range</label>
+                            <select class="form-select" name="portrangetype" id="portRangeSelect" aria-label="Default select example">
+                                <option value="default">Select port range</option>
                                 <option value="0">Top 10</option>
                                 <option value="1">Top 100</option>
-                                <option value="2" selected>top 1000</option>
+                                <option value="2">Top 1000</option>
                                 <option value="3">All ports (1 - 65535)</option>
-                              </select>
+                            </select>
                         </div>
+                        <div class="col d-none" id="portRangeInput">
+                            <label class="my-1 mr-2" for="customPortRange">Custom port range</label>
+                            <input type="text" class="form-control" id="customPortRange" name="customPortRange" placeholder="EX : 22-100">
+                        </div>
+
                     </div>
                     <div class="row m-3">
                         <div class="col">
@@ -77,6 +83,12 @@
                     <div class="row m-3">
                         <div class="col">
                             <div class="form-check">
+                                <input class="form-check-input" name="port_range" type="checkbox" value="on" id="check_custom">
+                                <label class="form-check-label" for="check_custom">
+                                Custom port range
+                                </label>
+                            </div>
+                            <div class="form-check">
                                 <input class="form-check-input" name="ide_evasion" type="checkbox" value="ide_evade" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">
                                 IDS Evasion (Beta)
@@ -108,4 +120,27 @@
 
     </div>
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const checkbox = document.getElementById("check_custom");
+        const selectInput = document.getElementById("portRangeSelect");
+        const textInput = document.getElementById("portRangeInput");
+        const label = document.getElementById("checkboxLabel");
+    
+        // Add event listeners to the checkbox and its label
+        [checkbox, label].forEach(element => {
+            element.addEventListener("click", function(event) {
+                if (checkbox.checked) {
+                    
+                    selectInput.classList.add("d-none");
+                    selectInput.selectedIndex = 0;
+                    textInput.classList.remove("d-none");
+                } else {
+                    selectInput.classList.remove("d-none");
+                    textInput.classList.add("d-none");
+                }
+            });
+        });
+    });
+</script>
 {%endblock%}

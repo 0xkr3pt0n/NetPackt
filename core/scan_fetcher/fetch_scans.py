@@ -75,6 +75,10 @@ class scans_fetch:
         self.connection.commit()
         print(result)
         return result
+    def delete_scan(self, scan_id):
+        query = f"DELETE FROM scans where id = {scan_id}"
+        self.cursor.execute(query)
+        self.connection.commit()
 
             
 

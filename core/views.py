@@ -74,6 +74,12 @@ def network_scan(request):
         port_scanType = request.POST.get('portscantype')
         port_rangeType = request.POST.get('portrangetype')
         intrustivity_type = request.POST.get('intrusive_type')
+        custom_portRange = request.POST.get('port_range')
+        custom_range = ''
+        if custom_portRange == 'on':
+            custom_range = request.POST.get('customPortRange')
+            
+        # print(custom_range)
         user_id = request.user.id
         # preparing shared users ids list
         shared_users_list = []
@@ -90,24 +96,33 @@ def network_scan(request):
         min_port = 0
         max_port = 0
         #start the vulnerability scan
-        if port_rangeType == "0":
+        
+        if port_rangeType == "0" and custom_portRange != 'on' :
             min_port = 1
             max_port = 10
-        elif port_rangeType == "1":
+            
+        elif port_rangeType == "1" and custom_portRange != 'on':
             min_port = 1
             max_port = 100
-        elif port_rangeType == "2":
+        elif port_rangeType == "2" and custom_portRange != 'on':
             min_port = 1
             max_port = 1000
-        else:
+        elif port_rangeType == "3" and custom_portRange != 'on':
             min_port = 1
             max_port = 65535
+        elif custom_portRange == 'on':
+            start, end = custom_range.split("-")
+            min_port = int(start)
+            max_port = int(end)
+        else:
+            print("invalid")
         
         if port_scanType == "1":
             scan_type = 1
         else:
             scan_type = 2
-        
+        print(min_port)
+        print(max_port)
         schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, repeat=Task.NEVER)
         return redirect('myscans')
     users = users_fetch.users_fetch()
@@ -214,6 +229,12 @@ def scan_report(request, report_id):
         return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front, 'scan_type':scan_type })
     else:
         return render(request, 'core/scanreport.html', {'scan_data':scan_data,'results':fhds, 'user_name':username,  'scan_type':scan_type })
+
+@login_required
+def delete_report(request, report_id):
+    delete = fetch_scans.scans_fetch()
+    delete.delete_scan(report_id)
+    return redirect('myscans')
 
 # @login_required
 # def export(request, report_id):

@@ -88,7 +88,7 @@
                                             <th>Progress</th>
                                             <th>IP</th>
                                             <th>Scan Date</th>
-                                            <th>Report</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -98,7 +98,7 @@
                                             <th>Progress</th>
                                             <th>IP</th>
                                             <th>Scan Date</th>
-                                            <th>Report</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -123,7 +123,11 @@
                                             <td>{{ item.4 }}</td>
                                             <td>{{ item.6 }}</td>
                                             
-                                            <td><a href="{%url 'report' item.0%}">View</a></td>
+                                            <td>
+                                                <a href="{%url 'report' item.0%}" style="margin: 5px;"><i class="fa-solid fa-eye"></i></a>
+                                                
+                                                <a href="{%url 'delete_report' item.0%}" style="margin: 5px;"><i class="fa-solid fa-trash"></i></a>
+                                            </td>
                                         </tr>
                                         {%endfor%}
                                     </tbody>
