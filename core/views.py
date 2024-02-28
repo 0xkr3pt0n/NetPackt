@@ -9,8 +9,11 @@ from .vulnerability_scan import vscanner
 from .scan_fetcher import fetch_scans
 from .users_fetcher import users_fetch
 from background_task import background
+from background_task.models import Task
 from .vulnerability_scan import api_database
 from .host_discovery import hdisocver
+
+# from .pdf_report import pdf_gen
 # Create your views here.
 
 def home(request):
@@ -105,7 +108,7 @@ def network_scan(request):
         else:
             scan_type = 2
         
-        schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type)
+        schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, repeat=Task.NEVER)
         return redirect('myscans')
     users = users_fetch.users_fetch()
     users_data = users.get_all_users(request.user.id)
@@ -113,7 +116,7 @@ def network_scan(request):
     return render(request, 'core/networkscan.html', {'users':users_data})
 
 
-@background(schedule=None)  # Execute immediately
+@background  # Execute immediately
 def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type):
     print("start")
     vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, 100)
@@ -136,13 +139,13 @@ def host_discover(request):
             except:
                 pass
         scan_id = create_scan.host_discovery(scan_name, subnet, user_id, shared_users_list)
-        host_dicovery_scan(scan_id, subnet, ping_option)
+        host_dicovery_scan(scan_id, subnet, ping_option, repeat=Task.NEVER)
         return redirect('myscans')
     users = users_fetch.users_fetch()
     users_data = users.get_all_users(request.user.id)
     return render(request, 'core/hostdiscovery.html', {'users':users_data})
 
-@background(schedule=None)
+@background
 def host_dicovery_scan(scan_id, subnet, ping_option):
     print("start 2")
     hs = hdisocver.hdiscover()
@@ -206,3 +209,13 @@ def scan_report(request, report_id):
     cve_data_front = [item for sublist in cve_data_list for item in sublist]
     refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
     return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front})
+
+# @login_required
+# def export(request, report_id):
+#     fs = fetch_scans.scans_fetch()
+#     report_data = fs.fetch_scan_result(report_id)
+#     scan_data = fs.fetch_scan_info(report_id)
+#     user_data = User.objects.get(id=scan_data[0][5])
+#     username = user_data.username
+#     pdf_gen.PDFPSReporte(f'report_{scan_data[0][1]}.pdf',f'{scan_data[0][1]}', f'{scan_data[0][6]}', f'{username}')
+#     return render(request, 'core/export.html')
