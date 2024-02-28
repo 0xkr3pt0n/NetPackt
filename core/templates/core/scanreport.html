@@ -118,7 +118,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        {% if scan_type == 0 %}
                         <div class="col">
                             <div class="card mb-4">
                                 <div class="card-body">
@@ -128,12 +128,16 @@
                                 </div>
                             </div>
                         </div>
+                        {%endif%}
 
                     </div>
                     
                     <div class="card mb-4">
                         <div class="card-header">Result summary</div>
                         <div class="card-body">
+
+                            {% comment %} netwotk vuln table start {% endcomment %}
+                            {% if scan_type == 0 %}
                             <div class="table" id="table">
                                 <table id="scan_result">
                                     <thead>
@@ -163,6 +167,31 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            {% comment %} network vuln table end {% endcomment %}
+                            {% comment %} host Discovery table start {% endcomment %}
+                            {%elif scan_type == 1 %} 
+                            <div class="table" id="table">
+                                <table id="scan_result">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 5px;">IP address</th>
+                                            <th style="padding: 5px;">MAC address</th>     
+                                            <th style="padding: 5px;">Device name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablebody">
+                                        {%for item in results%}
+                                        <tr>
+                                            <td style="padding: 5px;">{{ item.1 }}</td>
+                                            <td style="padding: 5px;">{{ item.2 }}</td>
+                                            <td style="padding: 5px;">{{ item.3 }}</td>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% comment %} host Discovery table end {% endcomment %}
+                            {%endif%}
                         </div>
                     </div>
                     {%for cve in cve_data%}

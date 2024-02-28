@@ -17,5 +17,6 @@ urlpatterns = [
     path('setting/', views.setting, name="setting"),
     path('delete_account/', views.delete_account, name='delete_account'),
     path('report/<int:report_id>/', views.scan_report, name='report'),
+    path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
     # path('export/<int:report_id>/', views.export, name='export'),
 ]

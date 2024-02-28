@@ -208,7 +208,12 @@ def scan_report(request, report_id):
     
     cve_data_front = [item for sublist in cve_data_list for item in sublist]
     refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
-    return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front})
+    scan_type = scan_data[0][2]
+    fhds = fs.fetch_hostdiscovery_result(report_id)
+    if scan_type == 0:
+        return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front, 'scan_type':scan_type })
+    else:
+        return render(request, 'core/scanreport.html', {'scan_data':scan_data,'results':fhds, 'user_name':username,  'scan_type':scan_type })
 
 # @login_required
 # def export(request, report_id):

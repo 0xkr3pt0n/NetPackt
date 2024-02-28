@@ -68,6 +68,13 @@ class scans_fetch:
         refrences_data = self.cve_cursor.fetchall()
         self.cve_connection.commit()
         return cve_data, refrences_data
+    def fetch_hostdiscovery_result(self, scan_id):
+        query = f"select * from discoverd_ip where report_id = {scan_id}"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        self.connection.commit()
+        print(result)
+        return result
 
             
 
