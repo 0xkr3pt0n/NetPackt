@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from .forms import LoginForm,SignupForm
 from django.contrib.auth.models import User
@@ -175,6 +176,11 @@ def myreports(request):
     fs = fetch_scans.scans_fetch()
     data = fs.fetch_scans(request.user.id)
     return render(request, 'core/reports.html', {'data':data})
+
+def get_scans_data(request):
+    fs = fetch_scans.scans_fetch()
+    data = fs.fetch_scans(request.user.id)
+    return JsonResponse({"scans":data})
 
 @login_required(login_url='/login/')
 def sharedreports(request):

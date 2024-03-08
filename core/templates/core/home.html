@@ -1,4 +1,9 @@
 {%load static%}
+{% if request.user.is_authenticated %}
+  <script>
+      window.location.href = "{% url 'dashboard' %}"; 
+  </script>
+{%else%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,3 +87,4 @@
 </body>
 
 </html>
+{%endif%}

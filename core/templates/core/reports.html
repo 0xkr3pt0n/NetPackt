@@ -80,58 +80,16 @@
                                 DataTable Example
                             </div>
                             <div class="card-body">
-                                <table id="datatablesSimple">
+                                <table class="table">
                                     <thead>
-                                        <tr>
-                                            <th>Scan name</th>
-                                            <th>Scan type</th>
-                                            <th>Progress</th>
-                                            <th>IP</th>
-                                            <th>Scan Date</th>
-                                            <th>Actions</th>
-                                        </tr>
+                                      <tr>
+                                        <th scope="col">Scan name</th>
+                                      </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Scan name</th>
-                                            <th>Scan type</th>
-                                            <th>Progress</th>
-                                            <th>IP</th>
-                                            <th>Scan Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        {%for item in data%}
-                                        <tr>
-                                            <td>{{ item.1 }}</td>
-                                            
-                                            {% comment %} detrmine scan type {% endcomment %}
-                                            {%if item.2 == 0 %}
-                                                <td>Vulnerability scan</td>
-                                            {%elif item.2 == 1%}
-                                                <td>Host discovery scan</td>
-                                            {%endif%}
+                                    <tbody id="scansbody">
 
-                                            {% comment %} detrmine scan status {% endcomment %}
-                                            {%if item.3 == 1%}
-                                                <td>In Progress</td>
-                                            {%else%}
-                                                <td>Completed</td>
-                                            {%endif%}
-
-                                            <td>{{ item.4 }}</td>
-                                            <td>{{ item.6 }}</td>
-                                            
-                                            <td>
-                                                <a href="{%url 'report' item.0%}" style="margin: 5px;"><i class="fa-solid fa-eye"></i></a>
-                                                
-                                                <a href="{%url 'delete_report' item.0%}" style="margin: 5px;"><i class="fa-solid fa-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                        {%endfor%}
                                     </tbody>
-                                </table>
+                                  </table>
                             </div>
                         </div>
                     </div>
@@ -151,10 +109,34 @@
             </div>
         </div>
         
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="{%static 'scripts.js'%}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="{%static 'datatables-simple-demo.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function(){
+                setInterval(function(){
+                    $.ajax({
+                        type:'GET',
+                        url : "{%url 'ajax_data' %}",
+                        success: function(response){ 
+                            var $tablescans = $('#scansbody')
+                            
+                            $("#scansbody").find("tr:gt(0)").remove();
+                            for (var key in response.scans){
+                                console.log(response.scans[key][1])
+                                $tablescans.append('<tr> <td>' + response.scans[key][1] + '</td> </tr>');  
+                            }
+                        },
+                        error: function(response){
+                            alert('no data found')
+                        }
+                    });
+                }, 1000);
+            });
+        </script>
     </body>
 </html>
