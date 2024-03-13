@@ -77,13 +77,18 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                DataTable Example
+                                Scans history
                             </div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
                                       <tr>
                                         <th scope="col">Scan name</th>
+                                        <th scope="col">Scan Date</th>
+                                        <th scope="col">Target</th>
+                                        <th scope="col">Progress</th>
+                                        <th scope="col">Scan Type</th>
+                                        <th scope="col">Actions</th>
                                       </tr>
                                     </thead>
                                     <tbody id="scansbody">
@@ -127,8 +132,26 @@
                             
                             $("#scansbody").find("tr:gt(0)").remove();
                             for (var key in response.scans){
-                                console.log(response.scans[key][1])
-                                $tablescans.append('<tr> <td>' + response.scans[key][1] + '</td> </tr>');  
+                                console.log(response.scans[key][1]);
+                                var scan_name = response.scans[key][1];
+                                var scan_date = response.scans[key][6];
+                                var target = response.scans[key][4];
+                                var progress = response.scans[key][3];
+                                var status = '';
+                                if (progress === 0){
+                                    status='Completed';
+                                }else{
+                                    status='In progress';
+                                }
+                                var scantype = response.scans[key][2];
+                                var scan_type = '';
+                                if (scantype === 0){
+                                    scan_type = 'Vulnerability scan';
+                                }else{
+                                    scan_type = 'Host discovery Scan'
+                                }
+                                var scan_id = response.scans[key][0];
+                                $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a href="/report/' + scan_id + '">view report</a>' +'</td>'+'</tr>');  
                             }
                         },
                         error: function(response){
