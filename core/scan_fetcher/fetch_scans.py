@@ -76,9 +76,13 @@ class scans_fetch:
         print(result)
         return result
     def delete_scan(self, scan_id):
-        query = f"DELETE FROM scans where id = {scan_id}"
-        self.cursor.execute(query)
+        query1 =  f"DELETE FROM vulnscan_report where scan_id = {scan_id}"
+        query2 = f"DELETE FROM scans where id = {scan_id}"
+        self.cursor.execute(query1)
+        self.cursor.execute(query2)
         self.connection.commit()
+                
+        
 
             
 

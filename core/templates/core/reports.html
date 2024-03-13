@@ -80,6 +80,10 @@
                                 Scans history
                             </div>
                             <div class="card-body">
+                                <div id="success-alert" class="alert alert-success" role="alert" style="display: none;">
+                                    scan completed.
+                                  </div>
+                                  
                                 <table class="table">
                                     <thead>
                                       <tr>
@@ -123,14 +127,15 @@
         <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script>
             $(document).ready(function(){
+                var previousStatus = {};
                 setInterval(function(){
                     $.ajax({
                         type:'GET',
                         url : "{%url 'ajax_data' %}",
                         success: function(response){ 
-                            var $tablescans = $('#scansbody')
+                            var $tablescans = $('#scansbody');
                             
-                            $("#scansbody").find("tr:gt(0)").remove();
+                            $("#scansbody").empty();
                             for (var key in response.scans){
                                 console.log(response.scans[key][1]);
                                 var scan_name = response.scans[key][1];
@@ -140,9 +145,22 @@
                                 var status = '';
                                 if (progress === 0){
                                     status='Completed';
+                                    prestatus = 'Completed'
                                 }else{
                                     status='In progress';
+                                    prestatus = 'In progress'
                                 }
+                                if (previousStatus[key] === 'In progress' && status === 'Completed') {
+                                    // Display alert when status changes from "In progress" to "Completed"
+                                    $('#success-alert').show();
+                                    // Hide the success alert after 5 seconds
+                                    setTimeout(function() {
+                                        $('#success-alert').hide();
+                                    }, 10000);
+                                }
+                                
+                                // Update previous status
+                                previousStatus[key] = status;
                                 var scantype = response.scans[key][2];
                                 var scan_type = '';
                                 if (scantype === 0){
@@ -151,7 +169,7 @@
                                     scan_type = 'Host discovery Scan'
                                 }
                                 var scan_id = response.scans[key][0];
-                                $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a href="/report/' + scan_id + '">view report</a>' +'</td>'+'</tr>');  
+                                $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a style="margin: 10px;" href="/report/' + scan_id + '"><i class="fa-solid fa-eye"></i></a>'+ '<a href="/delete_report/' + scan_id + '"><i class="fa-solid fa-trash"></i></a>' +'</td>'+'</tr>');  
                             }
                         },
                         error: function(response){
