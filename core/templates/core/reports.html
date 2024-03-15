@@ -164,9 +164,11 @@
                                 var scantype = response.scans[key][2];
                                 var scan_type = '';
                                 if (scantype === 0){
-                                    scan_type = 'Vulnerability scan';
-                                }else{
+                                    scan_type = 'Network vulnerability scan';
+                                }else if (scantype === 1){
                                     scan_type = 'Host discovery Scan'
+                                }else{
+                                    scan_type = 'Web vulnerability Scan'
                                 }
                                 var scan_id = response.scans[key][0];
                                 $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a style="margin: 10px;" href="/report/' + scan_id + '"><i class="fa-solid fa-eye"></i></a>'+ '<a href="/delete_report/' + scan_id + '"><i class="fa-solid fa-trash"></i></a>' +'</td>'+'</tr>');  

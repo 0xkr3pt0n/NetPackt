@@ -13,6 +13,7 @@ from background_task import background
 from background_task.models import Task
 from .vulnerability_scan import api_database
 from .host_discovery import hdisocver
+from .webscan import wscanner
 
 # from .pdf_report import pdf_gen
 # Create your views here.
@@ -251,3 +252,19 @@ def delete_report(request, report_id):
 #     username = user_data.username
 #     pdf_gen.PDFPSReporte(f'report_{scan_data[0][1]}.pdf',f'{scan_data[0][1]}', f'{scan_data[0][6]}', f'{username}')
 #     return render(request, 'core/export.html')
+
+def webscan(request):
+    if request.method == 'POST':
+        scan_name = request.POST.get('scan_name')
+        scan_target = request.POST.get('target')
+        subdomain_enum = request.POST.get('subdomain_enum')
+        user_id = request.user.id
+        create_scan = scan_create.scan_create()
+        shared_users_list = []
+        scan_id = create_scan.webscan(scan_name, scan_target, user_id, shared_users_list)
+        w = wscanner.wscanner('microsoft.com', 0)
+        if subdomain_enum == 'on':
+            w.subdomain_enum(0, 3, scan_id)
+    users = users_fetch.users_fetch()
+    users_data = users.get_all_users(request.user.id)
+    return render(request, 'core/webscan.html', {'users':users_data})

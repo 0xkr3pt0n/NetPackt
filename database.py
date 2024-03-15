@@ -30,6 +30,7 @@ class netpackt_database_prepare:
         self.create_hostdiscoveryreport_table()
         self.create_discoverdip_table()
         self.create_sharedusers_table()
+        self.create_disoverd_subdomains_table()
         
 
     def create_djangousers_table(self):
@@ -168,6 +169,22 @@ class netpackt_database_prepare:
             print("Table 'shared_users' created successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
+    
+    def create_disoverd_subdomains_table(self):
+        try:
+            create_table_query = '''
+            CREATE TABLE IF NOT EXISTS subdomains_discoverd (
+                id SERIAL PRIMARY KEY,
+                scan_id INTEGER REFERENCES scans(id),
+                domain TEXT
+            )
+            '''
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'subdomain' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+
 
 class cves_database_prepare:
     def __init__(self):
