@@ -120,8 +120,10 @@ def network_scan(request):
         
         if port_scanType == "1":
             scan_type = 1
-        else:
+        elif port_scanType == "2":
             scan_type = 2
+        else:
+            print("invalid input")
         print(min_port)
         print(max_port)
         schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, repeat=Task.NEVER)
