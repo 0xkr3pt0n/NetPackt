@@ -212,11 +212,12 @@
 
                             {% comment %} web vulnerability table start {% endcomment %}
                             {%elif scan_type == 2 %} 
-                                <div class="table" id="table">
-                                    <table id="datatablesSimple">
+                                
+                                    <table  class="table table-bordered" >
                                         <thead>
                                             <tr>
-                                                <th>Subdirectories</th>
+                                                <th scope="col">Subdirectories Found <a href="#"><i class="fa-solid fa-file-export" style="margin-left: 20px"></i> Export txt </a> </th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -227,7 +228,20 @@
                                             {%endfor%}
                                         </tbody>
                                     </table>
-                                </div>
+                                    <table  class="table table-bordered" >
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Subdomains Found <a href="#"><i class="fa-solid fa-file-export" style="margin-left: 20px"></i> Export txt </a></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {%for sub in results_subdomains%}
+                                            <tr>
+                                                <td><a href="{{sub.2}}" target="_blank">{{sub.2}}</a></td>
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
                             {% comment %} web vulnerability table end {% endcomment %}
                             {%endif%}
                         </div>
