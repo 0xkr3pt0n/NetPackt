@@ -75,11 +75,28 @@ class scans_fetch:
         self.connection.commit()
         print(result)
         return result
+        
+    def fetch_webscan_result(self, scan_id):
+        query1 = f"SELECT * FROM subdomains_discoverd WHERE scan_id = {scan_id}"
+        query2 = f"SELECT * FROM subdirectories_discoverd WHERE scan_id = {scan_id}"
+        self.cursor.execute(query1)
+        subdomains = self.cursor.fetchall()
+        self.connection.commit()
+
+        self.cursor.execute(query2)
+        subdirs = self.cursor.fetchall()
+        self.connection.commit()
+        return subdomains, subdirs
+
     def delete_scan(self, scan_id):
         query1 =  f"DELETE FROM vulnscan_report where scan_id = {scan_id}"
-        query2 = f"DELETE FROM scans where id = {scan_id}"
+        query2 = f"DELETE FROM subdomains_discoverd where scan_id = {scan_id}"
+        query3 = f"DELETE FROM discoverd_ip WHERE report_id = {scan_id}"
+        query4 = f"DELETE FROM scans where id = {scan_id}"
         self.cursor.execute(query1)
         self.cursor.execute(query2)
+        self.cursor.execute(query3)
+        self.cursor.execute(query4)
         self.connection.commit()
                 
         

@@ -14,6 +14,8 @@ from background_task.models import Task
 from .vulnerability_scan import api_database
 from .host_discovery import hdisocver
 from .webscan import wscanner
+from urllib.parse import urlparse
+
 
 # from .pdf_report import pdf_gen
 # Create your views here.
@@ -234,10 +236,14 @@ def scan_report(request, report_id):
     refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
     scan_type = scan_data[0][2]
     fhds = fs.fetch_hostdiscovery_result(report_id)
+    fws_domains, fws_dirs = fs.fetch_webscan_result(report_id)
+    print(fws_dirs)
     if scan_type == 0:
         return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front, 'scan_type':scan_type })
-    else:
+    elif scan_type == 1:
         return render(request, 'core/scanreport.html', {'scan_data':scan_data,'results':fhds, 'user_name':username,  'scan_type':scan_type })
+    elif scan_type == 2:
+        return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'results_subdirs':fws_dirs, 'results_subdomains':fws_domains, 'user_name':username,  'scan_type':scan_type })
 
 @login_required
 def delete_report(request, report_id):
@@ -255,18 +261,102 @@ def delete_report(request, report_id):
 #     pdf_gen.PDFPSReporte(f'report_{scan_data[0][1]}.pdf',f'{scan_data[0][1]}', f'{scan_data[0][6]}', f'{username}')
 #     return render(request, 'core/export.html')
 
+@login_required(login_url='/login/')
 def webscan(request):
+    users = users_fetch.users_fetch()
+    users_data = users.get_all_users(request.user.id)
+    
     if request.method == 'POST':
+        #getting post request parameters
         scan_name = request.POST.get('scan_name')
         scan_target = request.POST.get('target')
         subdomain_enum = request.POST.get('subdomain_enum')
+        dig_level = request.POST.get('dig_level')
+        dig_level_dirs = request.POST.get('dig_level_dirs')
+        thread_level = request.POST.get('thread_level')
+        subdirs_enum = request.POST.get('subdirs_enum')
+
         user_id = request.user.id
         create_scan = scan_create.scan_create()
         shared_users_list = []
         scan_id = create_scan.webscan(scan_name, scan_target, user_id, shared_users_list)
-        w = wscanner.wscanner('microsoft.com', 0)
+        scan_list = []
+
+        # parsing url to filter it
+        parsed_url = urlparse(scan_target)
+        scan_target_domain = parsed_url.netloc
+        if scan_target_domain.startswith('www.'):
+            scan_target_domain = scan_target_domain[4:]
+        else:
+            return render(request, 'core/webscan.html', {'error_message2': True, 'users':users_data})
+        print(scan_target_domain)
+        
+        #creating a webscan class inistance
+        # w = wscanner.wscanner(scan_target_domain)
+        #thread level
+        threads = 0
+        print(thread_level)
+        if thread_level == "0":
+            threads = 0
+        elif thread_level == "1":
+            threads = 1
+        elif thread_level == "2":
+            threads = 2
+        elif thread_level == "3":
+            threads = 3
+        else:
+            return render(request, 'core/webscan.html', {'error_message': True, 'users':users_data})
+        
+        digs = 0
         if subdomain_enum == 'on':
-            w.subdomain_enum(0, 3, scan_id)
-    users = users_fetch.users_fetch()
-    users_data = users.get_all_users(request.user.id)
+            # dig level for subdomain enumeration
+            scan_list.append(1)
+            if dig_level == "0":
+                digs = 0
+            elif dig_level == "1":
+                digs = 1
+            elif dig_level == "2":
+                digs = 2
+            elif dig_level == "3":
+                digs = 3
+            else:
+                return render(request, 'core/webscan.html', {'error_message1': True, 'users':users_data})
+            # w.subdomain_enum(digs, threads, scan_id)
+            
+        
+        digs_dirs = 0
+        if subdirs_enum == 'on':
+            
+            if dig_level_dirs == "0":
+                digs_dirs = 0
+            elif dig_level_dirs == "1":
+                digs_dirs = 1
+            elif dig_level_dirs == "2":
+                digs_dirs = 2
+            elif dig_level_dirs == "3":
+                digs_dirs = 3
+            else:
+                return render(request, 'core/webscan.html', {'error_message1': True, 'users':users_data})
+            # w.subdirs_enum(digs, threads, scan_id)
+            scan_list.append(2)
+            
+        # w.finish_scan(scan_id)
+        print("background will start")
+        
+        schedule_web_scan(scan_id, threads, scan_target_domain, scan_list, digs_dirs, digs, repeat=Task.NEVER)
+        return redirect('myscans')
+        
     return render(request, 'core/webscan.html', {'users':users_data})
+
+@background
+def schedule_web_scan(scan_id, thread_level, target, scans_list, digs_dirs=0, digs_domains=0):
+    w = wscanner.wscanner(target)
+    print(f'scan list {scans_list}')
+    
+    if 1 in scans_list:
+        w.subdomain_enum(digs_domains, thread_level, scan_id)
+    
+    if 2 in scans_list:
+        print("2 in list ")
+        w.subdirs_enum(digs_dirs, thread_level, scan_id)
+    w.finish_scan(scan_id)

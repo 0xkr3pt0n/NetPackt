@@ -12,6 +12,21 @@
             <div class="card-body">
                 <form method="POST" action=".">
                     {% csrf_token %}
+                    {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid threading option.
+                        </div>
+                    {%endif%}
+                    {% if error_message1 %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid Dig level option.
+                        </div>
+                    {%endif%}
+                    {% if error_message2 %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid URL.
+                        </div>
+                    {%endif%}
                     <div class="row m-3">
                         <div class="col">
                           <label class="my-1 mr-2" for="scan_name">Scan Name</label>
@@ -47,11 +62,50 @@
                     <div class="row m-3">
                         <div class="col">
                             <div class="form-check">
-                                <input class="form-check-input" name="subdomain_enum" type="checkbox" value="on" id="check_custom">
-                                <label class="form-check-label" for="check_custom">
+                                <input class="form-check-input" name="subdomain_enum" type="checkbox" value="on" id="subdomain_enum">
+                                <label class="form-check-label" for="subdomain_enum">
                                 Subdomain enumeration
                                 </label>
                             </div>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" name="dig_level" id="dig_level" aria-label="Default select example" style="display: none;">
+                                <option selected>Subdomains dig level</option>
+                                <option value="0">Low Dig (faster, less output)</option>
+                                <option value="1">Meduim Dig (Normal)</option>
+                                <option value="2">High Dig (slow, more output)</option>
+                                <option value="3">Insane Dig (slower, more output)</option>
+                              </select>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" name="subdirs_enum" type="checkbox" value="on" id="subdirs_enum">
+                                <label class="form-check-label" for="subdomain_enum">
+                                    Subdirectory discovery
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" name="dig_level_dirs" id="dig_level_dirs" aria-label="Default select example" style="display: none;">
+                                <option selected>Subdirectory dig level</option>
+                                <option value="0">Low Dig (faster, less output)</option>
+                                <option value="1">Meduim Dig (Normal)</option>
+                                <option value="2">High Dig (slow, more output)</option>
+                                <option value="3">Insane Dig (slower, more output)</option>
+                              </select>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <select class="form-select" name="thread_level" id="thread_level" aria-label="Default select example">
+                                <option selected>Thread level</option>
+                                <option value="0">No threading (Slow)</option>
+                                <option value="1">Intermediate threading (10 threads) (Normal)</option>
+                                <option value="2">High Threading (50 threads) (Fast)</option>
+                                <option value="3">Insane (100 threads) (Faster, Not recommended)</option>
+                              </select>
                         </div>
                     </div>
                     <div class="row m-3">
@@ -63,5 +117,27 @@
             </div>
         </div>
     </div>
-</main
+</main>
+<script>
+    var checkbox = document.getElementById("subdomain_enum");
+    var selectOptions = document.getElementById("dig_level");
+    
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            selectOptions.style.display = "block";
+        } else {
+            selectOptions.style.display = "none";
+        }
+    });
+
+    var subdirs_checkbox = document.getElementById("subdirs_enum");
+    var dig_level_dirs = document.getElementById("dig_level_dirs");
+    subdirs_checkbox.addEventListener('change', function(){
+        if (this.checked){
+            dig_level_dirs.style.display = "block";
+        } else {
+            dig_level_dirs.style.display = "none";
+        }
+    });
+</script>
 {%endblock%}

@@ -26,7 +26,7 @@ class subdomain_enum:
             self.thread_num = 10
         elif thread_level == 2:
             self.thread_num = 50
-        elif thread_level == 3:
+        else:
             self.thread_num = 100
 
     

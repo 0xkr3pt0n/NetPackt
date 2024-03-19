@@ -82,7 +82,11 @@
                             <div class="card-body">
                                 <div id="success-alert" class="alert alert-success" role="alert" style="display: none;">
                                     scan completed.
-                                  </div>
+                                </div>
+
+                                <div id="info-alert" class="alert alert-info" role="alert" style="display: none;">
+                                    No scans found.
+                                </div>
                                   
                                 <table class="table">
                                     <thead>
@@ -175,7 +179,11 @@
                             }
                         },
                         error: function(response){
-                            alert('no data found')
+                            $('#success-alert').show();
+                            // Hide the success alert after 5 seconds
+                            setTimeout(function() {
+                                $('#info-alert').hide();
+                            }, 10000);
                         }
                     });
                 }, 1000);
