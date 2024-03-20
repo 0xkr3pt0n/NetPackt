@@ -83,7 +83,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" name="subdirs_enum" type="checkbox" value="on" id="subdirs_enum">
                                 <label class="form-check-label" for="subdomain_enum">
-                                    Subdirectory discovery
+                                    Subdirectory enumeration
                                 </label>
                             </div>
                         </div>
@@ -99,6 +99,26 @@
                     </div>
                     <div class="row m-3">
                         <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" name="subdirs_enum" type="checkbox" value="on" id="subdirs_enum">
+                                <label class="form-check-label" for="subdomain_enum">
+                                    Parameters spidering
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" name="subdirs_enum" type="checkbox" value="on" id="subdirs_enum">
+                                <label class="form-check-label" for="subdomain_enum">
+                                    Test Owasp TOP 10
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
                             <select class="form-select" name="thread_level" id="thread_level" aria-label="Default select example">
                                 <option selected>Thread level</option>
                                 <option value="0">No threading (Slow)</option>
@@ -108,6 +128,7 @@
                               </select>
                         </div>
                     </div>
+
                     <div class="row m-3">
                         <div class ="col " style="text-align:center;">
                             <button type="submit" class="btn btn-primary btn-lg">Start scan</button>
