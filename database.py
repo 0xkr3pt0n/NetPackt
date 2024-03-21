@@ -32,6 +32,7 @@ class netpackt_database_prepare:
         self.create_sharedusers_table()
         self.create_disoverd_subdomains_table()
         self.create_disoverd_subdirs_table()
+        self.add_isempty_columns()
 
     def create_djangousers_table(self):
         command1 = "python manage.py makemigrations"
@@ -184,6 +185,7 @@ class netpackt_database_prepare:
             print("Table 'subdomain' created successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
+    
     def create_disoverd_subdirs_table(self):
         try:
             create_table_query = '''
@@ -196,6 +198,17 @@ class netpackt_database_prepare:
             self.cursor.execute(create_table_query)
             self.connection.commit()
             print("Table 'subdires' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+        
+    def add_isempty_columns(self):
+        try:
+            add_column_query1 = "ALTER TABLE scans ADD COLUMN IF NOT EXISTS isportscan_empty INTEGER DEFAULT 0;"
+            add_column_query2 = "ALTER TABLE scans ADD COLUMN IF NOT EXISTS isvulnscan_empty INTEGER DEFAULT 0;"
+            self.cursor.execute(add_column_query1)
+            self.cursor.execute(add_column_query2)
+            self.connection.commit()
+            print("column 'isportscan_empty, isvulnscan_empty' added successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
 

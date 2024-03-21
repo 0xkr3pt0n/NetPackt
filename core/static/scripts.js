@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', event => {
 const data = {
     labels: ['Critical', 'High', 'Medium', 'Low', 'Informational'],
     datasets: [{
-        label: 'My First Dataset',
+        label: 'Number of vulnerabilites',
         data: [12, 19, 3, 5, 20], //add data values from an analysis function
         backgroundColor: [ 
             '#d84315',

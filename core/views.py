@@ -99,8 +99,8 @@ def network_scan(request):
         
         min_port = 0
         max_port = 0
-        #start the vulnerability scan
         
+        #specfing port ranges
         if port_rangeType == "0" and custom_portRange != 'on' :
             min_port = 1
             max_port = 10
@@ -121,6 +121,7 @@ def network_scan(request):
         else:
             print("invalid")
         
+        # checking for scan type 1 for tcp connect, 2 for stealth
         if port_scanType == "1":
             scan_type = 1
         elif port_scanType == "2":
@@ -129,8 +130,20 @@ def network_scan(request):
             print("invalid input")
         print(min_port)
         print(max_port)
-        schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, repeat=Task.NEVER)
+        
+        thread_value = 0
+        #checking for intrusitivity
+        if intrustivity_type == '1':
+            thread_value = 1
+        elif intrustivity_type == '2':
+            thread_value = 50
+        elif intrustivity_type == '3':
+            thread_value = 100
+        else:
+            thread_value = 1
+        schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value, repeat=Task.NEVER)
         return redirect('myscans')
+    
     users = users_fetch.users_fetch()
     users_data = users.get_all_users(request.user.id)
     # print(users_data)
@@ -138,9 +151,10 @@ def network_scan(request):
 
 
 @background  # Execute immediately
-def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type):
-    print("start")
-    vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, 100)
+def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value):
+    print("start vulnerability")
+    print(thread_value)
+    vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, thread_value)
     vscanning.vulnerability_scan()
 
 @login_required(login_url='/login/')
@@ -197,7 +211,7 @@ def sharedreports(request):
         usernames.append((user.id, user.username))
     return render(request, 'core/shared_reports.html', {'data':data, 'usernames':usernames})
 
-@login_required
+@login_required(login_url='/login/')
 def setting(request):
     apoption = api_database.api_database()
     if request.method == "POST":
@@ -209,7 +223,7 @@ def setting(request):
     api = apoption.get_apiOption(request.user.id)
     return render(request, 'core/setting.html', {'api':api})
 
-@login_required
+@login_required(login_url='/login/')
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
@@ -218,7 +232,7 @@ def delete_account(request):
         return redirect('/login/')
     return render(request, 'core/setting')
 
-@login_required
+@login_required(login_url='/login/')
 def scan_report(request, report_id):
     fs = fetch_scans.scans_fetch()
     report_data = fs.fetch_scan_result(report_id)
@@ -239,13 +253,14 @@ def scan_report(request, report_id):
     fws_domains, fws_dirs = fs.fetch_webscan_result(report_id)
     print(fws_dirs)
     if scan_type == 0:
+        print(scan_data)
         return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front, 'scan_type':scan_type })
     elif scan_type == 1:
         return render(request, 'core/scanreport.html', {'scan_data':scan_data,'results':fhds, 'user_name':username,  'scan_type':scan_type })
     elif scan_type == 2:
         return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'results_subdirs':fws_dirs, 'results_subdomains':fws_domains, 'user_name':username,  'scan_type':scan_type })
 
-@login_required
+@login_required(login_url='/login/')
 def delete_report(request, report_id):
     delete = fetch_scans.scans_fetch()
     delete.delete_scan(report_id)
