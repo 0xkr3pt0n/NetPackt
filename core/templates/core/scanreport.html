@@ -321,6 +321,95 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="{%static 'datatables-simple-demo.js' %}"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', event => {
+
+            // Toggle the side navigation
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            if (sidebarToggle) {
+                // Uncomment Below to persist sidebar toggle between refreshes
+                // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+                //     document.body.classList.toggle('sb-sidenav-toggled');
+                // }
+                sidebarToggle.addEventListener('click', event => {
+                    event.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+                });
+            }
+        
+        });
+        var noneImpact = 0;
+        var InformationalImpact = 0;
+        var highImpact = 0;
+        var meduimImpact = 0;
+        var lowImpact = 0;
+        {%for cve in cve_data%}
+            {% if cve.3 > 0 and cve.3 < 1 %}
+                noneImpact++;
+            {% elif cve.3 > 1 and cve.3 < 2 %}
+                InformationalImpact++;
+            {% elif cve.3 > 2 and cve.3 < 4 %}
+                lowImpact++;
+            {% elif cve.3 > 4 and cve.3 < 7 %}
+                meduimImpact++;
+            {% elif cve.3 > 7 %}
+                highImpact++;
+            {%endif%}
+        {%endfor%}
+        console.log(InformationalImpact)
+        console.log(noneImpact);
+        console.log(lowImpact);
+        console.log(meduimImpact);
+        console.log(highImpact);
+        const data = {
+            labels: ['Critical', 'High', 'Medium', 'Low', 'Informational'],
+            datasets: [{
+                label: 'Number of vulnerabilites',
+                data: [highImpact, meduimImpact, lowImpact, InformationalImpact, noneImpact], //add data values from an analysis function
+                backgroundColor: [ 
+                    '#d84315',
+                    '#ec9630',
+                    '#fdd835', 
+                    '#9ccc65', 
+                    '#f1f8e9'
+                ],
+                hoverOffset: 4
+            }]
+        };
+        
+        // Get the canvas element
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        
+        // Create the pie chart
+        new Chart(ctx, {
+            type: 'pie',
+            data: data,
+        });
+        
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cell = row.querySelector('td:nth-child(4)');
+            const value = cell.textContent.trim().toLowerCase();
+            switch (value) {
+                case 'severe':
+                    row.style.backgroundColor = '#ffcccc'; // Light red
+                    break;
+                case 'high':
+                    row.style.backgroundColor = '#ffe0b3'; // Light orange
+                    break;
+                case 'medium':
+                    row.style.backgroundColor = '#ffffcc'; // Light yellow
+                    break;
+                case 'low':
+                    row.style.backgroundColor = '#ccffcc'; // Light green
+                    break;
+                default:
+                    // Handle unknown or default case
+                    break;
+            }
+        });
+    </script>
 </body>
 
 </html>
