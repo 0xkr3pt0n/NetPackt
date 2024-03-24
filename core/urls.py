@@ -18,6 +18,7 @@ urlpatterns = [
     path('delete_account/', views.delete_account, name='delete_account'),
     path('report/<int:report_id>/', views.scan_report, name='report'),
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
+    path('stop_scan/<int:report_id>/', views.stop_scan, name="stop_scan"),
     path('ajax_data/,', views.get_scans_data, name="ajax_data"),
     path('webscan/', views.webscan, name="webscan")
     

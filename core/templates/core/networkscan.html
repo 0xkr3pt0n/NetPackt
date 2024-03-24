@@ -19,9 +19,9 @@
                         <input type="text" id="scan_name" name="scan_name" class="form-control" placeholder="EX : Company1" title="Add a name to your scan" required>
                       </div>
                       <div class="col">
-                        <label class="my-1 mr-2" for="ip_addr">IP address or Network subnet</label>
+                        <label class="my-1 mr-2" for="ip_addr">Target</label>
                         {% comment %} pattern="\b(?:\d{1,3}\.){3}\d{1,3}\b" {% endcomment %}
-                        <input type="text" name="ip_addr" id="ip_addr" class="form-control" placeholder="EX: 192.168.1.1"  title="Please enter a valid IPv4 address EX: 192.168.1.1" required>
+                        <input type="text" name="ip_addr" id="ip_addr" class="form-control" placeholder="EX: 192.168.1.1 or 192.168.1.0/24 or scanme.nmap.org"  title="Please enter a valid IPv4 address EX: 192.168.1.1" required>
 
                       </div>
                     </div>
@@ -30,8 +30,8 @@
                         <label class="my-1 mr-2" for="share">Port scan Type</label>
                         <select class="form-select" name="portscantype" id="share" aria-label="Default select example"> 
                             <option value="1">TCP connect scan</option>
-                            <option value="2">Stealthy scan</option>
-                            
+                            <option value="2">TCP stealthy scan</option>
+                            <option value="2">UDP scan</option>
                           </select>
                         </div>
 

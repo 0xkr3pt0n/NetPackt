@@ -141,7 +141,11 @@ def network_scan(request):
             thread_value = 100
         else:
             thread_value = 1
-        schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value, repeat=Task.NEVER)
+        task = schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value, repeat=Task.NEVER)
+        task_id = task.id
+        fs = fetch_scans.scans_fetch()
+        fs.add_taskid(scan_id, task_id)
+        print(f"task id {task_id}")
         return redirect('myscans')
     
     users = users_fetch.users_fetch()
@@ -156,6 +160,7 @@ def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type,
     print(thread_value)
     vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, thread_value)
     vscanning.vulnerability_scan()
+    
 
 @login_required(login_url='/login/')
 def host_discover(request):
@@ -266,6 +271,11 @@ def delete_report(request, report_id):
     delete.delete_scan(report_id)
     return redirect('myscans')
 
+@login_required(login_url='/login/')
+def stop_scan(request, report_id):
+    fs = fetch_scans.scans_fetch()
+    fs.pause_scan(report_id)
+    return redirect('myscans')
 # @login_required
 # def export(request, report_id):
 #     fs = fetch_scans.scans_fetch()

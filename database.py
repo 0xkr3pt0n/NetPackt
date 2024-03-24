@@ -33,6 +33,7 @@ class netpackt_database_prepare:
         self.create_disoverd_subdomains_table()
         self.create_disoverd_subdirs_table()
         self.add_isempty_columns()
+        self.add_background_taskid()
 
     def create_djangousers_table(self):
         command1 = "python manage.py makemigrations"
@@ -209,6 +210,15 @@ class netpackt_database_prepare:
             self.cursor.execute(add_column_query2)
             self.connection.commit()
             print("column 'isportscan_empty, isvulnscan_empty' added successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+    
+    def add_background_taskid(self):
+        try:
+            add_column_query1 = "ALTER TABLE scans ADD COLUMN IF NOT EXISTS task_id INTEGER;"
+            self.cursor.execute(add_column_query1)
+            self.connection.commit()
+            print("column 'task_id, isvulnscan_empty' added successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
 

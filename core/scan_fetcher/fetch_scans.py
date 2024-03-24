@@ -1,4 +1,8 @@
 import psycopg2
+import time
+import run
+
+
 
 class scans_fetch:
     def __init__(self):
@@ -98,6 +102,30 @@ class scans_fetch:
         self.cursor.execute(query3)
         self.cursor.execute(query4)
         self.connection.commit()
+    
+    def add_taskid(self, scan_id, task_id):
+        query = f"UPDATE scans SET task_id = {task_id} where id = {scan_id}"
+        self.cursor.execute(query)
+        self.connection.commit()
+    def pause_scan(self, scan_id):
+        print('pausing scan')
+        
+        run.terminate_current()
+        query = f"SELECT task_id from scans where id = {scan_id}"
+        self.cursor.execute(query)
+        task_id = self.cursor.fetchall()
+        task_key = task_id[0][0]
+        self.connection.commit()
+        
+        query2 = f"DELETE FROM background_task where id = {task_key}"
+        self.cursor.execute(query2)
+        self.connection.commit()
+        
+        query3 = f"UPDATE scans SET progress = 2 where id = {scan_id}"
+        self.cursor.execute(query3)
+        self.connection.commit()
+        run.runAPP().process_tasks()
+       
                 
         
 

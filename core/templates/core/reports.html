@@ -150,9 +150,12 @@
                                 if (progress === 0){
                                     status='Completed';
                                     prestatus = 'Completed'
-                                }else{
+                                }else if (progress === 1){
                                     status='In progress';
                                     prestatus = 'In progress'
+                                }else{
+                                    status='Paused';
+                                    prestatus = 'Pasued'
                                 }
                                 if (previousStatus[key] === 'In progress' && status === 'Completed') {
                                     // Display alert when status changes from "In progress" to "Completed"
@@ -175,7 +178,13 @@
                                     scan_type = 'Web vulnerability Scan'
                                 }
                                 var scan_id = response.scans[key][0];
-                                $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a style="margin: 10px;" href="/report/' + scan_id + '"><i class="fa-solid fa-eye"></i></a>'+ '<a href="/delete_report/' + scan_id + '"><i class="fa-solid fa-trash"></i></a>' +'</td>'+'</tr>');  
+                                if (progress === 0 ){
+                                    $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a style="margin: 10px;" href="/report/' + scan_id + '"><i class="fa-solid fa-eye"></i></a>'+ '<a href="/stop_scan/' + scan_id +'" style="margin: 10px;"><i class="fa-solid fa-repeat"></i></a>' +'<a style="margin: 10px;" href="/delete_report/' + scan_id + '"><i class="fa-solid fa-trash"></i></a>' +'</td>'+'</tr>'); 
+                                } else if(progress === 1){
+                                    $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a style="margin: 10px;" href="/report/' + scan_id + '"><i class="fa-solid fa-eye"></i></a>'+ '<a href="/stop_scan/' + scan_id +'" style="margin: 10px;"><i class="fa-solid fa-pause"></i></a>' +'<a style="margin: 10px;" href="/delete_report/' + scan_id + '"><i class="fa-solid fa-trash"></i></a>' +'</td>'+'</tr>'); 
+                                }else{
+                                    $tablescans.append('<tr> <td>' + scan_name + '</td>'+ '<td>'+ scan_date +'</td>'+'<td>'+ target +'</td>'+'<td>'+ status +'</td>'+'<td>'+ scan_type +'</td>'+'<td>'+ '<a style="margin: 10px;" href="/report/' + scan_id + '"><i class="fa-solid fa-eye"></i></a>'+ '<a href="/stop_scan/' + scan_id +'" style="margin: 10px;"><i class="fa-solid fa-play"></i></a>' +'<a style="margin: 10px;" href="/delete_report/' + scan_id + '"><i class="fa-solid fa-trash"></i></a>' +'</td>'+'</tr>'); 
+                                }
                             }
                         },
                         error: function(response){

@@ -137,17 +137,19 @@
                                 </div>
                             </div>
                         </div>
-                        {% if scan_type == 0 %}
-                        <div class="col">
-                            <div class="card mb-4">
-                                <div class="card-body">
-                                    <div class="chart">
-                                        <canvas id="pieChart"></canvas>
+                        {%for item in scan_data%}
+                            {% if scan_type == 0 and item.7 == 0 %}
+                                <div class="col">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="chart">
+                                                <canvas id="pieChart"></canvas>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        {%endif%}
+                            {%endif%}
+                        {%endfor%}
 
                     </div>
                     {%for item in scan_data%}

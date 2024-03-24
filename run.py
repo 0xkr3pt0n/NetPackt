@@ -1,15 +1,39 @@
 import subprocess
+import os
+import signal
 import time
+import psutil
 
 
-def run_server():
-    subprocess.Popen(["python", "manage.py", "runserver"])
 
-def process_tasks():
-    subprocess.Popen(["python", "manage.py", "process_tasks"])
+class runAPP:
+    def __init__(self):
+        # self.backP = None
+        self.proccess = []
+
+    def run(self):
+        self.run_server()
+        time.sleep(5)
+        self.backP = self.process_tasks()
+
+    def run_server(self):
+        subprocess.Popen(["python", "manage.py", "runserver"])
+
+    def process_tasks(self):
+        task = subprocess.Popen(["python", "manage.py", "process_tasks"])
+        self.proccess.append(task)
+
+    def kill_runing(self):
+        print(self.proccess)
+        self.proccess[0].terminate()
+
+r = runAPP()
+
+def terminate_current():
+    r.kill_runing()
+
 
 if __name__ == "__main__":
-    run_server()
-    # Add a delay to ensure the server starts before processing tasks
-    time.sleep(5)  # Adjust delay as needed
-    process_tasks()
+    r.run()
+
+    
