@@ -25,7 +25,7 @@ python run.py
 ```bash
 
 python run.py
-WebAPP Socket : 127.0.0.1:8080
+WebAPP Socket : 127.0.0.1:8000
 
 ```
 ## pushing changes
