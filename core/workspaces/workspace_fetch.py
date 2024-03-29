@@ -58,3 +58,22 @@ class workspace_fetcher:
             for j in i:
                 proccesed_list.append(j)
         return proccesed_list
+    
+    def workspace_scans_fetch_all(self, space_id):
+        query = f"SELECT scan_id FROM workspaces_scans WHERE workspace_id = {space_id}"
+        self.cursor.execute(query)
+        scans = self.cursor.fetchall()
+        self.connection.commit()
+        data_returned = []
+        for i in scans:
+            for j in i:
+                query2 = f"select * from scans where id = {j}"
+                self.cursor.execute(query2)
+                scanss = self.cursor.fetchall()
+                self.connection.commit()
+                data_returned.append(scanss)
+        proccesed_list = []
+        for i in data_returned:
+            for j in i:
+                proccesed_list.append(j)
+        return proccesed_list

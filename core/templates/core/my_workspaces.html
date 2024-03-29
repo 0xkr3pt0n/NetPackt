@@ -110,7 +110,7 @@
                                                         <td>{{workspace.1}}</td>
                                                         <td>{{workspace.2}}</td>
                                                         <td>
-                                                            <a href="#" style="margin: 10px;"><i class="fa-solid fa-eye"></i></a>
+                                                            <a href="{% url 'view_workspace' workspace.0 %}" style="margin: 10px;"><i class="fa-solid fa-eye"></i></a>
                                                             <a href="{% url 'workspace' workspace.0 %}" style="margin: 10px;"><i class="fa-regular fa-pen-to-square"></i></a>
                                                             <a href="{% url 'delete_workspace' workspace.0 %}" style="margin: 10px;"><i class="fa-solid fa-trash-can"></i></a>
 

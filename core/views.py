@@ -396,7 +396,7 @@ def schedule_web_scan(scan_id, thread_level, target, scans_list, digs_dirs=0, di
         w.subdirs_enum(digs_dirs, thread_level, scan_id)
     w.finish_scan(scan_id)
 
-
+@login_required(login_url='/login/')
 def waf_enumeration(request):
     users = users_fetch.users_fetch()
     users_data = users.get_all_users(request.user.id)
@@ -416,6 +416,7 @@ def waf_enumeration(request):
 
     return render(request, 'core/waf_enum.html', {'users':users_data})
 
+@login_required(login_url='/login/')
 def my_workspaces(request):
     if request.method == 'POST':
         workspace_name = request.POST.get('workspace_name')
@@ -430,11 +431,13 @@ def my_workspaces(request):
     wspaces = wsdata.fetch_workspaces()
     return render(request, 'core/my_workspaces.html', {'workspaces': wspaces})
 
+@login_required(login_url='/login/')
 def delete_workspace(request, space_id):
     delete = workspace_fetch.workspace_fetcher()
     delete.delete_workspace(space_id)
     return redirect('my_workspaces')
 
+@login_required(login_url='/login/')
 def edit_workspace(request, space_id):
     ws = workspace_fetch.workspace_fetcher()
     wsdata = ws.fetch_workspace(space_id)
@@ -449,6 +452,67 @@ def edit_workspace(request, space_id):
         return render(request, 'core/workspace_edit.html', {'wsdata': wsdata, 'scans':scans_data})
         
     return render(request, 'core/workspace_edit.html', {'wsdata': wsdata, 'scans':scans_data, 'wsScans':wsScans})
+
+@login_required(login_url='/login/')
+def view_workspace(request, space_id):
+    s = workspace_fetch.workspace_fetcher()
+    workspace_data = s.fetch_workspace(space_id)
+    
+    scans_information = s.workspace_scans_fetch_all(space_id)
+    
+    fs = fetch_scans.scans_fetch()
+    vulnerability_scan_data = []
+    hds_scan_data = []
+    web_scan_data_domains = []
+    web_scan_data_dirs = []
+    waf_scan_data = []
+    for i in scans_information:
+        
+        if i[2] == 0:
+            vulnscan_id = i[0]
+            report_data = fs.fetch_scan_result(vulnscan_id)
+            vulnerability_scan_data.append(report_data)
+        elif i[2] == 1:
+            hostdisc_id = i[0]
+            host_data = fs.fetch_hostdiscovery_result(hostdisc_id)
+            hds_scan_data.append(host_data)
+        elif i[2] == 2:
+            webscan_id = i[0]
+            web_data_dn, web_data_dr = fs.fetch_webscan_result(webscan_id)
+            web_scan_data_domains.append(web_data_dn)
+            web_scan_data_dirs.append(web_scan_data_dirs)
+        elif i[2] == 3:
+            wafenum_id = i[0]
+            waf_result = fs.fetch_waf_result(wafenum_id)
+            waf_scan_data.append(waf_result)
+
+    
+    print(hds_scan_data)
+    print(web_scan_data_domains)
+    print(web_scan_data_dirs)
+    print(waf_scan_data)
+
+    vulnresult_proccesd = []
+    for i in vulnerability_scan_data:
+        for j in i:
+            vulnresult_proccesd.append(j)
+    
+    cve_data_list = []
+    cve_data_refrences = []
+    for cve in vulnresult_proccesd:
+        cve_id = cve[5]
+        vulndetails, ref_details = fs.get_vulnerability_detils(cve_id)
+        cve_data_list.append(vulndetails)
+        cve_data_refrences.append(ref_details)
+
+
+    cve_data = []
+    for i in cve_data_list:
+        for j in i:
+            cve_data.append(j)
+    print(cve_data)
+    print(f'you are viewing workspace : {space_id}')
+    return render(request, 'core/workspace_report.html', {'wdata':workspace_data, 'scans_information':scans_information,'vulnresult':vulnresult_proccesd, 'cve_data':cve_data, 'cve_ref': cve_data_refrences})
 
 
 
