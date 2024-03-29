@@ -5,12 +5,8 @@
 - [installtion](#installtion)
 - [running](#running)
 
-## downloading
-note : it's a private repo so you must configure and authorize git with github first with the following steps:<br>
-```bash
-git clone https://github.com/0xkr3pt0n/NetPackt.git
-cd NetPackt
-```
+## important note
+changes applied to Database, make sure you run python database.py first before running the project
 
 ## installtion for first time only
 
