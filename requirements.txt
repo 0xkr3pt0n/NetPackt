@@ -1,5 +1,12 @@
+beautifulsoup4==4.12.0
 Django==5.0.2
 django4_background_tasks==1.2.9
 mac_vendor_lookup==0.1.12
+pdf_reports==0.3.5
+pluginbase==1.0.1
+psutil==5.9.8
 psycopg2==2.9.9
+Requests==2.31.0
 scapy==2.5.0
+urllib3==2.2.1
+wafw00f==2.2.0

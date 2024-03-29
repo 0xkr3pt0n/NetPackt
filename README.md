@@ -6,7 +6,7 @@
 - [running](#running)
 
 ## important note
-changes applied to Database, make sure you run python database.py first before running the project
+changes applied to Database, make sure you run [python database.py] and [pip install -r requirements.txt] first before running the project
 
 ## installtion for first time only
 
