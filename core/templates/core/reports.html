@@ -173,9 +173,11 @@
                                 if (scantype === 0){
                                     scan_type = 'Network vulnerability scan';
                                 }else if (scantype === 1){
-                                    scan_type = 'Host discovery Scan'
+                                    scan_type = 'Host discovery Scan';
+                                }else if (scantype === 2){
+                                    scan_type = 'Web vulnerability Scan';
                                 }else{
-                                    scan_type = 'Web vulnerability Scan'
+                                    scan_type = 'WAF enumeration scan';
                                 }
                                 var scan_id = response.scans[key][0];
                                 if (progress === 0 ){

@@ -14,6 +14,7 @@ from background_task.models import Task
 from .vulnerability_scan import api_database
 from .host_discovery import hdisocver
 from .webscan import wscanner
+from .waf_enum import waf_enummer
 from urllib.parse import urlparse
 
 
@@ -257,6 +258,8 @@ def scan_report(request, report_id):
     fhds = fs.fetch_hostdiscovery_result(report_id)
     fws_domains, fws_dirs = fs.fetch_webscan_result(report_id)
     print(fws_dirs)
+
+
     if scan_type == 0:
         print(scan_data)
         return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front, 'scan_type':scan_type })
@@ -264,6 +267,10 @@ def scan_report(request, report_id):
         return render(request, 'core/scanreport.html', {'scan_data':scan_data,'results':fhds, 'user_name':username,  'scan_type':scan_type })
     elif scan_type == 2:
         return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'results_subdirs':fws_dirs, 'results_subdomains':fws_domains, 'user_name':username,  'scan_type':scan_type })
+    elif scan_type == 3:
+        firewalls_data = fs.fetch_waf_result(report_id)
+        return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'user_name':username,'scan_type':scan_type, 'firewalls_data':firewalls_data })
+
 
 @login_required(login_url='/login/')
 def delete_report(request, report_id):
@@ -305,6 +312,7 @@ def webscan(request):
         create_scan = scan_create.scan_create()
         shared_users_list = []
         scan_id = create_scan.webscan(scan_name, scan_target, user_id, shared_users_list)
+        
         scan_list = []
 
         # parsing url to filter it
@@ -385,3 +393,23 @@ def schedule_web_scan(scan_id, thread_level, target, scans_list, digs_dirs=0, di
         print("2 in list ")
         w.subdirs_enum(digs_dirs, thread_level, scan_id)
     w.finish_scan(scan_id)
+
+
+def waf_enumeration(request):
+    users = users_fetch.users_fetch()
+    users_data = users.get_all_users(request.user.id)
+
+    if request.method == 'POST':
+        scan_name = request.POST.get('scan_name')
+        target = request.POST.get('target')
+        print(scan_name)
+        print(target)
+        user_id = request.user.id
+        create_scan = scan_create.scan_create()
+        shared_users_list = []
+        scan_id = create_scan.waf_enum(scan_name, target, user_id, shared_users_list)
+
+        w = waf_enummer.waf_enumer(target, scan_id)
+        w.scan_target()
+
+    return render(request, 'core/waf_enum.html', {'users':users_data})

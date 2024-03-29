@@ -58,7 +58,20 @@
                                     <a class="nav-link" href="{%url 'sharedscans'%}">Shared Scans</a>
                                 </nav>
                             </div>
+                            
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fa-regular fa-object-ungroup"></i></div>
+                                Workspace
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{%url 'myscans'%}">My Workspaces</a>
+                                    <a class="nav-link" href="{%url 'sharedscans'%}">Shared Workspaces</a>
+                                </nav>
+                            </div>
                         </div>
+                        
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
@@ -77,8 +90,9 @@
                             
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-center text-grey mb-4" style="width: 16rem; height: 20rem;">
-                                    <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "vulnscan.png"%}" alt="Card image cap">
+                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "vulnscan.png"%}" alt="Card image cap"> {% endcomment %}
                                     <div class="card-body">
+                                        <i class="fa-solid fa-server" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">Network Vulnerability scan</p>
                                         <a href="{%url "network_scan"%}" class="btn btn-primary">New scan</a>
                                     </div>
@@ -86,8 +100,9 @@
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-center text-grey mb-4" style="width: 16rem; height: 20rem;">
-                                    <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "search.png"%}" alt="Card image cap">
+                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "search.png"%}" alt="Card image cap"> {% endcomment %}
                                     <div class="card-body">
+                                        <i class="fa-solid fa-magnifying-glass" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">Host Discovery scan</p>
                                         <a href="{%url 'host_discovery'%}" class="btn btn-primary">New scan</a>
                                     </div>
@@ -96,8 +111,9 @@
 
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "web.png"%}" alt="Card image cap">
+                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "web.png"%}" alt="Card image cap"> {% endcomment %}
                                     <div class="card-body" >
+                                        <i class="fa-solid fa-globe" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">Web Vulnerability scan</p>
                                         <a href="{%url 'webscan'%}" class="btn btn-primary">New scan</a>
                                     </div>
@@ -106,8 +122,9 @@
 
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "sql.png"%}" alt="Card image cap">
+                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "sql.png"%}" alt="Card image cap"> {% endcomment %}
                                     <div class="card-body" >
+                                        <i class="fa-solid fa-database" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">SQL injection tool</p>
                                         <a href="#" class="btn btn-primary">New scan</a>
                                     </div>
@@ -115,8 +132,9 @@
                             </div> 
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "infrastructure.png"%}" alt="Card image cap">
+                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "infrastructure.png"%}" alt="Card image cap"> {% endcomment %}
                                     <div class="card-body" >
+                                        <i class="fa-solid fa-diagram-project" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">Infrastructure scan</p>
                                         <a href="#" class="btn btn-primary">New scan</a>
                                     </div>
@@ -124,10 +142,11 @@
                             </div>  
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "malware.png"%}" alt="Card image cap">
+                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "malware.png"%}" alt="Card image cap"> {% endcomment %}
                                     <div class="card-body" >
-                                        <p class="card-text">MS17-010 (wannacry) scan</p>
-                                        <a href="#" class="btn btn-primary">New scan</a>
+                                        <i class="fa-solid fa-shield-halved" style="font-size: 180px; margin:10px;"></i>
+                                        <p class="card-text">WAF enumeration</p>
+                                        <a href="{%url 'waf_enumeration'%}" class="btn btn-primary">New scan</a>
                                     </div>
                                 </div>
                             </div>      

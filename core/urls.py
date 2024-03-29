@@ -20,7 +20,8 @@ urlpatterns = [
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
     path('stop_scan/<int:report_id>/', views.stop_scan, name="stop_scan"),
     path('ajax_data/,', views.get_scans_data, name="ajax_data"),
-    path('webscan/', views.webscan, name="webscan")
+    path('webscan/', views.webscan, name="webscan"),
+    path('waf_enumeration/', views.waf_enumeration, name="waf_enumeration")
     
     # path('export/<int:report_id>/', views.export, name='export'),
 ]

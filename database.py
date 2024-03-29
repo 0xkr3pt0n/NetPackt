@@ -34,7 +34,25 @@ class netpackt_database_prepare:
         self.create_disoverd_subdirs_table()
         self.add_isempty_columns()
         self.add_background_taskid()
+        self.create_db()
+        self.create_discoverd_waf_table()
+    
+    def create_db(self):
+        self.cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'netpackt'")
+        db_exists = self.cursor.fetchone()
 
+        # If the database does not exist, create it
+        if not db_exists:
+            try:
+                query = "CREATE DATABASE netpackt WITH OWNER = postgres ENCODING = 'UTF8' LOCALE_PROVIDER = 'libc' CONNECTION LIMIT = -1 IS_TEMPLATE = False"
+                self.cursor.execute(query)
+                self.connection.commit()
+                print("Database 'netpackt' created successfully.")
+            except psycopg2.Error as e:
+                print("Error: Unable to create database.")
+                print(e)
+        else:
+            print("Database 'netpackt' already exists.")
     def create_djangousers_table(self):
         command1 = "python manage.py makemigrations"
         command2 = "python manage.py migrate"
@@ -222,6 +240,21 @@ class netpackt_database_prepare:
         except Exception as e:
             print("Error creating table: ", e)
 
+    def create_discoverd_waf_table(self):
+        try:
+            create_table_query = '''
+            CREATE TABLE IF NOT EXISTS discoverd_waf (
+                id SERIAL PRIMARY KEY,
+                scan_id INTEGER REFERENCES scans(id),
+                waf TEXT
+            )
+            '''
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'discoverd_waf' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+
 
 class cves_database_prepare:
     def __init__(self):
@@ -243,6 +276,11 @@ class cves_database_prepare:
         self.create_refrences_table()
         self.create_cpeMatchURI_table()
         self.create_cpeMatchNames_table()
+    def create_db(self):
+        query = "CREATE DATABASE cves IF NOT EXISTS WITH OWNER = postgres ENCODING = 'UTF8' LOCALE_PROVIDER = 'libc' CONNECTION LIMIT = -1 IS_TEMPLATE = False"
+        self.connection.autocommit = True
+        self.cursor.execute(query)
+        self.connection.commit()
     def create_cve_table(self):
         try:
             # SQL query to create the scans table if it does not exist

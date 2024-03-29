@@ -91,11 +91,19 @@ class scans_fetch:
         subdirs = self.cursor.fetchall()
         self.connection.commit()
         return subdomains, subdirs
+    
+    def fetch_waf_result(self, scan_id):
+        query = f"SELECT * FROM discoverd_waf WHERE scan_id = {scan_id}"
+        self.cursor.execute(query)
+        wafs = self.cursor.fetchall()
+        self.connection.commit()
+        return wafs
 
     def delete_scan(self, scan_id):
         query1 =  f"DELETE FROM vulnscan_report where scan_id = {scan_id}"
         query2 = f"DELETE FROM subdomains_discoverd where scan_id = {scan_id}"
         query3 = f"DELETE FROM discoverd_ip WHERE report_id = {scan_id}"
+        query3 = f"DELETE FROM discoverd_waf WHERE scan_id = {scan_id}"
         query4 = f"DELETE FROM scans where id = {scan_id}"
         self.cursor.execute(query1)
         self.cursor.execute(query2)

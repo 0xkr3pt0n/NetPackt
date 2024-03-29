@@ -1,0 +1,74 @@
+{% extends "core/scans.html" %}
+{%block scan_title%} web scan {%endblock%}
+{%block scan_content%}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Web vulnerability scan</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="{%url 'dashboard'%}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Web vulnerability scan</li>
+        </ol>
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" action=".">
+                    {% csrf_token %}
+                    {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid threading option.
+                        </div>
+                    {%endif%}
+                    {% if error_message1 %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid Dig level option.
+                        </div>
+                    {%endif%}
+                    {% if error_message2 %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid URL.
+                        </div>
+                    {%endif%}
+                    <div class="row m-3">
+                        <div class="col">
+                          <label class="my-1 mr-2" for="scan_name">Scan Name</label>
+                          <input type="text" id="scan_name" name="scan_name" class="form-control" placeholder="EX : Company1">
+                        </div>
+                        <div class="col">
+                          <label class="my-1 mr-2" for="ip_addr">URL</label>
+                          <input type="text" name="target" id="ip_addr" class="form-control" placeholder="EX : https://www.example.com/">
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <label class="my-1 mr-2" for="share">Share report with</label>
+                            <div class="dropdown-center">
+                                <button class=" form-select" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Select users
+                                </button>
+                                <ul class="dropdown-menu ">
+                                {%for user in users%}
+                                    <li>                            
+                                        <div class="form-check m-2">
+                                            <input class="form-check-input" type="checkbox" name="{{user.0}}" value="{{user.0}}" id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                            {{user.1}}
+                                            </label>
+                                        </div>
+                                    </li>
+                                {%endfor%}
+                                </ul>
+                              </div>
+                        </div>
+                    </div>
+
+                    <div class="row m-3">
+                        <div class ="col " style="text-align:center;">
+                            <button type="submit" class="btn btn-primary btn-lg">Start scan</button>
+                        </div>
+                    <div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+{%endblock%}

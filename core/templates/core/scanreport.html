@@ -86,8 +86,10 @@
                             <h1 class="mt-4">Network vulnerability scan report</h1>
                         {%elif item.2 == 1%}
                             <h1 class="mt-4">Host discovery scan report</h1>
-                        {%else%}
+                        {%elif item.2 == 2%}
                             <h1 class="mt-4">Web vulnerability scan report</h1>
+                        {%else%}
+                            <h1 class="mt-4">WAF enumeration scan report</h1>
                         {%endif%}
                        
                     {%endfor%}
@@ -110,8 +112,10 @@
                                                 <li class="list-group-item">Scan Type : Network vulnerability scan</li>
                                             {%elif item.2 == 1%}
                                                 <li class="list-group-item">Scan Type : Host discovery scan</li>
-                                            {%else%}
+                                            {%elif item.2 == 2%}
                                                 <li class="list-group-item">Scan Type : Web vulnerability scan</li>
+                                            {%else%}
+                                                <li class="list-group-item">Scan Type : WAF enumeration scan</li>
                                             {%endif%}
 
                                             {%if item.3 == 0%}
@@ -253,6 +257,25 @@
                                                 </tbody>
                                             </table>
                                     {% comment %} web vulnerability table end {% endcomment %}
+
+                                    {% comment %} start waf enum table {% endcomment %}
+                                    {%elif scan_type == 3 %}
+                                    <table  class="table table-bordered" >
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Web application firewalls Found  </th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {%for waf in firewalls_data%}
+                                            <tr>
+                                                <td>{{waf.2}}</td>
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+
                                     {%endif%}
                                 </div>
                             </div>

@@ -53,3 +53,16 @@ class scan_create:
                 self.cursor.execute(insert_shared_query)
                 self.connection.commit()
         return scan_id
+    def waf_enum(self, scan_name, target, user_id, shared_list):
+        scan_type = 3
+        progress = 1 
+        create_scan_query = f"insert into scans (scan_name, scan_type, progress, ip_subnet, user_id) VALUES ('{scan_name}', '{scan_type}','{progress}', '{target}','{user_id}') RETURNING id"
+        self.cursor.execute(create_scan_query)
+        scan_id = self.cursor.fetchone()[0]
+        self.connection.commit()
+        if len(shared_list) > 0:
+            for shared_user_id in shared_list:
+                insert_shared_query = f"INSERT INTO shared_users (scan_id, user_id) VALUES ('{scan_id}' , '{shared_user_id}')"
+                self.cursor.execute(insert_shared_query)
+                self.connection.commit()
+        return scan_id
