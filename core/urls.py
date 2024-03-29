@@ -21,7 +21,11 @@ urlpatterns = [
     path('stop_scan/<int:report_id>/', views.stop_scan, name="stop_scan"),
     path('ajax_data/,', views.get_scans_data, name="ajax_data"),
     path('webscan/', views.webscan, name="webscan"),
-    path('waf_enumeration/', views.waf_enumeration, name="waf_enumeration")
+    path('waf_enumeration/', views.waf_enumeration, name="waf_enumeration"),
+    path('my_workspaces/', views.my_workspaces, name="my_workspaces"),
+    path('delete_workspace/<int:space_id>/', views.delete_workspace, name='delete_workspace'),
+    path('workspace/<int:space_id>/', views.edit_workspace, name='workspace')
+
     
     # path('export/<int:report_id>/', views.export, name='export'),
 ]

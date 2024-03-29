@@ -133,6 +133,13 @@ class scans_fetch:
         self.cursor.execute(query3)
         self.connection.commit()
         run.runAPP().process_tasks()
+    
+    def fetch_scans_workspace(self, user_id):
+        fetch_query = f"SELECT id, scan_name FROM scans where user_id = {user_id}"
+        self.cursor.execute(fetch_query)
+        result = self.cursor.fetchall()
+        self.connection.commit()
+        return result
        
                 
         

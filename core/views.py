@@ -16,6 +16,8 @@ from .host_discovery import hdisocver
 from .webscan import wscanner
 from .waf_enum import waf_enummer
 from urllib.parse import urlparse
+from .workspaces import workspace_create
+from .workspaces import workspace_fetch
 
 
 # from .pdf_report import pdf_gen
@@ -413,3 +415,42 @@ def waf_enumeration(request):
         w.scan_target()
 
     return render(request, 'core/waf_enum.html', {'users':users_data})
+
+def my_workspaces(request):
+    if request.method == 'POST':
+        workspace_name = request.POST.get('workspace_name')
+        print(workspace_name)
+        wc = workspace_create.workspace_create(workspace_name)
+        wc.create_workspace()
+
+        wsdata = workspace_fetch.workspace_fetcher()
+        wspaces = wsdata.fetch_workspaces()
+        return render(request, 'core/my_workspaces.html', {'workspaces': wspaces})
+    wsdata = workspace_fetch.workspace_fetcher()
+    wspaces = wsdata.fetch_workspaces()
+    return render(request, 'core/my_workspaces.html', {'workspaces': wspaces})
+
+def delete_workspace(request, space_id):
+    delete = workspace_fetch.workspace_fetcher()
+    delete.delete_workspace(space_id)
+    return redirect('my_workspaces')
+
+def edit_workspace(request, space_id):
+    ws = workspace_fetch.workspace_fetcher()
+    wsdata = ws.fetch_workspace(space_id)
+    wsScans = ws.workspace_scans_fetch(space_id)
+    scans = fetch_scans.scans_fetch()
+    user_id = request.user.id
+    scans_data = scans.fetch_scans_workspace(user_id)
+    
+    if request.method == 'POST':
+        scan_id = request.POST.get('scan_select')
+        ws.addscan_workspace(scan_id, space_id)
+        return render(request, 'core/workspace_edit.html', {'wsdata': wsdata, 'scans':scans_data})
+        
+    return render(request, 'core/workspace_edit.html', {'wsdata': wsdata, 'scans':scans_data, 'wsScans':wsScans})
+
+
+
+    
+    

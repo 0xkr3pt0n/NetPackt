@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Netpackt | Dashboard</title>
+        <title>Netpackt | my workspaces</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="{%static 'styles.css'%}" rel="stylesheet"/>
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -55,10 +55,10 @@
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{%url 'myscans'%}">My scans</a>
-                                    <a class="nav-link" href="{%url 'sharedscans'%}">Shared Scans</a>
+                                    <a class="nav-link" href="layout-sidenav-light.html">Shared Scans</a>
                                 </nav>
                             </div>
-                            
+
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fa-regular fa-object-ungroup"></i></div>
                                 Workspace
@@ -71,7 +71,6 @@
                                 </nav>
                             </div>
                         </div>
-                        
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
@@ -82,75 +81,98 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
+                        {%for data in wsdata%}
+                        <h1 class="mt-4">{{data.1}} workspace</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
+                            <li class="breadcrumb-item"><a href="#">Workspace</a></li>
+                            <li class="breadcrumb-item active">{{data.1}}</li>
                         </ol>
+                        {%endfor%}
                         <div class="row">
-                            
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card text-center text-grey mb-4" style="width: 16rem; height: 20rem;">
-                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "vulnscan.png"%}" alt="Card image cap"> {% endcomment %}
+                            <div class="col">
+                                <div class="card mb-4">
+                                    <div class="card-header">Workspace information</div>
                                     <div class="card-body">
-                                        <i class="fa-solid fa-server" style="font-size: 180px; margin:10px;"></i>
-                                        <p class="card-text">Network Vulnerability scan</p>
-                                        <a href="{%url "network_scan"%}" class="btn btn-primary">New scan</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card text-center text-grey mb-4" style="width: 16rem; height: 20rem;">
-                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "search.png"%}" alt="Card image cap"> {% endcomment %}
-                                    <div class="card-body">
-                                        <i class="fa-solid fa-magnifying-glass" style="font-size: 180px; margin:10px;"></i>
-                                        <p class="card-text">Host Discovery scan</p>
-                                        <a href="{%url 'host_discovery'%}" class="btn btn-primary">New scan</a>
-                                    </div>
-                                </div>
-                            </div>
+                                        <ul class="list-group list-group-flush">
+                                            {%for data in wsdata%}
+                                                <li class="list-group-item">Workspace name : {{data.1}}</li>
+                                                <li class="list-group-item">Created at : {{data.2}}</li>
+                                            {%endfor%}
+                                        </ul>
 
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "web.png"%}" alt="Card image cap"> {% endcomment %}
-                                    <div class="card-body" >
-                                        <i class="fa-solid fa-globe" style="font-size: 180px; margin:10px;"></i>
-                                        <p class="card-text">Web Vulnerability scan</p>
-                                        <a href="{%url 'webscan'%}" class="btn btn-primary">New scan</a>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "sql.png"%}" alt="Card image cap"> {% endcomment %}
-                                    <div class="card-body" >
-                                        <i class="fa-solid fa-database" style="font-size: 180px; margin:10px;"></i>
-                                        <p class="card-text">SQL injection tool</p>
-                                        <a href="#" class="btn btn-primary">New scan</a>
-                                    </div>
-                                </div>
-                            </div> 
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "infrastructure.png"%}" alt="Card image cap"> {% endcomment %}
-                                    <div class="card-body" >
-                                        <i class="fa-solid fa-diagram-project" style="font-size: 180px; margin:10px;"></i>
-                                        <p class="card-text">Infrastructure scan</p>
-                                        <a href="#" class="btn btn-primary">New scan</a>
-                                    </div>
-                                </div>
-                            </div>  
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card text-center text-grey mb-4"  style="width: 16rem; height: 20rem;">
-                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "malware.png"%}" alt="Card image cap"> {% endcomment %}
-                                    <div class="card-body" >
-                                        <i class="fa-solid fa-shield-halved" style="font-size: 180px; margin:10px;"></i>
-                                        <p class="card-text">WAF enumeration</p>
-                                        <a href="{%url 'waf_enumeration'%}" class="btn btn-primary">New scan</a>
-                                    </div>
-                                </div>
-                            </div>      
                         </div>
+                        <div class="row ">
+                            <div class="col">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-table me-1"></i>
+                                        Available reports in workspace
+                                    </div>
+                                    <div class="card-body">
+                                        <table id="datatablesSimple">
+                                            <thead>
+                                                <tr>
+                                                    <th>scan name</th>
+                                                    <th>Scan type</th>
+                                                    <th>Actions</th>
+
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {%for scan in wsScans%}
+                                                <tr>
+                                                    <td>{{scan.0}}</td>
+                                                    {%if scan.1 == 0 %}
+                                                        <td>Network vulnerability scan</td>
+                                                    {%elif scan.1 == 1%}
+                                                        <td>Host discovery scan</td>
+                                                    {%elif scan.1 == 2%}
+                                                        <td>Web scan</td>
+                                                    {%else%}
+                                                        <td>WAF enumeration scan</td>
+                                                    {%endif%}
+                                                    <td > <a href="#"><i class="fa-solid fa-xmark"></i></a></td>
+                                                </tr>
+                                                {%endfor%} 
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Add scans to workspace
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action=".">
+                                            {% csrf_token %}
+                                            <div class="row m-3">
+                                                <div class="col">
+                                                    <select class="form-select" name="scan_select" aria-label="Default select example">
+                                                        <option selected>Select scan</option>
+                                                        {%for scan in scans%}
+                                                            <option value="{{scan.0}}">{{scan.1}}</option>
+                                                        {%endfor%}
+                                                      </select>
+                                                </div>
+                                            </div>
+                                            <div class="row m-3">
+                                                <div class ="col " style="text-align:center;">
+                                                    <button type="submit" class="btn btn-primary btn-lg">Add scan to workspace</button>
+                                                </div>
+                                            <div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
                     </div>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
@@ -168,8 +190,9 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="{%static "scripts.js"%}"></script>
+        <script src="{%static 'scripts.js'%}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script src="{%static 'datatables-simple-demo.js' %}"></script>
     </body>
 </html>

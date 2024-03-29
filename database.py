@@ -36,6 +36,8 @@ class netpackt_database_prepare:
         self.add_background_taskid()
         self.create_db()
         self.create_discoverd_waf_table()
+        self.create_workspaces_table()
+        self.create_workspaces_scans_table()
     
     def create_db(self):
         self.cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'netpackt'")
@@ -255,6 +257,34 @@ class netpackt_database_prepare:
         except Exception as e:
             print("Error creating table: ", e)
 
+    def create_workspaces_table(self):
+        try:
+            create_table_query = '''
+            CREATE TABLE IF NOT EXISTS workspaces (
+                id SERIAL PRIMARY KEY,
+                name TEXT,
+                scan_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            '''
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'workspaces' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+    
+    def create_workspaces_scans_table(self):
+        try:
+            create_table_query = '''
+            CREATE TABLE IF NOT EXISTS workspaces_scans (
+                workspace_id INTEGER REFERENCES workspaces(id),
+                scan_id INTEGER REFERENCES scans(id)    
+            )
+            '''
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'workspaces_scans' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
 
 class cves_database_prepare:
     def __init__(self):
