@@ -188,8 +188,10 @@
                                     scan_type = 'Host discovery Scan';
                                 }else if (scantype === 2){
                                     scan_type = 'Web vulnerability Scan';
-                                }else{
+                                }else if (scantype === 3){
                                     scan_type = 'WAF enumeration scan';
+                                }else{
+                                    scan_type = 'Network incident investigation';
                                 }
                                 var scan_id = response.scans[key][0];
                                 if (progress === 0 ){
