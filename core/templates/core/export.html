@@ -1,0 +1,12 @@
+{% if user.is_authenticated %}
+    <!-- User is authenticated, display content here -->
+    <script type="text/javascript">
+        window.location.href = "{% url 'myscans' %}";
+    </script>
+    <!-- Add more authenticated user content here -->
+{% else %}
+    <!-- User is not authenticated, redirect to the dashboard -->
+    <script type="text/javascript">
+        window.location.href = "{% url 'myscans' %}";
+    </script>
+{% endif %}

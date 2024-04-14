@@ -1,0 +1,308 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Netpackt | {%block scan_title%} Report {%endblock%}</title>
+    <link href="{%static 'styles.css'%}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+
+</head>
+
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="{%url 'dashboard'%}">NetPackt</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
+                class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
+                    aria-describedby="btnNavbarSearch" />
+                <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i
+                        class="fas fa-search"></i></button>
+            </div>
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{%url 'setting'%}">Settings</a></li>
+                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                    <li>
+                        <hr class="dropdown-divider" />
+                    </li>
+                    <li><a class="dropdown-item" href="{%url 'logout'%}">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Home</div>
+                        <a class="nav-link" href="{%url 'dashboard'%}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+                        <div class="sb-sidenav-menu-heading">Reports</div>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                            data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Reports
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
+                            data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="{%url 'myscans'%}">My scans</a>
+                                <a class="nav-link" href="{%url 'sharedscans'%}">Shared Scans</a>
+                            </nav>
+                        </div>
+
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fa-regular fa-object-ungroup"></i></div>
+                            Workspace
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="{%url 'my_workspaces'%}">My Workspaces</a>
+                                <a class="nav-link" href="{%url 'sharedscans'%}">Shared Workspaces</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    {{ request.user.username }}
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+
+                    {%for workspace in wdata%}
+                    <h1 class="mt-4">{{workspace.1}} report</h1>
+                    {%endfor%}
+                         
+                    
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="{%url 'my_workspaces'%}">My workspaces</a></li>
+                        {%for item in wdata%}
+                            <li class="breadcrumb-item active">{{item.1}}</li>
+                        {%endfor%}
+                    </ol>
+                    <div class="row">
+
+                        <div class="col">
+                            <div class="card mb-4">
+                                <div class="card-header">Workspace Information</div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        {%for item in wdata%}
+                                            <li class="list-group-item">Workspace name : {{item.1}}</li>
+                                            <li class="list-group-item">Creation date : {{item.2}}</li>
+                                            <li class="list-group-item">Associated scans : 
+                                                <ul>
+                                                    {%for scan_info in scans_information%}
+                                                        <li>
+                                                            <a href="{% url 'report' scan_info.0 %}">{{scan_info.1}}</a> 
+                                                            {%if scan_info.2 == 0%}
+                                                                [Network vulnerability scan]
+                                                            {%elif scan_info.2 == 1%}
+                                                                [Host disocvery scan]
+                                                            {%elif scan_info.2 == 2%}
+                                                                [Web vulnerability scan]
+                                                            {%elif scan_info.2 == 3%}
+                                                                [WAF enumeration scan]
+                                                            {%endif%}
+                                                        </li>
+                                                    {%endfor%}
+                                                </ul>
+                                            </li>     
+                                        {%endfor%}
+                                      </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            {%for scan_info in scans_information%}
+                            <div class="card mb-4">
+                                <div class="card-header">{{scan_info.1}} scan report</div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        {%if scan_info.3 == 0%}
+                                            <li class="list-group-item">Scan Status : Completed. </li>
+                                        {%elif scan_info.3 == 1%}
+                                            <li class="list-group-item">Scan Status : In progress. </li>
+                                        {%else%}
+                                            <li class="list-group-item">Scan Status : Interuptted. </li>
+                                        {%endif%}
+                                        <li class="list-group-item">Target : {{scan_info.4}} </li>
+                                        <li class="list-group-item">Scane date : {{scan_info.6}} </li>
+                                    </ul>
+
+                                    {%if scan_info.2 == 0%}
+                                        <div class="row">
+                                            <div class="col">
+                                                {%for resultv in vulnresult%}
+                                                    {%if scan_info.0 == resultv.1%}
+                                                        
+                                                        {%for cve in cve_data%}
+                                                            {%if cve.0 == resultv.5  %}
+                                                                {{cve.0}} <br>
+                                                                
+                                                            {%endif%}
+                                                        {%endfor%}
+                                                    {%endif%}
+                                                {%endfor%}
+                                            </div>
+                                        </div>
+                                    {%elif scan_info.2 == 1%}
+                                        
+                                    {%elif scan_info.2 == 2%}
+                                        
+                                    {%elif scan_info.2 == 3%}
+                                        
+                                    {%endif%}
+                                        
+                                </div>
+                            </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                    
+                    
+
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Netpackt 2024</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="{%static 'scripts.js' %}"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="{%static 'datatables-simple-demo.js' %}"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', event => {
+
+            // Toggle the side navigation
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            if (sidebarToggle) {
+                // Uncomment Below to persist sidebar toggle between refreshes
+                // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+                //     document.body.classList.toggle('sb-sidenav-toggled');
+                // }
+                sidebarToggle.addEventListener('click', event => {
+                    event.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+                });
+            }
+        
+        });
+        var noneImpact = 0;
+        var InformationalImpact = 0;
+        var highImpact = 0;
+        var meduimImpact = 0;
+        var lowImpact = 0;
+        {%for cve in cve_data%}
+            {% if cve.3 > 0 and cve.3 < 1 %}
+                noneImpact++;
+            {% elif cve.3 > 1 and cve.3 < 2 %}
+                InformationalImpact++;
+            {% elif cve.3 > 2 and cve.3 < 4 %}
+                lowImpact++;
+            {% elif cve.3 > 4 and cve.3 < 7 %}
+                meduimImpact++;
+            {% elif cve.3 > 7 %}
+                highImpact++;
+            {%endif%}
+        {%endfor%}
+        console.log(InformationalImpact)
+        console.log(noneImpact);
+        console.log(lowImpact);
+        console.log(meduimImpact);
+        console.log(highImpact);
+        const data = {
+            labels: ['Critical', 'High', 'Medium', 'Low', 'Informational'],
+            datasets: [{
+                label: 'Number of vulnerabilites',
+                data: [highImpact, meduimImpact, lowImpact, InformationalImpact, noneImpact], //add data values from an analysis function
+                backgroundColor: [ 
+                    '#d84315',
+                    '#ec9630',
+                    '#fdd835', 
+                    '#9ccc65', 
+                    '#f1f8e9'
+                ],
+                hoverOffset: 4
+            }]
+        };
+        
+        // Get the canvas element
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        
+        // Create the pie chart
+        new Chart(ctx, {
+            type: 'pie',
+            data: data,
+        });
+        
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cell = row.querySelector('td:nth-child(4)');
+            const value = cell.textContent.trim().toLowerCase();
+            switch (value) {
+                case 'severe':
+                    row.style.backgroundColor = '#ffcccc'; // Light red
+                    break;
+                case 'high':
+                    row.style.backgroundColor = '#ffe0b3'; // Light orange
+                    break;
+                case 'medium':
+                    row.style.backgroundColor = '#ffffcc'; // Light yellow
+                    break;
+                case 'low':
+                    row.style.backgroundColor = '#ccffcc'; // Light green
+                    break;
+                default:
+                    // Handle unknown or default case
+                    break;
+            }
+        });
+    </script>
+</body>
+
+</html>

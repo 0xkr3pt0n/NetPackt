@@ -1,0 +1,164 @@
+{% extends "core/scans.html" %}
+{%block scan_title%} web scan {%endblock%}
+{%block scan_content%}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Web vulnerability scan</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="{%url 'dashboard'%}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Web vulnerability scan</li>
+        </ol>
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" action=".">
+                    {% csrf_token %}
+                    {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid threading option.
+                        </div>
+                    {%endif%}
+                    {% if error_message1 %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid Dig level option.
+                        </div>
+                    {%endif%}
+                    {% if error_message2 %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid URL.
+                        </div>
+                    {%endif%}
+                    <div class="row m-3">
+                        <div class="col">
+                          <label class="my-1 mr-2" for="scan_name">Scan Name</label>
+                          <input type="text" id="scan_name" name="scan_name" class="form-control" placeholder="EX : Company1">
+                        </div>
+                        <div class="col">
+                          <label class="my-1 mr-2" for="ip_addr">URL</label>
+                          <input type="text" name="target" id="ip_addr" class="form-control" placeholder="EX : https://www.example.com/">
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <label class="my-1 mr-2" for="share">Share report with</label>
+                            <div class="dropdown-center">
+                                <button class=" form-select" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Select users
+                                </button>
+                                <ul class="dropdown-menu ">
+                                {%for user in users%}
+                                    <li>                            
+                                        <div class="form-check m-2">
+                                            <input class="form-check-input" type="checkbox" name="{{user.0}}" value="{{user.0}}" id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                            {{user.1}}
+                                            </label>
+                                        </div>
+                                    </li>
+                                {%endfor%}
+                                </ul>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" name="subdomain_enum" type="checkbox" value="on" id="subdomain_enum">
+                                <label class="form-check-label" for="subdomain_enum">
+                                Subdomain enumeration
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" name="dig_level" id="dig_level" aria-label="Default select example" style="display: none;">
+                                <option selected>Subdomains dig level</option>
+                                <option value="0">Low Dig (faster, less output)</option>
+                                <option value="1">Meduim Dig (Normal)</option>
+                                <option value="2">High Dig (slow, more output)</option>
+                                <option value="3">Insane Dig (slower, more output)</option>
+                              </select>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" name="subdirs_enum" type="checkbox" value="on" id="subdirs_enum">
+                                <label class="form-check-label" for="subdomain_enum">
+                                    Subdirectory enumeration
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" name="dig_level_dirs" id="dig_level_dirs" aria-label="Default select example" style="display: none;">
+                                <option selected>Subdirectory dig level</option>
+                                <option value="0">Low Dig (faster, less output)</option>
+                                <option value="1">Meduim Dig (Normal)</option>
+                                <option value="2">High Dig (slow, more output)</option>
+                                <option value="3">Insane Dig (slower, more output)</option>
+                              </select>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" name="subdirs_enum" type="checkbox" value="on" id="subdirs_enum">
+                                <label class="form-check-label" for="subdomain_enum">
+                                    Parameters spidering
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" name="subdirs_enum" type="checkbox" value="on" id="subdirs_enum">
+                                <label class="form-check-label" for="subdomain_enum">
+                                    Test Owasp TOP 10
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <select class="form-select" name="thread_level" id="thread_level" aria-label="Default select example">
+                                <option selected>Thread level</option>
+                                <option value="0">No threading (Slow)</option>
+                                <option value="1">Intermediate threading (10 threads) (Normal)</option>
+                                <option value="2">High Threading (50 threads) (Fast)</option>
+                                <option value="3">Insane (100 threads) (Faster, Not recommended)</option>
+                              </select>
+                        </div>
+                    </div>
+
+                    <div class="row m-3">
+                        <div class ="col " style="text-align:center;">
+                            <button type="submit" class="btn btn-primary btn-lg">Start scan</button>
+                        </div>
+                    <div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    var checkbox = document.getElementById("subdomain_enum");
+    var selectOptions = document.getElementById("dig_level");
+    
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            selectOptions.style.display = "block";
+        } else {
+            selectOptions.style.display = "none";
+        }
+    });
+
+    var subdirs_checkbox = document.getElementById("subdirs_enum");
+    var dig_level_dirs = document.getElementById("dig_level_dirs");
+    subdirs_checkbox.addEventListener('change', function(){
+        if (this.checked){
+            dig_level_dirs.style.display = "block";
+        } else {
+            dig_level_dirs.style.display = "none";
+        }
+    });
+</script>
+{%endblock%}

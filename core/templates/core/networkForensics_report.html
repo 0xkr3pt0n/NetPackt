@@ -1,0 +1,89 @@
+{%extends "core/report.html" %}
+
+{%block scan_header%}
+Network incident investigation report
+{%endblock%}
+
+{%block scan_name%}
+{{scan_info.0.1}}
+{%endblock%}
+
+{%block scan_information_card%}
+<div class="card mb-4">
+    <div class="card-header">Scan Information</div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Scan name : {{scan_info.0.1}}</li>
+            <li class="list-group-item">Scan Type : Network incident investigation</li>
+            {%if scan_info.0.3 == 0%}
+            <li class="list-group-item">Progress : Completed</li>
+            {%else%}
+            <li class="list-group-item">Scan name : In progress</li>
+            {%endif%}
+            <li class="list-group-item">Evidence file name : {{scan_info.0.4}} </li>
+            <li class="list-group-item">Invesigated by : {{username}}</li>
+            <li class="list-group-item">Investigation date and time : {{scan_info.0.6}}</li>
+            <li class="list-group-item">Export report PDF : <a href="#"><i class="fa-solid fa-file-export"></i></a></li>
+        </ul>
+    <div class="card-body">
+    </div>
+</div>
+{%endblock%}
+
+{%block scan_content%}
+<div class="card mb-4">
+    <div class="card-header">Summary | Statistics</div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                  <th scope="col">Number of IP addresses</th>
+                  <th scope="col">Number of packets</th>
+                  <th scope="col">TCP packets</th>
+                  <th scope="col">UDP packets</th> 
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>{{nf_stats.0.5}}</td>
+                    <td>{{nf_stats.0.2}}</td>
+                    <td>{{nf_stats.0.3}}</td>
+                    <td>{{nf_stats.0.4}}</td>
+                </tr>
+              </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header"> <i class="fas fa-table me-1"></i> IP address found</div>
+    <div class="card-body">
+        <table id="datatablesSimple">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>IP Role</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>IP</th>
+                    <th>IP Role</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                {%for ip in nf_ips%}
+                 <tr>
+                    <td>
+                        {{ip.2}}
+                    </td>
+                    <td>
+                        {{ip.3}}
+                    </td>
+                 </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{%endblock%}

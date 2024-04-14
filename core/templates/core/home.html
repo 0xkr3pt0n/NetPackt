@@ -1,0 +1,91 @@
+{%load static%}
+{% if request.user.is_authenticated %}
+  <script>
+      window.location.href = "{% url 'dashboard' %}"; 
+  </script>
+{%else%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netpackt - Vulnerability Assessment Tool</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{%static 'home.css'%}">
+</head>
+
+<body>
+    <header class="header">
+        <h2><a href="{%url 'home'%}" >Netpackt</a></h2>
+        <nav class="nav-items">
+            <a href="{%url 'dashboard'%}">Dashboard</a>
+            <a href="#">Help</a>
+            <a href="#About">About</a>
+            <a href="#Contact">Contact</a>
+            <a href="{%url 'login'%}" class="header-button"> Login </a>
+            <a href="{%url 'register'%}" class="header-button2">Sign Up</a>
+        </nav>
+    </header>
+    <main>
+        <div class="intro">
+            <h1>A Vulnerability Assessment Tool</h1>
+            <p>Netpackt is a web-based tool that helps you scan, analyze, and fix vulnerabilities in your web
+                applications.</p>
+            <button>Learn More</button>
+        </div>
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-shield-alt"></i>
+                <p class="feature-heading">Secure</p>
+                <p class="feature-text">Netpackt uses advanced techniques and algorithms to detect and prevent security
+                    threats.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-chart-line"></i>
+                <p class="feature-heading">Fast</p>
+                <p class="feature-text">Netpackt performs scans and analyses in real-time, giving you instant feedback
+                    and results.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-cogs"></i>
+                <p class="feature-heading">Customizable</p>
+                <p class="feature-text">Netpackt allows you to configure and customize your scans and reports according
+                    to your needs and preferences.</p>
+            </div>
+        </div>
+        <div class="about" id="About">
+            <div class="about-text">
+                <h2>About Netpackt</h2>
+                <p>Netpackt is a web-based tool that helps you scan, analyze, and fix vulnerabilities in network and your web
+                    applications. It supports various web technologies and frameworks, such as HTML, CSS, JavaScript,
+                    Python, Django and more. Netpackt provides you with comprehensive and detailed
+                    reports, highlighting the severity, impact, and solution of each vulnerability. Netpackt also offers
+                    you suggestions and recommendations on how to improve your network and web security and performance.</p>
+            </div>
+            <div class="about-image">
+                <img src="{%static 'Image.png'%}" alt="Netpackt logo">
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="social-media">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <div class="contact-details" id="Contact">
+            <p>Email: netpackt@gmail.com</p>
+            <p>Phone: +20 123 456 789</p>
+        </div>
+        <div class="copyrigth">
+            <p>© 2024 Netpackt. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+
+</html>
+{%endif%}
