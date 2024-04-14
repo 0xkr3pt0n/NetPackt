@@ -247,8 +247,24 @@ def scan_report(request, report_id):
     scan_info = fs.fetch_scan_info(report_id)
     user_data = User.objects.get(id=scan_info[0][5])
     username = user_data.username
-    print(username)
-    if scan_type == 4:
+    
+    #network vulnerablility scan
+    if scan_type == 0:
+        cve_data_list = []
+        cve_refrences_list = []
+        report_data = fs.fetch_scan_result(report_id)
+        for cve_id in report_data:
+            cve_data, cve_refrences = fs.get_vulnerability_detils(cve_id[5])
+            cve_data_list.append(cve_data)
+            cve_refrences_list.append(cve_refrences)
+        
+        cve_data_front = [item for sublist in cve_data_list for item in sublist]
+        refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
+        return render(request, 'core/networkscan_report.html', {'report_data':report_data, 'scan_info':scan_info, 'username':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front})
+    elif scan_type == 2:
+        return render(request, 'core/webscan_report.html',{'scan_info':scan_info})
+    #forensics scan
+    elif scan_type == 4:
         nf_stats = fs.fetch_nf_stats(report_id)
         nf_ips = fs.fetch_nf_ips(report_id)
         return render(request, 'core/networkForensics_report.html', {'scan_info':scan_info, 'username':username, 'nf_stats':nf_stats, 'nf_ips':nf_ips})
