@@ -257,12 +257,23 @@ def scan_report(request, report_id):
             cve_data, cve_refrences = fs.get_vulnerability_detils(cve_id[5])
             cve_data_list.append(cve_data)
             cve_refrences_list.append(cve_refrences)
-        
         cve_data_front = [item for sublist in cve_data_list for item in sublist]
         refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
         return render(request, 'core/networkscan_report.html', {'report_data':report_data, 'scan_info':scan_info, 'username':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front})
+    #host discovery scan
+    elif scan_type == 1:
+        fhds = fs.fetch_hostdiscovery_result(report_id)
+        return render(request, 'core/hostdiscovery_report.html', {'scan_info':scan_info, 'username':username, 'results':fhds})
+    #webscan
     elif scan_type == 2:
-        return render(request, 'core/webscan_report.html',{'scan_info':scan_info})
+        fws_domains, fws_dirs = fs.fetch_webscan_result(report_id)
+        print(fws_domains)
+        print(fws_dirs)
+        return render(request, 'core/webscan_report.html',{'scan_info':scan_info, 'username':username, 'results_subdirs':fws_dirs, 'results_subdomains':fws_domains})
+    #waf scan
+    elif scan_type == 3:
+        firewalls_data = fs.fetch_waf_result(report_id)
+        return render(request, 'core/wafenum_report.html', {'scan_info':scan_info, 'username':username, 'firewalls_data':firewalls_data})
     #forensics scan
     elif scan_type == 4:
         nf_stats = fs.fetch_nf_stats(report_id)
@@ -444,6 +455,7 @@ def waf_enumeration(request):
 
         w = waf_enummer.waf_enumer(target, scan_id)
         w.scan_target()
+        return redirect('myscans')
 
     return render(request, 'core/waf_enum.html', {'users':users_data})
 
@@ -569,6 +581,7 @@ def network_forensics(request):
         nf = nforensics.pcap_analyzer(saved_file_name, scan_id)
         data = nf.pacp_analyze()
         nf.result_insertion(data)
+        return redirect('myscans')
         
     else:
         form = Pcap_form()

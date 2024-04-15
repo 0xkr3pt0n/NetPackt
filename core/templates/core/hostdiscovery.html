@@ -11,16 +11,16 @@
         
         <div class="card mb-4">
             <div class="card-body">
-                <form method="POST" action=".">
+                <form method="POST" action="." novalidate>
                     {% csrf_token %}
                     <div class="row m-3">
                       <div class="col">
                         <label class="my-1 mr-2" for="scan_name">Scan Name</label>
-                        <input type="text" id="scan_name" name="scan_name" class="form-control" placeholder="EX : Company1" required>
+                        <input type="text" id="scan_name" name="scan_name" class="form-control" placeholder="EX : Company1">
                       </div>
                       <div class="col" id="ipInput">
-                        <label class="my-1 mr-2" for="scan_name">Network subnet</label>
-                        <input type="text" name="subnet" id="subnet" class="form-control" placeholder="EX: 192.168.1.0/24" title="Please enter a valid IPv4 network in CIDR notation" required>
+                        <label class="my-1 mr-2" for="subnet">Network subnet</label>
+                        <input type="text" name="subnet" id="subnet" class="form-control" placeholder="EX: 192.168.1.0/24" >
                       </div>
                     </div>
                     <div class="row m-3">

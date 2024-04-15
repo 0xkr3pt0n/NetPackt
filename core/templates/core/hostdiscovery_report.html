@@ -1,7 +1,7 @@
 {%extends "core/report.html" %}
 
 {%block scan_header%}
-Web application scan report
+Host discovery scan report
 {%endblock%}
 
 {%block scan_name%}
@@ -14,13 +14,13 @@ Web application scan report
     <div class="card-body">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Scan name : {{scan_info.0.1}}</li>
-            <li class="list-group-item">Scan Type : Web application scan</li>
+            <li class="list-group-item">Scan Type : Host discovery scan</li>
             {%if scan_info.0.3 == 0%}
             <li class="list-group-item">Progress : Completed</li>
             {%else%}
             <li class="list-group-item">Scan name : In progress</li>
             {%endif%}
-            <li class="list-group-item">Target website : {{scan_info.0.4}} </li>
+            <li class="list-group-item">Target subnet : {{scan_info.0.4}} </li>
             <li class="list-group-item">Done by : {{username}}</li>
             <li class="list-group-item">date and time : {{scan_info.0.6}}</li>
             <li class="list-group-item">Export report PDF : <a href="#"><i class="fa-solid fa-file-export"></i></a></li>
@@ -31,13 +31,22 @@ Web application scan report
 
 {%block scan_content%}
 <div class="card mb-4">
-    <div class="card-header"> <i class="fas fa-table me-1"></i> Subdomains found</div>
+    <div class="card-header"> <i class="fas fa-table me-1"></i> Hosts discoverd</div>
     <div class="card-body">
         <table class="table">
-            <tbody>
-                {%for sub in results_subdomains%}
+            <thead>
                 <tr>
-                    <td>{{sub.2}}</td>
+                    <td>IP address</td>
+                    <td>MAC address</td>
+                    <td>Device name</td>
+                </tr>
+            </thead>
+            <tbody>
+                {%for host in results%}
+                <tr>
+                    <td>{{host.1}}</td>
+                    <td>{{host.2}}</td>
+                    <td>{{host.3}}</td>
                 </tr>
                 {%endfor%}
             </tbody>
@@ -45,18 +54,4 @@ Web application scan report
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-header"> <i class="fas fa-table me-1"></i> Subdirectories found</div>
-    <div class="card-body">
-        <table class="table">
-            <tbody>
-                {%for sub in results_subdirs%}
-                <tr>
-                    <td>{{sub.2}}</td>
-                </tr>
-                {%endfor%}
-            </tbody>
-        </table>
-    </div>
-</div>
 {%endblock%}
