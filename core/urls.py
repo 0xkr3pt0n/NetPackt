@@ -25,8 +25,9 @@ urlpatterns = [
     path('my_workspaces/', views.my_workspaces, name="my_workspaces"),
     path('delete_workspace/<int:space_id>/', views.delete_workspace, name='delete_workspace'),
     path('workspace/<int:space_id>/', views.edit_workspace, name='workspace'),
-    path('incident_investigate', views.network_forensics, name="network_forensics"),
-    path('view_workspace/<int:space_id>/', views.view_workspace, name='view_workspace')
+    path('incident_investigate/', views.network_forensics, name="network_forensics"),
+    path('view_workspace/<int:space_id>/', views.view_workspace, name='view_workspace'),
+    path('chat/', views.chat_page, name='chat')
     
 
     

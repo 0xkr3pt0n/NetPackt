@@ -587,3 +587,7 @@ def network_forensics(request):
         form = Pcap_form()
 
     return render(request, 'core/network_forensics.html', {'form':form, 'users':users_data})
+
+
+def chat_page(request):
+    return render(request, 'core/chat.html')
