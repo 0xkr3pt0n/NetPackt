@@ -79,7 +79,7 @@
                             </a>
                             <div class="collapse" id="collapseLayouts3" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{%url 'chat'%}">My messages</a>
+                                    <a class="nav-link" href="{%url 'chat' request.user.username%}">My messages</a>
                                     <a class="nav-link" href="{%url 'sharedscans'%}">Messages request</a>
                                 </nav>
                             </div>
@@ -91,7 +91,7 @@
                             </a>
                             <div class="collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{%url 'chat'%}">My friends</a>
+                                    <a class="nav-link" href="#">My friends</a>
                                     <a class="nav-link" href="{%url 'sharedscans'%}">Add friends</a>
                                 </nav>
                             </div>

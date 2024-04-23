@@ -20,6 +20,7 @@ urlpatterns = [
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
     path('stop_scan/<int:report_id>/', views.stop_scan, name="stop_scan"),
     path('ajax_data/,', views.get_scans_data, name="ajax_data"),
+    path('ajax_data_chats/<str:selected_username>/,', views.ajax_data_chats, name="ajax_data_chats"),
     path('webscan/', views.webscan, name="webscan"),
     path('waf_enumeration/', views.waf_enumeration, name="waf_enumeration"),
     path('my_workspaces/', views.my_workspaces, name="my_workspaces"),
@@ -27,7 +28,8 @@ urlpatterns = [
     path('workspace/<int:space_id>/', views.edit_workspace, name='workspace'),
     path('incident_investigate/', views.network_forensics, name="network_forensics"),
     path('view_workspace/<int:space_id>/', views.view_workspace, name='view_workspace'),
-    path('chat/', views.chat_page, name='chat')
+    path('chat/<str:username>/', views.chat_page, name='chat'),
+    
     
 
     

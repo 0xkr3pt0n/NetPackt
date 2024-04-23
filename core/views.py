@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 from .workspaces import workspace_create
 from .workspaces import workspace_fetch
 from .network_forensics import nforensics
+from .chat import fetch_users_info, fetch_chat, send_message
 
 # from .pdf_report import pdf_gen
 # Create your views here.
@@ -35,6 +36,8 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            us = users_fetch.users_fetch()
+            us.userlogin_status(request.user.id)
             return redirect('dashboard')
         else:
             messages.error(request, 'Username or password is not correct')
@@ -62,6 +65,8 @@ def register(request):
 
 @login_required(login_url='/login/')
 def user_logout(request):
+    us = users_fetch.users_fetch()
+    us.userlogout_status(request.user.id)
     logout(request)
     return redirect('/login/')
 
@@ -209,6 +214,11 @@ def get_scans_data(request):
     fs = fetch_scans.scans_fetch()
     data = fs.fetch_scans(request.user.id)
     return JsonResponse({"scans":data})
+
+def ajax_data_chats(request, selected_username):
+    cm = fetch_chat.fetch_chat_info()
+    data = cm.get_messages(request.user.username, selected_username)
+    return JsonResponse({"chat":data})
 
 @login_required(login_url='/login/')
 def sharedreports(request):
@@ -589,5 +599,23 @@ def network_forensics(request):
     return render(request, 'core/network_forensics.html', {'form':form, 'users':users_data})
 
 
-def chat_page(request):
-    return render(request, 'core/chat.html')
+def chat_page(request, username):
+    
+    fs = fetch_users_info.fetch_users_info()
+    fc = fetch_chat.fetch_chat_info()
+    
+    user_id = request.user.id
+    users = fs.get_all_users(user_id)
+    
+    user1_username=request.user.username
+    user2_laslogin = fs.get_user_lastlogin(username)[0][0]
+    messagess = fc.get_messages(user1_username, username)
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        sm = send_message.send_message()
+        sm.send_message(user1_username, username, message)
+
+    return render(request, 'core/chat.html', {"users":users,'messagess':messagess, 'selected_username':username, 'selected_lastlogin':user2_laslogin})
+    # return render(request, 'core/chat.html', {"users":users, 'selected_username':user2_username, 'selected_lastlogin':user2_lastlogin, 'messagess':messagess})
+

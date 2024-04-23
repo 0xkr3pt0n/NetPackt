@@ -23,6 +23,7 @@ class netpackt_database_prepare:
         #create tables
         self.create_djangousers_table()
         self.add_api_column()
+        self.add_status_column()
         self.create_scans_table()
         self.create_Vulnscanreport_table()
         self.create_apiresults_table()
@@ -40,6 +41,7 @@ class netpackt_database_prepare:
         self.create_workspaces_scans_table()
         self.create_nfstatistics_table()
         self.create_nfIps_table()
+        self.create_messages_table()
     
     def create_db(self):
         self.cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'netpackt'")
@@ -57,6 +59,26 @@ class netpackt_database_prepare:
                 print(e)
         else:
             print("Database 'netpackt' already exists.")
+    def create_messages_table(self):
+        try:
+            # SQL query to create the scans table if it does not exist
+            create_table_query = '''
+                CREATE TABLE IF NOT EXISTS messages (
+                    id SERIAL PRIMARY KEY,
+                    sender text REFERENCES auth_user(username),
+                    reciver text REFERENCES auth_user(username),
+                    message TEXT,
+                    Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    status INTEGER
+                )
+            '''
+            # execute the create table query
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'messages' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+
     def create_djangousers_table(self):
         command1 = "python manage.py makemigrations"
         command2 = "python manage.py migrate"
@@ -71,6 +93,14 @@ class netpackt_database_prepare:
             self.cursor.execute(add_column_query)
             self.connection.commit()
             print("column 'api_option' added successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+    def add_status_column(self):
+        try:
+            add_column_query = "ALTER TABLE auth_user ADD COLUMN IF NOT EXISTS status INTEGER DEFAULT 0;"
+            self.cursor.execute(add_column_query)
+            self.connection.commit()
+            print("column 'status' added successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
 

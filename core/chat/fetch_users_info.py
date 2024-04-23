@@ -1,6 +1,6 @@
 import psycopg2
 
-class users_fetch:
+class fetch_users_info:
     def __init__(self):
         try:
             # Connection to the CVE database
@@ -15,22 +15,14 @@ class users_fetch:
         except Exception as e:
                 print("Error connecting to database : ", e)
     def get_all_users(self, user_id):
-        get_query  = f"select id,username from auth_user where id != {user_id}"
+        get_query  = f"select id,username,status,last_login from auth_user where id != {user_id}"
         self.cursor.execute(get_query)
         users_data = self.cursor.fetchall()
         self.connection.commit()
         return users_data
-    
-    def userlogin_status(self, user_id):
-        update_query = f"UPDATE auth_user set status = 1 where id = {user_id}"
-        self.cursor.execute(update_query)
+    def get_user_lastlogin(self, username):
+        get_query  = f"select last_login from auth_user where username = '{username}'"
+        self.cursor.execute(get_query)
+        users_data = self.cursor.fetchall()
         self.connection.commit()
-    
-    def userlogout_status(self, user_id):
-        update_query = f"UPDATE auth_user set status = 0 where id = {user_id}"
-        self.cursor.execute(update_query)
-        self.connection.commit()
-    
-if __name__ == "__main__":
-    users = users_fetch()
-    print(users.get_all_users())
+        return users_data
