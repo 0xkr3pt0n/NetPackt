@@ -1,8 +1,6 @@
 import psycopg2
 import subprocess
 
-
-
 class netpackt_database_prepare:
     def __init__(self):
         try:
@@ -42,6 +40,7 @@ class netpackt_database_prepare:
         self.create_nfstatistics_table()
         self.create_nfIps_table()
         self.create_messages_table()
+        self.create_friend_request_table()  # Add this line to create the friend_request table
     
     def create_db(self):
         self.cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'netpackt'")
@@ -59,6 +58,7 @@ class netpackt_database_prepare:
                 print(e)
         else:
             print("Database 'netpackt' already exists.")
+            
     def create_messages_table(self):
         try:
             # SQL query to create the scans table if it does not exist
@@ -95,6 +95,7 @@ class netpackt_database_prepare:
             print("column 'api_option' added successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
+            
     def add_status_column(self):
         try:
             add_column_query = "ALTER TABLE auth_user ADD COLUMN IF NOT EXISTS status INTEGER DEFAULT 0;"
@@ -208,6 +209,7 @@ class netpackt_database_prepare:
             print("Table 'discoverd_ip' created successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
+            
     def create_sharedusers_table(self):
         try:
             # SQL query to create the scans table if it does not exist
@@ -348,6 +350,23 @@ class netpackt_database_prepare:
             self.cursor.execute(create_table_query)
             self.connection.commit()
             print("Table 'workspaces_scans' created successfully or already exists.")
+        except Exception as e:
+            print("Error creating table: ", e)
+            
+    def create_friend_request_table(self):
+        try:
+            create_table_query = '''
+            CREATE TABLE IF NOT EXISTS friend_request (
+                id SERIAL PRIMARY KEY,
+                from_user_id INTEGER REFERENCES auth_user(id),
+                to_user_id INTEGER REFERENCES auth_user(id),
+                created_at TIMESTAMP DEFAULT NOW(),
+                accepted BOOLEAN DEFAULT FALSE
+            )
+            '''
+            self.cursor.execute(create_table_query)
+            self.connection.commit()
+            print("Table 'friend_request' created successfully or already exists.")
         except Exception as e:
             print("Error creating table: ", e)
 
