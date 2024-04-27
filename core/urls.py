@@ -29,6 +29,14 @@ urlpatterns = [
     path('incident_investigate/', views.network_forensics, name="network_forensics"),
     path('view_workspace/<int:space_id>/', views.view_workspace, name='view_workspace'),
     path('chat/<str:username>/', views.chat_page, name='chat'),
+    path('search/', views.search_users, name='search_users'),
+    path('friend-requests/', views.friend_requests, name='friend_requests'),
+    path('search/', views.search_users, name='search_users'),
+    path('send-friend-request/<int:to_user_id>/', views.send_friend_request, name='send_friend_request'),
+    path('accept-friend-request/<int:request_id>/', views.accept_friend_request, name='accept_friend_request'),
+    path('reject-friend-request/<int:request_id>/', views.reject_friend_request, name='reject_friend_request'),
+    path('accepted-users/', views.accepted_users, name='accepted_users'),
+
     
     
 
