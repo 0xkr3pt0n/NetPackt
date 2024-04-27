@@ -21,6 +21,9 @@ from .workspaces import workspace_create
 from .workspaces import workspace_fetch
 from .network_forensics import nforensics
 from .chat import fetch_users_info, fetch_chat, send_message
+from django.db import connection
+
+
 
 # from .pdf_report import pdf_gen
 # Create your views here.
@@ -619,3 +622,89 @@ def chat_page(request, username):
     return render(request, 'core/chat.html', {"users":users,'messagess':messagess, 'selected_username':username, 'selected_lastlogin':user2_laslogin})
     # return render(request, 'core/chat.html', {"users":users, 'selected_username':user2_username, 'selected_lastlogin':user2_lastlogin, 'messagess':messagess})
 
+@login_required(login_url='/login/')
+def friend_requests(request):
+    # Assuming you have a PostgreSQL table named friend_request
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT fr.id, u.username
+            FROM friend_request fr
+            JOIN auth_user u ON fr.from_user_id = u.id
+            WHERE fr.to_user_id = %s
+        """, [request.user.id])
+        friend_requests = cursor.fetchall()
+
+    return render(request, 'core/add_friend.html', {'friend_requests': friend_requests})
+
+
+
+
+@login_required(login_url='/login/')   
+def search_users(request):
+    if request.method == 'GET':
+        query = request.GET.get('q', '')
+        users = User.objects.filter(username__icontains=query)
+        return render(request, 'core/search_results.html', {'users': users, 'query': query})
+    else:
+        return redirect('core/dashboard.html')
+
+@login_required(login_url='/login/')   
+def send_friend_request(request, to_user_id):
+    if request.method == 'POST':
+        from_user_id = request.user.id
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO friend_request (from_user_id, to_user_id) VALUES (%s, %s)",
+                    [from_user_id, to_user_id]
+                )
+            # Provide feedback to the user
+            messages.success(request, 'Friend request sent successfully.')
+        except Exception as e:
+            # Handle any database errors
+            messages.error(request, 'An error occurred while sending the friend request.')
+        return redirect('home')
+
+@login_required(login_url='/login/')
+def accept_friend_request(request, request_id):
+    if request.method == 'POST':
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE friend_request SET accepted = TRUE WHERE id = %s",
+                    [request_id]
+                )
+            # Provide feedback to the user
+            messages.success(request, 'Friend request accepted successfully.')
+        except Exception as e:
+            # Handle any database errors
+            messages.error(request, 'An error occurred while accepting the friend request.')
+        return redirect('home')
+
+@login_required(login_url='/login/')
+def reject_friend_request(request, request_id):
+    if request.method == 'POST':
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM friend_request WHERE id = %s",
+                    [request_id]
+                )
+            # Provide feedback to the user
+            messages.success(request, 'Friend request rejected successfully.')
+        except Exception as e:
+            # Handle any database errors
+            messages.error(request, 'An error occurred while rejecting the friend request.')
+        return redirect('home')
+    
+@login_required(login_url='/login/')
+def accepted_users(request):
+    # Fetch users who have sent friend requests that were accepted
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT u.username AS sender_username, u2.username AS receiver_username FROM auth_user u INNER JOIN friend_request fr ON u.id = fr.from_user_id INNER JOIN auth_user u2 ON u2.id = fr.to_user_id WHERE fr.accepted = TRUE AND (fr.from_user_id = %s OR fr.to_user_id = %s)",
+            [request.user.id, request.user.id]
+        )
+        accepted_users = [{'sender': row[0], 'receiver': row[1]} for row in cursor.fetchall()]
+
+    return render(request, 'core/accepted_users.html', {'accepted_users': accepted_users})
