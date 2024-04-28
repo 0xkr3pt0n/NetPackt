@@ -295,38 +295,6 @@ def scan_report(request, report_id):
     else:
         return render(request, 'core/report.html')
 
-# @login_required(login_url='/login/')
-# def scan_report(request, report_id):
-#     fs = fetch_scans.scans_fetch()
-#     report_data = fs.fetch_scan_result(report_id)
-#     scan_data = fs.fetch_scan_info(report_id)
-#     user_data = User.objects.get(id=scan_data[0][5])
-#     username = user_data.username
-#     cve_data_list = []
-#     cve_refrences_list = []
-#     for cve_id in report_data:
-#         cve_data, cve_refrences = fs.get_vulnerability_detils(cve_id[5])
-#         cve_data_list.append(cve_data)
-#         cve_refrences_list.append(cve_refrences)
-    
-#     cve_data_front = [item for sublist in cve_data_list for item in sublist]
-#     refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
-#     scan_type = scan_data[0][2]
-#     fhds = fs.fetch_hostdiscovery_result(report_id)
-#     fws_domains, fws_dirs = fs.fetch_webscan_result(report_id)
-#     print(fws_dirs)
-
-
-#     if scan_type == 0:
-#         print(scan_data)
-#         return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front, 'scan_type':scan_type })
-#     elif scan_type == 1:
-#         return render(request, 'core/scanreport.html', {'scan_data':scan_data,'results':fhds, 'user_name':username,  'scan_type':scan_type })
-#     elif scan_type == 2:
-#         return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'results_subdirs':fws_dirs, 'results_subdomains':fws_domains, 'user_name':username,  'scan_type':scan_type })
-#     elif scan_type == 3:
-#         firewalls_data = fs.fetch_waf_result(report_id)
-#         return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'user_name':username,'scan_type':scan_type, 'firewalls_data':firewalls_data })
 
 
 @login_required(login_url='/login/')
@@ -601,7 +569,7 @@ def network_forensics(request):
 
     return render(request, 'core/network_forensics.html', {'form':form, 'users':users_data})
 
-
+@login_required(login_url='/login/') 
 def chat_page(request, username):
     
     fs = fetch_users_info.fetch_users_info()
@@ -609,18 +577,25 @@ def chat_page(request, username):
     
     user_id = request.user.id
     users = fs.get_all_users(user_id)
-    
+    #if no username is set then set the first username
+    if username == request.user.username:
+        username=users[0][1]
     user1_username=request.user.username
     user2_laslogin = fs.get_user_lastlogin(username)[0][0]
     messagess = fc.get_messages(user1_username, username)
-
+    last_message = ""
+    if len(messagess[-1][3]) > 40:
+        last_message = f"{messagess[-1][3][:40]}......"
+    else:
+        last_message = messagess[-1][3]
+    print(last_message)
+    
     if request.method == 'POST':
         message = request.POST.get('message')
         sm = send_message.send_message()
         sm.send_message(user1_username, username, message)
 
-    return render(request, 'core/chat.html', {"users":users,'messagess':messagess, 'selected_username':username, 'selected_lastlogin':user2_laslogin})
-    # return render(request, 'core/chat.html', {"users":users, 'selected_username':user2_username, 'selected_lastlogin':user2_lastlogin, 'messagess':messagess})
+    return render(request, 'core/chat.html', {"users":users,'messagess':messagess, 'selected_username':username, 'selected_lastlogin':user2_laslogin, 'last_message':last_message})
 
 @login_required(login_url='/login/')
 def friend_requests(request):

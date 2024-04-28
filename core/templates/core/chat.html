@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Netpackt | Dashboard</title>
+        <title>Netpackt | My messages</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="{%static 'chat.css'%}" rel="stylesheet"/>
         <link href="{%static 'styles.css'%}" rel="stylesheet"/>
@@ -93,8 +93,8 @@
                             </a>
                             <div class="collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{%url 'chat' 'khaled'%}">My friends</a>
-                                    <a class="nav-link" href="{%url 'sharedscans'%}">Add friends</a>
+                                    <a class="nav-link" href="{%url 'chat' request.user.username%}">My friends</a>
+                                    <a class="nav-link" href="{%url 'friend_requests'%}">Add friends</a>
                                 </nav>
                             </div>
 
@@ -145,7 +145,11 @@
                                         <a href="{%url 'chat' user.1 %}" style="text-decoration: none; color: white;">{{user.1}}</a>
                                       </span>
                                       <!-- last message -->
-                                      <span class="friends-message">Crap! I forgot my shoes. Can you bring extra pair for me?</span>
+                                      {%if user.2 == 0%}
+                                        <span class="friends-message"> <i class="fa fa-circle offline"></i> Offline</span>
+                                      {%else%}
+                                        <span class="friends-message"> <i class="fa fa-circle online"></i> Online</span>
+                                      {%endif%}
                                     </div>
                                     <!-- notification badge -->
                                     <span class="badge notif-badge">7</span>
@@ -164,7 +168,7 @@
                                 <!-- name -->
                                 <h4 class="name your-name">Welcome to Netpackt chatboard</h4>
                                 <!-- setting btn -->
-                                <span class="glyphicon glyphicon-cog"></span>
+                                <span class="glyphicon "><i class="fa-brands fa-rocketchat"></i></span>
                               </div>
                             </section>
                         
@@ -277,10 +281,11 @@
                                     if (logged_in_user === sender) {
                                         $chat_box.append(`                                
                                         <div id="your-chat" class="your-chat">
-                                          <p class="your-chat-balloon">`+message+`</p>
+                                          <p class="your-chat-balloon" id="message">`+message+`</p>
                                           <p class="chat-datetime"><span class="glyphicon glyphicon-ok"></span> Sun, Aug 30 | 15:45</p>
                                         </div>`);
                                     } else {
+                                        
                                         $chat_box.append(`                                
                                         <div id="friends-chat" class="friends-chat">
                                           <div class="profile friends-chat-photo">

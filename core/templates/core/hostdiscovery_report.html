@@ -39,6 +39,7 @@ Host discovery scan report
                     <td>IP address</td>
                     <td>MAC address</td>
                     <td>Device name</td>
+                    <td>Actions</td>
                 </tr>
             </thead>
             <tbody>
@@ -47,11 +48,40 @@ Host discovery scan report
                     <td>{{host.1}}</td>
                     <td>{{host.2}}</td>
                     <td>{{host.3}}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Do vulnerability scan
+                        </button>
+                        <button type="button" class="btn btn-primary" title="Upgrade to Enterprise to use this feature" style="pointer-events: auto;" disabled >
+                            Enumerate host
+                        </button>
+                        
+                    </td>
                 </tr>
                 {%endfor%}
             </tbody>
         </table>
     </div>
 </div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Host vulnerability scan</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Scan host for vulnerabilites 
+        </div>
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-success">Direct scan</button>
+          <button type="button" class="btn btn-primary">Edit scan details</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {%endblock%}
