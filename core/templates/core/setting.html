@@ -134,8 +134,12 @@
                                         Online scanner
                                         </a>
                                         <a class="list-group-item list-group-item-action" data-toggle="list"
-                                            href="#delete-account" role="tab">
-                                            Delete account
+                                            href="#info_update" role="tab">
+                                            Inforamtion and update
+                                        </a>
+                                        <a class="list-group-item list-group-item-action" data-toggle="list"
+                                        href="#delete-account" role="tab">
+                                        Delete account
                                         </a>
 
                                     </div>
@@ -181,6 +185,26 @@
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-danger">Delete Account</button>
                                                 </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="info_update" role="tabpanel">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Software information</h5>
+                                                <p>Welcome to Netpackt Vulnerability assesment tool</p>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item"><b> You are using : </b> Netpackt Professional edition V1</li>
+                                                    <li class="list-group-item"><b>You license key :</b> XXXX-YYYY-ZZZZ-MMMM</li>
+                                                    <li class="list-group-item"><b>Current installed version : </b>1.0 </li>
+                                                    <li class="list-group-item"><b>Registerd by : </b>user</li>
+                                                    <li class="list-group-item"><b>Registration email :</b> email@example.com</li>
+                                                </ul><br>
+                                                <button type="button" class="btn btn-primary">Check for update</button>
+                                                <button type="button" class="btn btn-success">Upgrade to Enterprise</button>
+
+
                                             </div>
                                         </div>
                                     </div>

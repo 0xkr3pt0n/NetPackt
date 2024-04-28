@@ -101,7 +101,8 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        {{ request.user.username }}
+                        {{ request.user.username }}<br>
+                        Netpackt Professional
                     </div>
                 </nav>
             </div>
@@ -113,6 +114,16 @@
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
                         <div class="row">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-center text-grey mb-4" style="width: 16rem; height: 20rem;">
+                                    {% comment %} <img class="card-img-top mx-auto " style="width: 9rem; height: 12rem;" src="{%static "vulnscan.png"%}" alt="Card image cap"> {% endcomment %}
+                                    <div class="card-body">
+                                        <i class="fa-solid fa-circle-nodes" style="font-size: 180px; margin:10px;"></i>
+                                        <p class="card-text">Basic network scan</p>
+                                        <a href="{%url "network_scan"%}" class="btn btn-primary">New scan</a>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="col-xl-3 col-md-6">
                                 <div class="card text-center text-grey mb-4" style="width: 16rem; height: 20rem;">
@@ -152,7 +163,7 @@
                                     <div class="card-body" >
                                         <i class="fa-solid fa-database" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">SQL injection tool</p>
-                                        <a href="#" class="btn btn-primary">New scan</a>
+                                        <a href="#" class="btn btn-primary disabled" aria-disabled="true">New scan</a>
                                     </div>
                                 </div>
                             </div> 
@@ -162,7 +173,7 @@
                                     <div class="card-body" >
                                         <i class="fa-solid fa-diagram-project" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">Infrastructure scan</p>
-                                        <a href="#" class="btn btn-primary">New scan</a>
+                                        <a href="#" class="btn btn-primary disabled" aria-disabled="true">New scan</a>
                                     </div>
                                 </div>
                             </div>  
@@ -172,7 +183,7 @@
                                     <div class="card-body" >
                                         <i class="fa-solid fa-shield-halved" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">WAF enumeration</p>
-                                        <a href="{%url 'waf_enumeration'%}" class="btn btn-primary">New scan</a>
+                                        <a href="{%url 'waf_enumeration'%}" class="btn btn-primary disabled" aria-disabled="true">New scan</a>
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +194,7 @@
                                     <div class="card-body" >
                                         <i class="fa-solid fa-user-secret" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">Network Incident Investigation</p>
-                                        <a href="{%url 'network_forensics'%}" class="btn btn-primary">New scan</a>
+                                        <a href="{%url 'network_forensics'%}" class="btn btn-primary disabled" aria-disabled="true">New scan</a>
                                     </div>
                                 </div>
                             </div>
@@ -194,7 +205,9 @@
                                     <div class="card-body" >
                                         <i class="fa-solid fa-virus" style="font-size: 180px; margin:10px;"></i>
                                         <p class="card-text">Wanacry (MS17-010)</p>
-                                        <a href="{%url 'network_forensics'%}" class="btn btn-primary">New scan</a>
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-title="Disabled tooltip">
+                                            <a href="{%url 'network_forensics'%}" class="btn btn-primary disabled" aria-disabled="true">New scan</a>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
