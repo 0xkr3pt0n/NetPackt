@@ -5,11 +5,11 @@ import time
 import psutil
 
 
-
 class runAPP:
     def __init__(self):
         # self.backP = None
         self.proccess = []
+
 
     def run(self):
         self.updatedb()
@@ -32,8 +32,6 @@ class runAPP:
 
 r = runAPP()
 
-def terminate_current():
-    r.kill_runing()
 
 
 if __name__ == "__main__":

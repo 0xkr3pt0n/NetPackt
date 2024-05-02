@@ -22,7 +22,7 @@ from .workspaces import workspace_fetch
 from .network_forensics import nforensics
 from .chat import fetch_users_info, fetch_chat, send_message
 from django.db import connection
-
+import ipaddress
 
 
 # from .pdf_report import pdf_gen
@@ -111,7 +111,7 @@ def network_scan(request):
         
         min_port = 0
         max_port = 0
-        
+        custom = 0
         #specfing port ranges
         if port_rangeType == "0" and custom_portRange != 'on' :
             min_port = 1
@@ -130,8 +130,11 @@ def network_scan(request):
             start, end = custom_range.split("-")
             min_port = int(start)
             max_port = int(end)
+            custom = 1
+            if min_port >= max_port:
+                return render(request, 'core/networkscan.html', {'invalid_port':True})
         else:
-            print("invalid")
+            return render(request, 'core/networkscan.html', {'invalid_port':True})
         
         # checking for scan type 1 for tcp connect, 2 for stealth
         if port_scanType == "1":
@@ -139,7 +142,7 @@ def network_scan(request):
         elif port_scanType == "2":
             scan_type = 2
         else:
-            print("invalid input")
+            return render(request, 'core/networkscan.html', {'invalid_stype':True})
         print(min_port)
         print(max_port)
         
@@ -152,8 +155,9 @@ def network_scan(request):
         elif intrustivity_type == '3':
             thread_value = 100
         else:
-            thread_value = 1
-        task = schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value, repeat=Task.NEVER)
+            return render(request, 'core/networkscan.html', {'invalid_thread':True})
+        
+        task = schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, custom, thread_value, repeat=Task.NEVER)
         task_id = task.id
         fs = fetch_scans.scans_fetch()
         fs.add_taskid(scan_id, task_id)
@@ -167,12 +171,19 @@ def network_scan(request):
 
 
 @background  # Execute immediately
-def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value):
+def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, custom, thread_value):
     print("start vulnerability")
     print(thread_value)
-    vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, thread_value)
+    vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, custom, thread_value)
     vscanning.vulnerability_scan()
-    
+
+def ip_address_validator(ip):
+    try:
+        ip_obj = ipaddress.ip_address(ip)
+        return 1
+    except ValueError:
+        return 0
+            
 
 @login_required(login_url='/login/')
 def host_discover(request):
@@ -180,6 +191,20 @@ def host_discover(request):
         scan_name = request.POST.get('scan_name')
         subnet = request.POST.get('subnet')
         ping_option = request.POST.get('ping_option')
+        
+        if(len(scan_name) == 0 ):
+            return render(request, 'core/hostdiscovery.html', {'empty_name':True})
+        
+        if(len(subnet) == 0 ):
+            return render(request, 'core/hostdiscovery.html', {'empty_subnet':True})
+        
+        if (ping_option == "on" or ping_option == "off"):
+            pass
+        else:
+            return render(request, 'core/hostdiscovery.html', {'Invalid_ping':True})
+
+        if(ip_address_validator(subnet) == 0):
+            return render(request, 'core/hostdiscovery.html', {'Invalid_ip':True})
         
         create_scan = scan_create.scan_create()
         user_id = request.user.id

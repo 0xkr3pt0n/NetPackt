@@ -11,6 +11,27 @@
         
         <div class="card mb-4">
             <div class="card-body">
+                {%if empty_name%}
+                  <div class="alert alert-danger" role="alert">
+                    Cannot leave scan name empty
+                  </div>
+                {%endif%}
+                {%if empty_subnet%}
+                  <div class="alert alert-danger" role="alert">
+                    Cannot leave scan subnet empty
+                  </div>
+                {%endif%}
+                {%if Invalid_ping%}
+                  <div class="alert alert-danger" role="alert">
+                    Invalid value for ping option
+                  </div>
+                {%endif%}
+                {%if Invalid_ip%}
+                  <div class="alert alert-danger" role="alert">
+                    Invalid IP address, please specify ip address in valid form : 0.0.0.0 -> 255.255.255.255
+                  </div>
+              {%endif%}
+                
                 <form method="POST" action="." novalidate>
                     {% csrf_token %}
                     <div class="row m-3">
