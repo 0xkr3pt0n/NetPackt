@@ -20,7 +20,7 @@ from urllib.parse import urlparse
 from .workspaces import workspace_create
 from .workspaces import workspace_fetch
 from .network_forensics import nforensics
-from .chat import fetch_users_info, fetch_chat, send_message
+from .chat import fetch_users_info, fetch_chat, send_message,delete_messages
 from django.db import connection
 import ipaddress
 
@@ -94,7 +94,12 @@ def network_scan(request):
         custom_range = ''
         if custom_portRange == 'on':
             custom_range = request.POST.get('customPortRange')
-            
+        
+        if(len(scan_name) == 0):
+            return render(request, 'core/networkscan.html', {'empty_name':True})
+        
+        if(len(ip_addr) == 0):
+            return render(request, 'core/networkscan.html', {'empty_ip':True})
         # print(custom_range)
         user_id = request.user.id
         # preparing shared users ids list
@@ -260,6 +265,7 @@ def sharedreports(request):
 
 @login_required(login_url='/login/')
 def setting(request):
+
     apoption = api_database.api_database()
     if request.method == "POST":
         api_option = request.POST.get("apioption")
@@ -273,6 +279,15 @@ def setting(request):
 @login_required(login_url='/login/')
 def delete_account(request):
     if request.method == 'POST':
+        #deleting user related scans
+        fs = fetch_scans.scans_fetch()
+        scans_ids = fs.get_user_scans(request.user.id)
+        for single_scan in scans_ids:
+            fs.delete_scan(single_scan[0])
+        #deleting user related messages
+        ch = delete_messages.delete_messages()
+        ch.delete_allusermessages(request.user.username)
+        #deleting user
         user = request.user
         user.delete()
         messages.success(request, 'Your account has been deleted.')
@@ -603,17 +618,21 @@ def chat_page(request, username):
     user_id = request.user.id
     users = fs.get_all_users(user_id)
     #if no username is set then set the first username
+    if (len(users) == 0):
+         return render(request, 'core/chat.html', {"empty_users":True, "selected_username":None})
     if username == request.user.username:
         username=users[0][1]
     user1_username=request.user.username
     user2_laslogin = fs.get_user_lastlogin(username)[0][0]
     messagess = fc.get_messages(user1_username, username)
     last_message = ""
-    if len(messagess[-1][3]) > 40:
-        last_message = f"{messagess[-1][3][:40]}......"
-    else:
-        last_message = messagess[-1][3]
-    print(last_message)
+    try:
+        if len(messagess[-1][3]) > 40:
+            last_message = f"{messagess[-1][3][:40]}......"
+        else:
+            last_message = messagess[-1][3]
+    except:
+        pass
     
     if request.method == 'POST':
         message = request.POST.get('message')
