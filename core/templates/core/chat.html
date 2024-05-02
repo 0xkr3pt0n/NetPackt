@@ -115,17 +115,21 @@
                             <li class="breadcrumb-item active">My messages</li>
                         </ol>
                         {% comment %} content {% endcomment %}
-                       
+                        {%if empty_users%}
+                          <div class="alert alert-primary" role="alert" style="margin: 30px;">
+                            You don't have any friends, add friends to start chat with them
+                          </div>
+                        {%endif%}
                         <div id="app" class="app">
-
+                            
                             <!-- LEFT SECTION -->
                         
                             <section id="main-left" class="main-left">
                               <!-- header -->
                               <div id="header-left" class="header-left">
-                                <span class="glyphicon glyphicon-menu-hamburger hamburger-btn"></span>
-                                <span class="glyphicon glyphicon-search search-btn"></span>
-                                <span class="glyphicon glyphicon-option-vertical option-btn"></span>
+                                
+                                
+                                
                               </div>
                         
                               <!-- chat list -->
@@ -189,9 +193,9 @@
                         
                                 <!-- some btn -->
                                 <div class="some-btn">
-                                  <span class="glyphicon glyphicon-facetime-video"></span>
+                                  {% comment %} <span class="glyphicon glyphicon-facetime-video"></span>
                                   <span class="glyphicon glyphicon-earphone"></span>
-                                  <span class="glyphicon glyphicon-option-vertical option-btn"></span>
+                                  <span class="glyphicon glyphicon-option-vertical option-btn"></span> {% endcomment %}
                                 </div>
                               </div>
                         

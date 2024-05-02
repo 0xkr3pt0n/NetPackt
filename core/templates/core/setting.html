@@ -183,7 +183,31 @@
                                                 <p>Are you sure you want to delete your account?</p>
                                                 <form method="post" action="{% url 'delete_account' %}">
                                                     {% csrf_token %}
-                                                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                                                    <!-- Button trigger modal -->
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                        delete account
+                                                    </button>
+                                                    
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Deleting user account</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                            Warning : deleting your account will delete all your current scan reports and your messages. <br>
+                                                            <b> Are you sure do you want to continue ? <b>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    {% comment %} <button type="submit" class="btn btn-danger">Delete Account</button> {% endcomment %}
                                                 </form>
                                             </div>
                                         </div>
