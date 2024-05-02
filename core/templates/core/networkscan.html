@@ -11,6 +11,22 @@
         
         <div class="card mb-4">
             <div class="card-body">
+                {%if invalid_port%}
+                    <div class="alert alert-danger" role="alert">
+                        Invalid port range option
+                    </div>
+                {%endif%}
+                {%if invalid_thread%}
+                    <div class="alert alert-danger" role="alert">
+                        Invalid thread level option
+                    </div>
+                {%endif%}
+                {%if invalid_stype%}
+                    <div class="alert alert-danger" role="alert">
+                        Invalid port scan type
+                    </div>
+                {%endif%}
+                
                 <form method="POST" action=".">
                     {% csrf_token %}
                     <div class="row m-3">
