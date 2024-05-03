@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import pcap_file
+
 # login form
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -51,7 +51,3 @@ class SignupForm(UserCreationForm):
         error_messages={'required': 'This field is required.'}
     )
 
-class Pcap_form(forms.ModelForm):
-    class Meta:
-        model = pcap_file
-        fields = ['pfile']
