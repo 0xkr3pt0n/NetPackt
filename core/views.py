@@ -334,6 +334,8 @@ def stop_scan(request, report_id):
     fs = fetch_scans.scans_fetch()
     fs.pause_scan(report_id)
     return redirect('myscans')
+
+
 # @login_required
 # def export(request, report_id):
 #     fs = fetch_scans.scans_fetch()
