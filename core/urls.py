@@ -20,6 +20,7 @@ urlpatterns = [
     path('stop_scan/<int:report_id>/', views.stop_scan, name="stop_scan"),
     path('ajax_data/,', views.get_scans_data, name="ajax_data"),
     path('webscan/', views.webscan, name="webscan"),
+    path('port-scan/', views.port_scan, name='port_scan'),
   
 
     
