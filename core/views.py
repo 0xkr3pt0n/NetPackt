@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from .scan_generator import scan_create
 from .vulnerability_scan import vscanner
 from .scan_fetcher import fetch_scans
-from .users_fetcher import users_fetch
+from .users_fetcher import users_fetch, new_user
 from background_task import background
 from background_task.models import Task
 from .vulnerability_scan import api_database
@@ -17,7 +17,7 @@ from .webscan import wscanner
 from urllib.parse import urlparse
 from django.db import connection
 import ipaddress
-
+from django.contrib.auth.hashers import make_password
 
 # from .pdf_report import pdf_gen
 # Create your views here.
@@ -48,12 +48,21 @@ def register(request):
 
         if form.is_valid():
             username = form.cleaned_data.get('username')
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username already exists.')
-            else:
-                form.save()
-                messages.success(request, 'Account created successfully.')
+            password = form.cleaned_data.get('password1')
+            hashedpass = make_password(password)
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            email = form.cleaned_data.get('email')
+            print(username)
+            print(hashedpass)
+            print(last_name)
+            dataAPI = new_user.new_user(username, hashedpass, first_name, last_name, email)
+            send = dataAPI.sendapi()
+            if(send):
+                messages.success(request, 'register request is recived, your account will be activated shortly.')
                 return redirect('login')
+            else:
+                messages.error(request, 'An error happend please try again')
         else:
             messages.error(request, 'Invalid information !')
     else:
@@ -334,6 +343,8 @@ def stop_scan(request, report_id):
     fs = fetch_scans.scans_fetch()
     fs.pause_scan(report_id)
     return redirect('myscans')
+
+
 # @login_required
 # def export(request, report_id):
 #     fs = fetch_scans.scans_fetch()
