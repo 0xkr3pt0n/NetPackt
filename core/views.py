@@ -18,6 +18,8 @@ from urllib.parse import urlparse
 from django.db import connection
 import ipaddress
 from django.contrib.auth.hashers import make_password
+from .Basic_scan.port_discovery import scan_ips, validate_port_range, validate_ip_range
+
 
 # from .pdf_report import pdf_gen
 # Create your views here.
@@ -456,4 +458,28 @@ def schedule_web_scan(scan_id, thread_level, target, scans_list, digs_dirs=0, di
         w.subdirs_enum(digs_dirs, thread_level, scan_id)
     w.finish_scan(scan_id)
 
+@login_required(login_url='/login/')
+def port_scan(request):
+    if request.method == 'POST':
+        ip_range = request.POST.get('ipRange')
+        start_port = int(request.POST.get('startPort'))
+        end_port = int(request.POST.get('endPort'))
 
+        try:
+            validate_port_range(start_port, end_port)
+
+            if '/' in ip_range:  # Check if CIDR notation is used
+                validate_ip_range(ip_range)
+                ip_addresses = [str(ip) for ip in ipaddress.ip_network(ip_range).hosts()]
+            else:  # Single IP address
+                ip_addresses = [ip_range]
+
+            open_ports = []
+            for ip in ip_addresses:
+                open_ports.extend(scan_ips([ip], start_port, end_port))
+
+            return JsonResponse(open_ports, safe=False)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    
+    return render(request, 'core/basic_scan.html')

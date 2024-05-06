@@ -1,0 +1,89 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Scanner</title>
+    <link rel="stylesheet" href="{%static 'basicScan.css'%}">
+</head>
+<body>
+    <h1>Port Scanner</h1>
+    <form id="portScanForm">
+        {% csrf_token %}
+        <div>
+            <label for="ipRange">IP Range (CIDR notation):</label>
+            <input type="text" id="ipRange" name="ipRange" placeholder="E.g., 192.168.1.0/24">
+        </div>
+        <div>
+            <label for="startPort">Starting Port:</label>
+            <input type="number" id="startPort" name="startPort" placeholder="Enter starting port">
+        </div>
+        <div>
+            <label for="endPort">Ending Port:</label>
+            <input type="number" id="endPort" name="endPort" placeholder="Enter ending port">
+        </div>
+        <button type="submit">Scan Ports</button>
+    </form>
+
+    <div id="results">
+        <h2>Results:</h2>
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>Port</th>
+                    <th>Service</th>
+                </tr>
+            </thead>
+            <tbody id="resultsBody">
+                <!-- Results will be displayed here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $('#portScanForm').submit(function(event) {
+            event.preventDefault();
+
+            var scanButton = document.getElementById('scanButton');
+            scanButton.disabled = true;
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "port_scan" %}',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(data) {
+                    var resultsBody = $('#resultsBody');
+                    resultsBody.empty();
+
+                    if (data.error) {
+                        alert('An error occurred: ' + data.error);
+                    } else if (data.length === 0) {
+                        alert('No open ports found.');
+                    } else {
+                        $.each(data, function(index, item) {
+                            var row = '<tr><td>' + item[0] + '</td><td>' + item[1] + '</td><td>' + item[2] + '</td></tr>';
+                            resultsBody.append(row);
+                        });
+                    }
+                    scanButton.disabled = false;
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while processing the request.');
+                    scanButton.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
