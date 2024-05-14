@@ -20,6 +20,17 @@ class users_fetch:
         users_data = self.cursor.fetchall()
         self.connection.commit()
         return users_data
+    
+    def userlogin_status(self, user_id):
+        update_query = f"UPDATE auth_user set status = 1 where id = {user_id}"
+        self.cursor.execute(update_query)
+        self.connection.commit()
+    
+    def userlogout_status(self, user_id):
+        update_query = f"UPDATE auth_user set status = 0 where id = {user_id}"
+        self.cursor.execute(update_query)
+        self.connection.commit()
+    
 if __name__ == "__main__":
     users = users_fetch()
     print(users.get_all_users())

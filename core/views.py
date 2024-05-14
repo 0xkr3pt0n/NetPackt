@@ -20,6 +20,10 @@ from urllib.parse import urlparse
 from .workspaces import workspace_create
 from .workspaces import workspace_fetch
 from .network_forensics import nforensics
+from .chat import fetch_users_info, fetch_chat, send_message
+from django.db import connection
+
+
 
 # from .pdf_report import pdf_gen
 # Create your views here.
@@ -35,6 +39,8 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            us = users_fetch.users_fetch()
+            us.userlogin_status(request.user.id)
             return redirect('dashboard')
         else:
             messages.error(request, 'Username or password is not correct')
@@ -62,6 +68,8 @@ def register(request):
 
 @login_required(login_url='/login/')
 def user_logout(request):
+    us = users_fetch.users_fetch()
+    us.userlogout_status(request.user.id)
     logout(request)
     return redirect('/login/')
 
@@ -210,6 +218,11 @@ def get_scans_data(request):
     data = fs.fetch_scans(request.user.id)
     return JsonResponse({"scans":data})
 
+def ajax_data_chats(request, selected_username):
+    cm = fetch_chat.fetch_chat_info()
+    data = cm.get_messages(request.user.username, selected_username)
+    return JsonResponse({"chat":data})
+
 @login_required(login_url='/login/')
 def sharedreports(request):
     fs = fetch_scans.scans_fetch()
@@ -282,38 +295,6 @@ def scan_report(request, report_id):
     else:
         return render(request, 'core/report.html')
 
-# @login_required(login_url='/login/')
-# def scan_report(request, report_id):
-#     fs = fetch_scans.scans_fetch()
-#     report_data = fs.fetch_scan_result(report_id)
-#     scan_data = fs.fetch_scan_info(report_id)
-#     user_data = User.objects.get(id=scan_data[0][5])
-#     username = user_data.username
-#     cve_data_list = []
-#     cve_refrences_list = []
-#     for cve_id in report_data:
-#         cve_data, cve_refrences = fs.get_vulnerability_detils(cve_id[5])
-#         cve_data_list.append(cve_data)
-#         cve_refrences_list.append(cve_refrences)
-    
-#     cve_data_front = [item for sublist in cve_data_list for item in sublist]
-#     refrence_data_front = [item for sublist in cve_refrences_list for item in sublist]
-#     scan_type = scan_data[0][2]
-#     fhds = fs.fetch_hostdiscovery_result(report_id)
-#     fws_domains, fws_dirs = fs.fetch_webscan_result(report_id)
-#     print(fws_dirs)
-
-
-#     if scan_type == 0:
-#         print(scan_data)
-#         return render(request, 'core/scanreport.html', {'report_data':report_data, 'scan_data':scan_data, 'user_name':username, 'cve_data':cve_data_front, 'cve_refs':refrence_data_front, 'scan_type':scan_type })
-#     elif scan_type == 1:
-#         return render(request, 'core/scanreport.html', {'scan_data':scan_data,'results':fhds, 'user_name':username,  'scan_type':scan_type })
-#     elif scan_type == 2:
-#         return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'results_subdirs':fws_dirs, 'results_subdomains':fws_domains, 'user_name':username,  'scan_type':scan_type })
-#     elif scan_type == 3:
-#         firewalls_data = fs.fetch_waf_result(report_id)
-#         return render(request, 'core/scanreport.html', {'scan_data':scan_data, 'user_name':username,'scan_type':scan_type, 'firewalls_data':firewalls_data })
 
 
 @login_required(login_url='/login/')
@@ -587,3 +568,118 @@ def network_forensics(request):
         form = Pcap_form()
 
     return render(request, 'core/network_forensics.html', {'form':form, 'users':users_data})
+
+@login_required(login_url='/login/') 
+def chat_page(request, username):
+    
+    fs = fetch_users_info.fetch_users_info()
+    fc = fetch_chat.fetch_chat_info()
+    
+    user_id = request.user.id
+    users = fs.get_all_users(user_id)
+    #if no username is set then set the first username
+    if username == request.user.username:
+        username=users[0][1]
+    user1_username=request.user.username
+    user2_laslogin = fs.get_user_lastlogin(username)[0][0]
+    messagess = fc.get_messages(user1_username, username)
+    last_message = ""
+    if len(messagess[-1][3]) > 40:
+        last_message = f"{messagess[-1][3][:40]}......"
+    else:
+        last_message = messagess[-1][3]
+    print(last_message)
+    
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        sm = send_message.send_message()
+        sm.send_message(user1_username, username, message)
+
+    return render(request, 'core/chat.html', {"users":users,'messagess':messagess, 'selected_username':username, 'selected_lastlogin':user2_laslogin, 'last_message':last_message})
+
+@login_required(login_url='/login/')
+def friend_requests(request):
+    # Assuming you have a PostgreSQL table named friend_request
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT fr.id, u.username
+            FROM friend_request fr
+            JOIN auth_user u ON fr.from_user_id = u.id
+            WHERE fr.to_user_id = %s
+        """, [request.user.id])
+        friend_requests = cursor.fetchall()
+
+    return render(request, 'core/add_friend.html', {'friend_requests': friend_requests})
+
+
+
+
+@login_required(login_url='/login/')   
+def search_users(request):
+    if request.method == 'GET':
+        query = request.GET.get('q', '')
+        users = User.objects.filter(username__icontains=query)
+        return render(request, 'core/search_results.html', {'users': users, 'query': query})
+    else:
+        return redirect('core/dashboard.html')
+
+@login_required(login_url='/login/')   
+def send_friend_request(request, to_user_id):
+    if request.method == 'POST':
+        from_user_id = request.user.id
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO friend_request (from_user_id, to_user_id) VALUES (%s, %s)",
+                    [from_user_id, to_user_id]
+                )
+            # Provide feedback to the user
+            messages.success(request, 'Friend request sent successfully.')
+        except Exception as e:
+            # Handle any database errors
+            messages.error(request, 'An error occurred while sending the friend request.')
+        return redirect('home')
+
+@login_required(login_url='/login/')
+def accept_friend_request(request, request_id):
+    if request.method == 'POST':
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE friend_request SET accepted = TRUE WHERE id = %s",
+                    [request_id]
+                )
+            # Provide feedback to the user
+            messages.success(request, 'Friend request accepted successfully.')
+        except Exception as e:
+            # Handle any database errors
+            messages.error(request, 'An error occurred while accepting the friend request.')
+        return redirect('home')
+
+@login_required(login_url='/login/')
+def reject_friend_request(request, request_id):
+    if request.method == 'POST':
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM friend_request WHERE id = %s",
+                    [request_id]
+                )
+            # Provide feedback to the user
+            messages.success(request, 'Friend request rejected successfully.')
+        except Exception as e:
+            # Handle any database errors
+            messages.error(request, 'An error occurred while rejecting the friend request.')
+        return redirect('home')
+    
+@login_required(login_url='/login/')
+def accepted_users(request):
+    # Fetch users who have sent friend requests that were accepted
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT u.username AS sender_username, u2.username AS receiver_username FROM auth_user u INNER JOIN friend_request fr ON u.id = fr.from_user_id INNER JOIN auth_user u2 ON u2.id = fr.to_user_id WHERE fr.accepted = TRUE AND (fr.from_user_id = %s OR fr.to_user_id = %s)",
+            [request.user.id, request.user.id]
+        )
+        accepted_users = [{'sender': row[0], 'receiver': row[1]} for row in cursor.fetchall()]
+
+    return render(request, 'core/accepted_users.html', {'accepted_users': accepted_users})

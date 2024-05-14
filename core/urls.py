@@ -20,13 +20,24 @@ urlpatterns = [
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
     path('stop_scan/<int:report_id>/', views.stop_scan, name="stop_scan"),
     path('ajax_data/,', views.get_scans_data, name="ajax_data"),
+    path('ajax_data_chats/<str:selected_username>/,', views.ajax_data_chats, name="ajax_data_chats"),
     path('webscan/', views.webscan, name="webscan"),
     path('waf_enumeration/', views.waf_enumeration, name="waf_enumeration"),
     path('my_workspaces/', views.my_workspaces, name="my_workspaces"),
     path('delete_workspace/<int:space_id>/', views.delete_workspace, name='delete_workspace'),
     path('workspace/<int:space_id>/', views.edit_workspace, name='workspace'),
-    path('incident_investigate', views.network_forensics, name="network_forensics"),
-    path('view_workspace/<int:space_id>/', views.view_workspace, name='view_workspace')
+    path('incident_investigate/', views.network_forensics, name="network_forensics"),
+    path('view_workspace/<int:space_id>/', views.view_workspace, name='view_workspace'),
+    path('chat/<str:username>/', views.chat_page, name='chat'),
+    path('search/', views.search_users, name='search_users'),
+    path('friend-requests/', views.friend_requests, name='friend_requests'),
+    path('search/', views.search_users, name='search_users'),
+    path('send-friend-request/<int:to_user_id>/', views.send_friend_request, name='send_friend_request'),
+    path('accept-friend-request/<int:request_id>/', views.accept_friend_request, name='accept_friend_request'),
+    path('reject-friend-request/<int:request_id>/', views.reject_friend_request, name='reject_friend_request'),
+    path('accepted-users/', views.accepted_users, name='accepted_users'),
+
+    
     
 
     
