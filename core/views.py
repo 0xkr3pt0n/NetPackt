@@ -58,7 +58,8 @@ def register(request):
             print(username)
             print(hashedpass)
             print(last_name)
-            dataAPI = new_user.new_user(username, hashedpass, first_name, last_name, email)
+            version = 0
+            dataAPI = new_user.new_user(username, hashedpass, first_name, last_name, email, version)
             send = dataAPI.sendapi()
             if(send):
                 messages.success(request, 'register request is recived, your account will be activated shortly.')
