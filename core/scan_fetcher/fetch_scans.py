@@ -98,6 +98,13 @@ class scans_fetch:
         wafs = self.cursor.fetchall()
         self.connection.commit()
         return wafs
+    
+    def get_user_scans(self, user_id):
+        query = f"select * from scans where user_id = {user_id}"
+        self.cursor.execute(query)
+        scans = self.cursor.fetchall()
+        self.connection.commit()
+        return scans
 
     def delete_scan(self, scan_id):
         query1 =  f"DELETE FROM vulnscan_report where scan_id = {scan_id}"

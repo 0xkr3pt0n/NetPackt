@@ -7,6 +7,7 @@ from queue import Queue
 import ipaddress
 import sys
 import socket
+from getmac import get_mac_address
 
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 
@@ -41,7 +42,7 @@ class hostDiscovery:
                     "MAC": mac_address,
                     "Vendor": vendor,
                 }
-
+                print(f"host details is {host_details}")
                 live_hosts.append(host_details)
 
             return live_hosts
@@ -125,8 +126,11 @@ class hostDiscovery:
 
         live_hosts = []
         for ip in sorted(iplist, key=ipaddress.IPv4Address):
-            live_hosts.append({"IP": str(ip)})
-
+            print(ip)
+            MAC_ADDR = get_mac_address(ip=f"{ip}")
+            vendor = self.get_vendor(MAC_ADDR)
+            live_hosts.append({"IP": str(ip), "MAC":MAC_ADDR, "Vendor": vendor})
+        print(live_hosts)
         return live_hosts
 
     def discover_hosts(self, option, target_subnet, exclude_ips=None):
@@ -151,7 +155,5 @@ class hostDiscovery:
 
 if __name__ == "__main__":
     scanner = hostDiscovery()
-    live_hosts = scanner.discover_hosts("0", "192.168.1.0/24")
-    print("Live Hosts:")
-    for host in live_hosts:
-        print(host)
+    live_hosts = scanner.discover_hosts("1", "192.168.1.0/24")
+

@@ -1,42 +1,22 @@
-import subprocess
 import os
-import signal
+import subprocess
 import time
-import psutil
 
 
+def runWindows():
+    subprocess.Popen(["python", "manage.py", "runserver"])
+    time.sleep(3)
+    task = subprocess.Popen(["python", "manage.py", "process_tasks"])
 
-class runAPP:
-    def __init__(self):
-        # self.backP = None
-        self.proccess = []
-
-    def run(self):
-        self.updatedb()
-        time.sleep(10)
-        self.run_server()
-        time.sleep(5)
-        self.backP = self.process_tasks()
-    def updatedb(self):
-        subprocess.Popen(["python", "database.py"])
-    def run_server(self):
-        subprocess.Popen(["python", "manage.py", "runserver"])
-
-    def process_tasks(self):
-        task = subprocess.Popen(["python", "manage.py", "process_tasks"])
-        self.proccess.append(task)
-
-    def kill_runing(self):
-        print(self.proccess)
-        self.proccess[0].terminate()
-
-r = runAPP()
-
-def terminate_current():
-    r.kill_runing()
+def runLinux():
+    subprocess.Popen(["python3", "manage.py", "runserver"])
+    time.sleep(3)
+    task = subprocess.Popen(["python3", "manage.py", "process_tasks"])
 
 
 if __name__ == "__main__":
-    r.run()
-
-    
+    os_name = os.name
+    if os_name == "nt":
+        runWindows()
+    elif os_name == "posix":
+        runLinux()

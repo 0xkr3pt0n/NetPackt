@@ -14,15 +14,25 @@ Network vulnerability scan report
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Scan name : {{scan_info.0.1}}</li>
             <li class="list-group-item">Scan Type : Network Vulnerability scan</li>
-            {%if scan_info.0.3 == 0%}
+            {%if scan_info.0.7 == 1%}
+            <li class="list-group-item">Progress : Interuptted</li>
+            {%elif scan_info.0.7 == 2%}
+            <li class="list-group-item">Progress : Interuptted</li>
+            {%elif scan_info.0.3 == 0%}
             <li class="list-group-item">Progress : Completed</li>
             {%else%}
             <li class="list-group-item">Scan name : In progress</li>
+            {%endif%}
+            {%if scan_info.0.7 == 1%}
+            <li class="list-group-item">Reason : Scan completed but no open ports found on the specified host</li>
+            {%elif scan_info.0.7 == 2%}
+            <li class="list-group-item">Reason : Scan completed but host is down or not responding</li>
             {%endif%}
             <li class="list-group-item">Target : {{scan_info.0.4}} </li>
             <li class="list-group-item">Done by : {{username}}</li>
             <li class="list-group-item">date and time : {{scan_info.0.6}}</li>
             <li class="list-group-item">Export report PDF : <a href="#"><i class="fa-solid fa-file-export"></i></a></li>
+
         </ul>
     <div class="card-body">
     </div>

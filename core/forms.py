@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import pcap_file
+
 # login form
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -20,13 +20,31 @@ class LoginForm(AuthenticationForm):
 class SignupForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username','email' ,'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name','email' ,'password1', 'password2')
     username = forms.CharField(
         max_length=30,
         help_text="Required. 30 characters or fewer. Letters, digits, and @/./+/-/_ only.",
         error_messages={
             'required': 'This field is required.',
             'max_length': 'Username must be 30 characters or fewer.',
+        }
+    )
+    first_name = forms.CharField(
+        max_length=254,
+        help_text="Required. Enter a valid email address.",
+        error_messages={
+            'required': 'This field is required.',
+            'invalid': 'Enter a valid email address.',
+            'max_length': 'Email address must be 254 characters or fewer.',
+        }
+    )
+    last_name = forms.CharField(
+        max_length=254,
+        help_text="Required. Enter a valid email address.",
+        error_messages={
+            'required': 'This field is required.',
+            'invalid': 'Enter a valid email address.',
+            'max_length': 'Email address must be 254 characters or fewer.',
         }
     )
    
@@ -51,7 +69,3 @@ class SignupForm(UserCreationForm):
         error_messages={'required': 'This field is required.'}
     )
 
-class Pcap_form(forms.ModelForm):
-    class Meta:
-        model = pcap_file
-        fields = ['pfile']

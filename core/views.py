@@ -3,26 +3,22 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render,redirect
-from .forms import LoginForm,SignupForm,Pcap_form
-from .models import pcap_file
+from .forms import LoginForm,SignupForm
 from django.contrib.auth.models import User
 from .scan_generator import scan_create
 from .vulnerability_scan import vscanner
 from .scan_fetcher import fetch_scans
-from .users_fetcher import users_fetch
+from .users_fetcher import users_fetch, new_user
 from background_task import background
 from background_task.models import Task
 from .vulnerability_scan import api_database
 from .host_discovery import hdisocver
 from .webscan import wscanner
-from .waf_enum import waf_enummer
 from urllib.parse import urlparse
-from .workspaces import workspace_create
-from .workspaces import workspace_fetch
-from .network_forensics import nforensics
-from .chat import fetch_users_info, fetch_chat, send_message
 from django.db import connection
-
+import ipaddress
+from django.contrib.auth.hashers import make_password
+from .Basic_scan.port_discovery import scan_ips, validate_port_range, validate_ip_range
 
 
 # from .pdf_report import pdf_gen
@@ -54,12 +50,22 @@ def register(request):
 
         if form.is_valid():
             username = form.cleaned_data.get('username')
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username already exists.')
-            else:
-                form.save()
-                messages.success(request, 'Account created successfully.')
+            password = form.cleaned_data.get('password1')
+            hashedpass = make_password(password)
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            email = form.cleaned_data.get('email')
+            print(username)
+            print(hashedpass)
+            print(last_name)
+            version = 0
+            dataAPI = new_user.new_user(username, hashedpass, first_name, last_name, email, version)
+            send = dataAPI.sendapi()
+            if(send):
+                messages.success(request, 'register request is recived, your account will be activated shortly.')
                 return redirect('login')
+            else:
+                messages.error(request, 'An error happend please try again')
         else:
             messages.error(request, 'Invalid information !')
     else:
@@ -94,7 +100,12 @@ def network_scan(request):
         custom_range = ''
         if custom_portRange == 'on':
             custom_range = request.POST.get('customPortRange')
-            
+        
+        if(len(scan_name) == 0):
+            return render(request, 'core/networkscan.html', {'empty_name':True})
+        
+        if(len(ip_addr) == 0):
+            return render(request, 'core/networkscan.html', {'empty_ip':True})
         # print(custom_range)
         user_id = request.user.id
         # preparing shared users ids list
@@ -111,7 +122,7 @@ def network_scan(request):
         
         min_port = 0
         max_port = 0
-        
+        custom = 0
         #specfing port ranges
         if port_rangeType == "0" and custom_portRange != 'on' :
             min_port = 1
@@ -130,8 +141,11 @@ def network_scan(request):
             start, end = custom_range.split("-")
             min_port = int(start)
             max_port = int(end)
+            custom = 1
+            if min_port >= max_port:
+                return render(request, 'core/networkscan.html', {'invalid_port':True})
         else:
-            print("invalid")
+            return render(request, 'core/networkscan.html', {'invalid_port':True})
         
         # checking for scan type 1 for tcp connect, 2 for stealth
         if port_scanType == "1":
@@ -139,7 +153,7 @@ def network_scan(request):
         elif port_scanType == "2":
             scan_type = 2
         else:
-            print("invalid input")
+            return render(request, 'core/networkscan.html', {'invalid_stype':True})
         print(min_port)
         print(max_port)
         
@@ -152,8 +166,9 @@ def network_scan(request):
         elif intrustivity_type == '3':
             thread_value = 100
         else:
-            thread_value = 1
-        task = schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value, repeat=Task.NEVER)
+            return render(request, 'core/networkscan.html', {'invalid_thread':True})
+        
+        task = schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, custom, thread_value, repeat=Task.NEVER)
         task_id = task.id
         fs = fetch_scans.scans_fetch()
         fs.add_taskid(scan_id, task_id)
@@ -167,12 +182,19 @@ def network_scan(request):
 
 
 @background  # Execute immediately
-def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, thread_value):
+def schedule_vulnerability_scan(scan_id, ip_addr, min_port, max_port, scan_type, custom, thread_value):
     print("start vulnerability")
     print(thread_value)
-    vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, thread_value)
+    vscanning = vscanner.vulnerability_scanner(ip_addr, min_port, max_port, scan_type, scan_id, custom, thread_value)
     vscanning.vulnerability_scan()
-    
+
+def ip_address_validator(ip):
+    try:
+        ip_obj = ipaddress.ip_address(ip)
+        return 1
+    except ValueError:
+        return 0
+            
 
 @login_required(login_url='/login/')
 def host_discover(request):
@@ -180,6 +202,20 @@ def host_discover(request):
         scan_name = request.POST.get('scan_name')
         subnet = request.POST.get('subnet')
         ping_option = request.POST.get('ping_option')
+        
+        if(len(scan_name) == 0 ):
+            return render(request, 'core/hostdiscovery.html', {'empty_name':True})
+        
+        if(len(subnet) == 0 ):
+            return render(request, 'core/hostdiscovery.html', {'empty_subnet':True})
+        
+        if (ping_option == "on" or ping_option == "off"):
+            pass
+        else:
+            return render(request, 'core/hostdiscovery.html', {'Invalid_ping':True})
+
+        if(ip_address_validator(subnet) == 0):
+            return render(request, 'core/hostdiscovery.html', {'Invalid_ip':True})
         
         create_scan = scan_create.scan_create()
         user_id = request.user.id
@@ -223,18 +259,11 @@ def ajax_data_chats(request, selected_username):
     data = cm.get_messages(request.user.username, selected_username)
     return JsonResponse({"chat":data})
 
-@login_required(login_url='/login/')
-def sharedreports(request):
-    fs = fetch_scans.scans_fetch()
-    data = fs.fetch_shared_scans(request.user.id)
-    usernames = []
-    for userids in data:
-        user = User.objects.get(pk=userids[5])
-        usernames.append((user.id, user.username))
-    return render(request, 'core/shared_reports.html', {'data':data, 'usernames':usernames})
+
 
 @login_required(login_url='/login/')
 def setting(request):
+
     apoption = api_database.api_database()
     if request.method == "POST":
         api_option = request.POST.get("apioption")
@@ -248,6 +277,15 @@ def setting(request):
 @login_required(login_url='/login/')
 def delete_account(request):
     if request.method == 'POST':
+        #deleting user related scans
+        fs = fetch_scans.scans_fetch()
+        scans_ids = fs.get_user_scans(request.user.id)
+        for single_scan in scans_ids:
+            fs.delete_scan(single_scan[0])
+        #deleting user related messages
+        ch = delete_messages.delete_messages()
+        ch.delete_allusermessages(request.user.username)
+        #deleting user
         user = request.user
         user.delete()
         messages.success(request, 'Your account has been deleted.')
@@ -308,6 +346,8 @@ def stop_scan(request, report_id):
     fs = fetch_scans.scans_fetch()
     fs.pause_scan(report_id)
     return redirect('myscans')
+
+
 # @login_required
 # def export(request, report_id):
 #     fs = fetch_scans.scans_fetch()
@@ -420,266 +460,27 @@ def schedule_web_scan(scan_id, thread_level, target, scans_list, digs_dirs=0, di
     w.finish_scan(scan_id)
 
 @login_required(login_url='/login/')
-def waf_enumeration(request):
-    users = users_fetch.users_fetch()
-    users_data = users.get_all_users(request.user.id)
-
+def port_scan(request):
     if request.method == 'POST':
-        scan_name = request.POST.get('scan_name')
-        target = request.POST.get('target')
-        print(scan_name)
-        print(target)
-        user_id = request.user.id
-        create_scan = scan_create.scan_create()
-        shared_users_list = []
-        scan_id = create_scan.waf_enum(scan_name, target, user_id, shared_users_list)
+        ip_range = request.POST.get('ipRange')
+        start_port = int(request.POST.get('startPort'))
+        end_port = int(request.POST.get('endPort'))
 
-        w = waf_enummer.waf_enumer(target, scan_id)
-        w.scan_target()
-        return redirect('myscans')
-
-    return render(request, 'core/waf_enum.html', {'users':users_data})
-
-@login_required(login_url='/login/')
-def my_workspaces(request):
-    if request.method == 'POST':
-        workspace_name = request.POST.get('workspace_name')
-        print(workspace_name)
-        wc = workspace_create.workspace_create(workspace_name)
-        wc.create_workspace()
-
-        wsdata = workspace_fetch.workspace_fetcher()
-        wspaces = wsdata.fetch_workspaces()
-        return render(request, 'core/my_workspaces.html', {'workspaces': wspaces})
-    wsdata = workspace_fetch.workspace_fetcher()
-    wspaces = wsdata.fetch_workspaces()
-    return render(request, 'core/my_workspaces.html', {'workspaces': wspaces})
-
-@login_required(login_url='/login/')
-def delete_workspace(request, space_id):
-    delete = workspace_fetch.workspace_fetcher()
-    delete.delete_workspace(space_id)
-    return redirect('my_workspaces')
-
-@login_required(login_url='/login/')
-def edit_workspace(request, space_id):
-    ws = workspace_fetch.workspace_fetcher()
-    wsdata = ws.fetch_workspace(space_id)
-    wsScans = ws.workspace_scans_fetch(space_id)
-    scans = fetch_scans.scans_fetch()
-    user_id = request.user.id
-    scans_data = scans.fetch_scans_workspace(user_id)
-    
-    if request.method == 'POST':
-        scan_id = request.POST.get('scan_select')
-        ws.addscan_workspace(scan_id, space_id)
-        return render(request, 'core/workspace_edit.html', {'wsdata': wsdata, 'scans':scans_data})
-        
-    return render(request, 'core/workspace_edit.html', {'wsdata': wsdata, 'scans':scans_data, 'wsScans':wsScans})
-
-@login_required(login_url='/login/')
-def view_workspace(request, space_id):
-    s = workspace_fetch.workspace_fetcher()
-    workspace_data = s.fetch_workspace(space_id)
-    
-    scans_information = s.workspace_scans_fetch_all(space_id)
-    
-    fs = fetch_scans.scans_fetch()
-    vulnerability_scan_data = []
-    hds_scan_data = []
-    web_scan_data_domains = []
-    web_scan_data_dirs = []
-    waf_scan_data = []
-    for i in scans_information:
-        
-        if i[2] == 0:
-            vulnscan_id = i[0]
-            report_data = fs.fetch_scan_result(vulnscan_id)
-            vulnerability_scan_data.append(report_data)
-        elif i[2] == 1:
-            hostdisc_id = i[0]
-            host_data = fs.fetch_hostdiscovery_result(hostdisc_id)
-            hds_scan_data.append(host_data)
-        elif i[2] == 2:
-            webscan_id = i[0]
-            web_data_dn, web_data_dr = fs.fetch_webscan_result(webscan_id)
-            web_scan_data_domains.append(web_data_dn)
-            web_scan_data_dirs.append(web_scan_data_dirs)
-        elif i[2] == 3:
-            wafenum_id = i[0]
-            waf_result = fs.fetch_waf_result(wafenum_id)
-            waf_scan_data.append(waf_result)
-
-    
-    print(hds_scan_data)
-    print(web_scan_data_domains)
-    print(web_scan_data_dirs)
-    print(waf_scan_data)
-
-    vulnresult_proccesd = []
-    for i in vulnerability_scan_data:
-        for j in i:
-            vulnresult_proccesd.append(j)
-    
-    cve_data_list = []
-    cve_data_refrences = []
-    for cve in vulnresult_proccesd:
-        cve_id = cve[5]
-        vulndetails, ref_details = fs.get_vulnerability_detils(cve_id)
-        cve_data_list.append(vulndetails)
-        cve_data_refrences.append(ref_details)
-
-
-    cve_data = []
-    for i in cve_data_list:
-        for j in i:
-            cve_data.append(j)
-    print(cve_data)
-    print(f'you are viewing workspace : {space_id}')
-    return render(request, 'core/workspace_report.html', {'wdata':workspace_data, 'scans_information':scans_information,'vulnresult':vulnresult_proccesd, 'cve_data':cve_data, 'cve_ref': cve_data_refrences})
-
-
-@login_required(login_url='/login/')   
-def network_forensics(request):
-    users = users_fetch.users_fetch()
-    users_data = users.get_all_users(request.user.id)
-    
-    if request.method == 'POST':
-        form = Pcap_form(request.POST, request.FILES)
-        
-        scan_name = request.POST.get('scan_name')
-        target = request.FILES['pfile'].name
-        shared_users_list = []
-        user_id = request.user.id
-        create_scan = scan_create.scan_create()
-        scan_id = create_scan.network_forensics(scan_name, target, user_id, shared_users_list)
-        saved_file_name = ''
-        if form.is_valid():
-            saved_file = form.save()
-            saved_file_name = saved_file.pfile.name
-        print(saved_file_name)
-        
-        nf = nforensics.pcap_analyzer(saved_file_name, scan_id)
-        data = nf.pacp_analyze()
-        nf.result_insertion(data)
-        return redirect('myscans')
-        
-    else:
-        form = Pcap_form()
-
-    return render(request, 'core/network_forensics.html', {'form':form, 'users':users_data})
-
-@login_required(login_url='/login/') 
-def chat_page(request, username):
-    
-    fs = fetch_users_info.fetch_users_info()
-    fc = fetch_chat.fetch_chat_info()
-    
-    user_id = request.user.id
-    users = fs.get_all_users(user_id)
-    #if no username is set then set the first username
-    if username == request.user.username:
-        username=users[0][1]
-    user1_username=request.user.username
-    user2_laslogin = fs.get_user_lastlogin(username)[0][0]
-    messagess = fc.get_messages(user1_username, username)
-    last_message = ""
-    if len(messagess[-1][3]) > 40:
-        last_message = f"{messagess[-1][3][:40]}......"
-    else:
-        last_message = messagess[-1][3]
-    print(last_message)
-    
-    if request.method == 'POST':
-        message = request.POST.get('message')
-        sm = send_message.send_message()
-        sm.send_message(user1_username, username, message)
-
-    return render(request, 'core/chat.html', {"users":users,'messagess':messagess, 'selected_username':username, 'selected_lastlogin':user2_laslogin, 'last_message':last_message})
-
-@login_required(login_url='/login/')
-def friend_requests(request):
-    # Assuming you have a PostgreSQL table named friend_request
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT fr.id, u.username
-            FROM friend_request fr
-            JOIN auth_user u ON fr.from_user_id = u.id
-            WHERE fr.to_user_id = %s
-        """, [request.user.id])
-        friend_requests = cursor.fetchall()
-
-    return render(request, 'core/add_friend.html', {'friend_requests': friend_requests})
-
-
-
-
-@login_required(login_url='/login/')   
-def search_users(request):
-    if request.method == 'GET':
-        query = request.GET.get('q', '')
-        users = User.objects.filter(username__icontains=query)
-        return render(request, 'core/search_results.html', {'users': users, 'query': query})
-    else:
-        return redirect('core/dashboard.html')
-
-@login_required(login_url='/login/')   
-def send_friend_request(request, to_user_id):
-    if request.method == 'POST':
-        from_user_id = request.user.id
         try:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "INSERT INTO friend_request (from_user_id, to_user_id) VALUES (%s, %s)",
-                    [from_user_id, to_user_id]
-                )
-            # Provide feedback to the user
-            messages.success(request, 'Friend request sent successfully.')
-        except Exception as e:
-            # Handle any database errors
-            messages.error(request, 'An error occurred while sending the friend request.')
-        return redirect('home')
+            validate_port_range(start_port, end_port)
 
-@login_required(login_url='/login/')
-def accept_friend_request(request, request_id):
-    if request.method == 'POST':
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "UPDATE friend_request SET accepted = TRUE WHERE id = %s",
-                    [request_id]
-                )
-            # Provide feedback to the user
-            messages.success(request, 'Friend request accepted successfully.')
-        except Exception as e:
-            # Handle any database errors
-            messages.error(request, 'An error occurred while accepting the friend request.')
-        return redirect('home')
+            if '/' in ip_range:  # Check if CIDR notation is used
+                validate_ip_range(ip_range)
+                ip_addresses = [str(ip) for ip in ipaddress.ip_network(ip_range).hosts()]
+            else:  # Single IP address
+                ip_addresses = [ip_range]
 
-@login_required(login_url='/login/')
-def reject_friend_request(request, request_id):
-    if request.method == 'POST':
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "DELETE FROM friend_request WHERE id = %s",
-                    [request_id]
-                )
-            # Provide feedback to the user
-            messages.success(request, 'Friend request rejected successfully.')
+            open_ports = []
+            for ip in ip_addresses:
+                open_ports.extend(scan_ips([ip], start_port, end_port))
+
+            return JsonResponse(open_ports, safe=False)
         except Exception as e:
-            # Handle any database errors
-            messages.error(request, 'An error occurred while rejecting the friend request.')
-        return redirect('home')
+            return JsonResponse({'error': str(e)}, status=400)
     
-@login_required(login_url='/login/')
-def accepted_users(request):
-    # Fetch users who have sent friend requests that were accepted
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT u.username AS sender_username, u2.username AS receiver_username FROM auth_user u INNER JOIN friend_request fr ON u.id = fr.from_user_id INNER JOIN auth_user u2 ON u2.id = fr.to_user_id WHERE fr.accepted = TRUE AND (fr.from_user_id = %s OR fr.to_user_id = %s)",
-            [request.user.id, request.user.id]
-        )
-        accepted_users = [{'sender': row[0], 'receiver': row[1]} for row in cursor.fetchall()]
-
-    return render(request, 'core/accepted_users.html', {'accepted_users': accepted_users})
+    return render(request, 'core/basic_scan.html')
