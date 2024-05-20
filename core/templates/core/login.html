@@ -14,7 +14,7 @@
 
             <div class="center">
 
-                <h1>Login</h1>
+                <h1 style="color:#181818;">Login</h1>
                 
                 <form method="post">
                     {%csrf_token%}
@@ -40,7 +40,7 @@
                     <span></span>
                     <label>Password</label>
                   </div>
-                  <p class="error-message  {% if form.errors %}show{%else%}hide{% endif %}">Invalid username or password. Please try again or register if you don't have an account.</p>
+                  <p class="error-message  {% if form.errors %}show{%else%}hide{% endif %}">Invalid username or password. Please try again or Sign up if you don't have an account ;).</p>
                   <style>
                     .error-message {
                         color: red;
@@ -60,7 +60,7 @@
                 </form>
             </div>
         </div>
-        <script>
+        <script >
           document.addEventListener('DOMContentLoaded', function () {
               const errorMessage = document.querySelector('.error-message');
               

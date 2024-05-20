@@ -11,6 +11,18 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
+ .pass {
+  color: #8a0303;
+  cursor: pointer;
+}
+.pass:hover {
+  text-decoration: none;
+  color: #8a0303;
+}
+.pass a{
+  text-decoration: none;
+  color: #8a0303;
+}
  body {
   margin-top: 20px;
   background: #F0F8FF;
