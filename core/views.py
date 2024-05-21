@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from .scan_generator import scan_create
 from .vulnerability_scan import vscanner
 from .scan_fetcher import fetch_scans
-from .users_fetcher import users_fetch, new_user
+from .users_fetcher import user_loginapi, users_fetch, new_user, user_activateapi
 from background_task import background
 from background_task.models import Task
 from .vulnerability_scan import api_database
@@ -29,15 +29,23 @@ def home(request):
 
 def user_login(request):
     if request.method == 'POST':
+        #getting post request parameters
         form = LoginForm(request.POST)
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            us = users_fetch.users_fetch()
-            us.userlogin_status(request.user.id)
-            return redirect('dashboard')
+
+        #authenticating via API
+        u = user_loginapi.userlogin()
+        loginapi = u.login_api(username, password)
+        
+        #validating API response
+        if loginapi == 1:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('dashboard')
+        elif loginapi == 0:
+            return redirect('activate', username=username)
         else:
             messages.error(request, 'Username or password is not correct')
     else:
@@ -55,12 +63,10 @@ def register(request):
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')
             email = form.cleaned_data.get('email')
-            print(username)
-            print(hashedpass)
-            print(last_name)
             version = 0
             dataAPI = new_user.new_user(username, hashedpass, first_name, last_name, email, version)
             send = dataAPI.sendapi()
+            form.save()
             if(send):
                 messages.success(request, 'register request is recived, your account will be activated shortly.')
                 return redirect('login')
@@ -72,10 +78,21 @@ def register(request):
         form = SignupForm()
     return render(request, 'core/register.html', {'form': form})
 
+def activate(request, username):
+    if request.method == 'POST':
+        serial_key = request.POST.get('serial')
+        u = user_activateapi.user_activateapi()
+        activate = u.user_activate(username, serial_key)
+        if activate:
+            return redirect('login')
+        else:
+            print('wrong serial')
+            messages.error(request, 'Invalid information !')
+
+    return render(request, 'core/activate.html', {'username': username})
+
 @login_required(login_url='/login/')
 def user_logout(request):
-    us = users_fetch.users_fetch()
-    us.userlogout_status(request.user.id)
     logout(request)
     return redirect('/login/')
 

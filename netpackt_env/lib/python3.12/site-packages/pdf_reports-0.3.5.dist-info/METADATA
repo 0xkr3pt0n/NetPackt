@@ -1,0 +1,75 @@
+Metadata-Version: 2.1
+Name: pdf-reports
+Version: 0.3.5
+Summary: Create nice-looking PDF reports from HTML content.
+Home-page: https://github.com/Edinburgh-Genome-Foundry/pdf_reports
+Author: Zulko
+License: MIT
+Keywords: PDF report web jinja weasyprint
+Platform: UNKNOWN
+License-File: LICENCE.txt
+Requires-Dist: pypugjs
+Requires-Dist: jinja2
+Requires-Dist: weasyprint
+Requires-Dist: beautifulsoup4
+Requires-Dist: pandas
+Requires-Dist: Markdown
+Requires-Dist: backports.functools-lru-cache
+
+PDF Reports
+===========
+
+*PDF Reports* (complete documentation `here <https://edinburgh-genome-foundry.github.io/pdf_reports/>`_) is a Python library to create nice-looking PDF reports from HTML or `Pug <https://pugjs.org>`_ templates. It features modern-looking components (via the `Semantic UI <https://semantic-ui.com/>`_ framework) and provides routines to embed tables or plots in the documents.
+
+
+Example of use
+--------------
+
+Your Pug template file ``template.pug`` may look like this (see a `full example <https://github.com/Edinburgh-Genome-Foundry/pdf_reports/blob/master/examples/example_template.pug>`_):
+
+.. code:: pug
+
+    #sidebar I am the text in the sidebar.
+
+    h1 {{ title }}
+
+    .ui.piled.segment
+      p Oh hi there ! I am some text in a cool box.
+
+Your Python code will be as follows:
+
+.. code:: python
+
+    from pdf_reports import pug_to_html, write_report
+    html = pug_to_html("template.pug", title="My report")
+    write_report(html, "example.pdf")
+
+
+And your final result may look like this (`PDF file <https://github.com/Edinburgh-Genome-Foundry/pdf_reports/raw/master/examples/example.pdf>`_):
+
+.. image:: https://github.com/Edinburgh-Genome-Foundry/pdf_reports/raw/master/screenshot.png
+
+Infos
+-----
+
+**PIP installation:**
+
+.. code:: bash
+
+  pip install pdf_reports
+
+**Web documentation:**
+
+`<https://edinburgh-genome-foundry.github.io/pdf_reports/>`_
+
+**Github Page:**
+
+`<https://github.com/Edinburgh-Genome-Foundry/pdf_reports>`_
+
+**Live demo:**
+
+`<http://cuba.genomefoundry.org/sculpt_a_sequence>`_
+
+**License:** MIT, Copyright Edinburgh Genome Foundry
+
+

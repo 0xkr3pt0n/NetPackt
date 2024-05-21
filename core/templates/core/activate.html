@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{%load static%}
+{%block title%}Activate account{%endblock%}
+{%block headattrs%}<link rel="stylesheet" href="{%static 'oops.css'%}" />{%endblock%}
+{%block content%}
+{% if request.user.is_authenticated %}
+  <script>
+      window.location.href = "{% url 'home' %}"; 
+  </script>
+{%else%}
+<body class="bg-primary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <div class="center">
+                <h1>Activate your account</h1>
+                <form method="post">
+                    {%csrf_token%}
+                    <div class="txt_field">
+                        <input type="text" id="inputEmail" value="{{username}}"  disabled/>
+                        <span></span>
+                        
+                    </div>
+                  <div class="txt_field">
+                    <input type="text" id="inputEmail" name="serial"  required/>
+                    <span></span>
+                    <label>Serial key</label>
+                  </div>
+                  <input type="submit" value="Activate" />
+                  <div class="signup_link">Back To <a href="{%url 'login'%}">Login</a></div>
+                </form>
+            </div>
+        </div>
+</body>
+{%endif%}
+{%endblock%}

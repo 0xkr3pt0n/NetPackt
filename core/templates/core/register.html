@@ -14,7 +14,7 @@
             <div class="center">
             <h1>Register</h1>
             <form method="post" action="{% url 'register' %}">
-                {% csrf_token %}
+                {%csrf_token%}
                 {% if form.username.errors %}
                 <div class="text-danger">
                     {{ form.username.errors.0 }}
