@@ -1,0 +1,2 @@
+[console_scripts]
+ping3 = ping3.command_line:main
