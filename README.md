@@ -5,8 +5,8 @@
 - [installtion](#installtion)
 - [running](#running)
 
-## important note
-changes applied to Database, make sure you run [python database.py] and [pip install -r requirements.txt] first before running the project
+## important note (updated !!!)
+changes applied to Database, you must run python manage.py makemigrations and python manage.py migrate to apply changes.
 
 ## installtion for first time only
 
