@@ -22,6 +22,7 @@ urlpatterns = [
     path('ajax_data/,', views.get_scans_data, name="ajax_data"),
     path('webscan/', views.webscan, name="webscan"),
     path('port-scan/', views.port_scan, name='port_scan'),
+    path('basic_page/', views.basicpage, name="basicpage"),
   
 
     

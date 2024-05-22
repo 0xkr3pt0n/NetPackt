@@ -24,6 +24,9 @@ from .Basic_scan.port_discovery import scan_ips, validate_port_range, validate_i
 # from .pdf_report import pdf_gen
 # Create your views here.
 
+def basicpage(request):
+    return render(request, 'core/basicpage.html')
+
 def home(request):
     return render(request, "core/home.html")
 
