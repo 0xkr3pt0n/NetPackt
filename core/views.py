@@ -67,6 +67,7 @@ def register(request):
             dataAPI = new_user.new_user(username, hashedpass, first_name, last_name, email, version)
             send = dataAPI.sendapi()
             form.save()
+            print(send)
             if(send):
                 messages.success(request, 'register request is recived, your account will be activated shortly.')
                 return redirect('login')
