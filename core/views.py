@@ -24,6 +24,9 @@ from .Basic_scan.port_discovery import scan_ips, validate_port_range, validate_i
 # from .pdf_report import pdf_gen
 # Create your views here.
 
+def basicpage(request):
+    return render(request, 'core/basicpage.html')
+
 def home(request):
     return render(request, "core/home.html")
 
@@ -67,6 +70,7 @@ def register(request):
             dataAPI = new_user.new_user(username, hashedpass, first_name, last_name, email, version)
             send = dataAPI.sendapi()
             form.save()
+            print(send)
             if(send):
                 messages.success(request, 'register request is recived, your account will be activated shortly.')
                 return redirect('login')

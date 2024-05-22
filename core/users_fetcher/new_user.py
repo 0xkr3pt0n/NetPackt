@@ -26,9 +26,4 @@ class new_user:
         
         print('reached')
         response = requests.post(url, json=data)
-
-        if response.status_code == 201:
-            print('done')
-            return 1
-        else:
-            return 0
+        return response
